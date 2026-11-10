@@ -44,11 +44,12 @@
       var bm = o.basemap || (isDark() ? 'dark' : 'light'), layer = L.tileLayer(BASEMAPS[bm].url, { attribution: BASEMAPS[bm].attr, maxZoom: 19 }).addTo(map);
       map.setBasemap = function (id) { map.removeLayer(layer); layer = L.tileLayer(BASEMAPS[id].url, { attribution: BASEMAPS[id].attr, maxZoom: 19 }).addTo(map); };
       if (!o.basemap) new MutationObserver(function () { map.setBasemap(isDark() ? 'dark' : 'light'); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-mode'] });
-      var group = L.featureGroup().addTo(map);
+      var group = L.featureGroup().addTo(map); map.markerRefs = [];
       (o.markers || []).forEach(function (m) {
         var mk = L.marker([m.lat, m.lng], { icon: pin(L, m), title: m.title }).addTo(group);
         mk.bindPopup('<strong>' + m.title + '</strong>' + (m.lines || []).map(function (l) { return '<br>' + l; }).join(''));
         if (m.onClick) mk.on('click', function () { m.onClick(m); });
+        map.markerRefs.push(mk);
       });
       (o.polylines || []).forEach(function (p) { L.polyline(p.points, { color: p.color || getComputedStyle(document.documentElement).getPropertyValue('--primary'), weight: p.weight || 4, opacity: .85, dashArray: p.dash }).addTo(group); });
       (o.polygons || []).forEach(function (p) { var c = p.color || getComputedStyle(document.documentElement).getPropertyValue('--primary'); L.polygon(p.points, { color: c, fillColor: c, fillOpacity: .15, weight: 2 }).bindTooltip(p.title || '').addTo(group); });

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supervision</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .live-line { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .live { display: inline-flex; align-items: center; gap: 8px; padding: 2px 12px 2px 8px; border-radius: var(--radius-md); background: color-mix(in srgb, var(--success) 15%, transparent); font-size: 12px; font-weight: 600; color: var(--success-text); }
+    .live i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: mpulse 1.6s ease-in-out infinite; } .live.paused { background: var(--hover-bg); color: var(--text-muted); } .live.paused i { animation: none; }
+    @keyframes mpulse { 50% { opacity: .3; } }
+    .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--radius-sm); background: var(--hover-bg); }
+    .seg button { height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: none; font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; } .seg button.on { background: var(--card-bg); color: var(--text-primary); font-weight: 600; box-shadow: var(--shadow-1); }
+    .alert { margin-bottom: 16px; align-items: center; } .alert .grow { flex: 1; }
+    .bg-success { background: var(--success); } .bg-warning { background: var(--warning); } .bg-error { background: var(--error); } .bg-info { background: var(--info); } .bg-neutral { background: var(--text-muted); }
+    .overall { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 16px 20px; margin-bottom: 16px; }
+    .o-ic { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; } .o-ic .mi { font-size: 28px; }
+    .o-txt { flex: 1 1 260px; display: flex; flex-direction: column; } .o-txt strong { font-size: 16px; } .o-txt span { font-size: 13px; color: var(--text-secondary); }
+    .o-counts { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--text-secondary); } .o-counts span { display: inline-flex; align-items: center; gap: 8px; } .o-counts b { color: var(--text-primary); } .o-counts .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .overall.tone-warning { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--warning) 40%, var(--border)); }
+    .kpis.six { grid-template-columns: repeat(6, minmax(0, 1fr)); } @media (max-width: 1500px) { .kpis.six { grid-template-columns: repeat(3, minmax(0, 1fr)); } } @media (max-width: 767px) { .kpis.six { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .kpi .k-val { font-size: 24px; }
+    .trend { display: inline-flex; align-items: center; gap: 2px; font-weight: 600; } .trend .mi { font-size: 16px; } .trend.up { color: var(--success-text); } .trend.down { color: var(--error-text); }
+    .grid { display: grid; gap: 16px; margin-bottom: 16px; } .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid.infra, .grid.fleet { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } .grid.logs-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+    @media (max-width: 1100px) { .grid.two, .grid.infra, .grid.fleet, .grid.logs-grid { grid-template-columns: minmax(0, 1fr); } }
+    .chart { position: relative; height: 220px; } .chart.sm { height: 180px; }
+    .list { padding: 8px 0; }
+    .count { min-width: 22px; padding: 0 7px; border-radius: 11px; background: color-mix(in srgb, var(--error) 14%, transparent); color: var(--error-text); font-size: 12px; font-weight: 700; line-height: 22px; text-align: center; }
+    .state { padding: 2px 8px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; white-space: nowrap; } .state::first-letter { text-transform: uppercase; }
+    .mono { font-family: var(--font-mono); font-size: .92em; }
+    .services { margin-bottom: 16px; } .svc-list { padding: 4px 0 8px; }
+    .svc { display: grid; grid-template-columns: 36px minmax(160px, 220px) minmax(0, 1fr) 72px 110px; align-items: center; gap: 16px; padding: 12px 20px; }
+    .svc-name { display: flex; flex-direction: column; min-width: 0; } .svc-name strong { font-size: 13px; } .svc-name small { font-size: 12px; color: var(--text-muted); }
+    .svc .pct { text-align: right; font-size: 13px; font-weight: 600; } .svc .state { justify-self: end; }
+    @media (max-width: 1100px) { .svc { grid-template-columns: 36px minmax(0, 1fr) 72px 110px; } .uptime { grid-column: 1 / -1; grid-row: 2; } }
+    .uptime { display: flex; gap: 2px; height: 28px; min-width: 0; } .uptime i { flex: 1; min-width: 2px; border-radius: 2px; opacity: .85; } .uptime i:hover { opacity: 1; transform: scaleY(1.12); }
+    .map-card { overflow: hidden; } .map-card .um { margin-top: 12px; border-radius: 0 0 var(--radius-md) var(--radius-md); }
+    .gauges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; } @media (max-width: 600px) { .gauges { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .gauge { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 4px 4px; }
+    .gauge svg { width: 100%; max-width: 130px; } .g-track { fill: none; stroke: var(--hover-bg); stroke-width: 9; stroke-linecap: round; } .g-val { fill: none; stroke: var(--success); stroke-width: 9; stroke-linecap: round; }
+    .g-val-txt { margin-top: -26px; font-size: 22px; font-weight: 600; } .g-val-txt small { margin-left: 2px; font-size: 12px; font-weight: 500; color: var(--text-muted); }
+    .g-lbl { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 12px; font-weight: 600; } .g-lbl .mi { font-size: 14px; color: var(--text-muted); } .g-site { font-size: 11px; color: var(--text-muted); }
+    .gauge.warn .g-val { stroke: var(--error); }
+    .dot-lg { width: 10px; height: 10px; flex: none; border-radius: 50%; margin: 0 8px; } .dot-lg.pulse { animation: mpulse 1.2s ease-in-out infinite; }
+    .incidents { padding: 8px 0; } .inc { display: flex; align-items: center; gap: 12px; padding: 12px 20px; }
+    .sev { min-width: 62px; padding: 2px 8px; border-radius: var(--radius-sm); text-align: center; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    .inc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; } .inc-body strong { font-size: 13px; } .inc-body small { font-size: 12px; color: var(--text-muted); } .inc.done .inc-body strong { color: var(--text-secondary); font-weight: 500; }
+    @media (max-width: 600px) { .inc { flex-wrap: wrap; } }
+    .console-card { display: flex; flex-direction: column; min-height: 0; }
+    .lvls { display: flex; gap: 2px; padding: 2px; border-radius: var(--radius-sm); background: var(--hover-bg); }
+    .lvls button { border: 0; background: none; padding: 3px 8px; border-radius: var(--radius-sm); cursor: pointer; font: 600 11px var(--font-sans); color: var(--text-secondary); } .lvls button::first-letter { text-transform: uppercase; } .lvls button.on { background: var(--card-bg); color: var(--text-primary); box-shadow: var(--shadow-1); }
+    .log-search { margin: 12px 16px 8px; height: 34px; }
+    .console { height: 300px; overflow-y: auto; margin: 0 16px 16px; padding: 8px 0; border-radius: var(--radius-sm); background: #0f172a; color: #cbd5e1; font: 12px/1.7 var(--font-mono); }
+    .console .ln { display: flex; gap: 12px; padding: 0 12px; white-space: nowrap; } .console .ln:hover { background: rgba(255,255,255,.04); } .console .ln.empty { color: #64748b; }
+    .console time { color: #64748b; } .console .lv { width: 44px; flex: none; text-transform: uppercase; font-weight: 700; }
+    .lv-info { color: #38bdf8; } .lv-warn { color: #fbbf24; } .lv-error { color: #f87171; } .lv-debug { color: #94a3b8; }
+    .console .src { width: 92px; flex: none; color: #a78bfa; overflow: hidden; text-overflow: ellipsis; } .console .msg { color: #e2e8f0; overflow: hidden; text-overflow: ellipsis; }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Supervision" data-crumb="Pilotage">
+  <main id="ex-content">
+    <div class="page-head">
+      <div class="titles"><span class="eyebrow">Pilotage</span><h1>Supervision</h1><p class="live-line"><span class="live" id="live"><i></i>En direct</span><span id="upd"></span></p></div>
+      <div class="actions"><div class="seg" role="radiogroup" aria-label="Période" id="range"><button class="on" data-r="1h">1 h</button><button data-r="24h">24 h</button><button data-r="7j">7 j</button></div>
+        <button class="ui-btn ui-btn--outlined" id="toggle"><span class="mi">pause</span>Pause</button><button class="ui-btn"><span class="mi">add_alert</span>Nouvelle alerte</button></div>
+    </div>
+    <div class="ui-alert ui-alert--warning alert" role="status"><span class="mi" style="color:var(--warning-text)">warning</span><div class="grow"><strong>Incident en cours · INC-214.</strong> Latence élevée sur les callbacks Mobile Money depuis 38 min. Les paiements aboutissent avec un délai.</div><button class="ui-btn ui-btn--text ui-btn--sm">Voir l'incident</button></div>
+    <section class="card overall" id="overall"></section>
+    <div class="kpis six" id="kpis"></div>
+    <div class="grid two">
+      <section class="card"><div class="card-head"><h2>Trafic</h2><span class="sub">requêtes par minute</span></div><div class="card-body"><div class="chart" id="c-traffic"></div></div></section>
+      <section class="card"><div class="card-head"><h2>Latence</h2><span class="sub">p50 / p95 · seuil 250 ms</span></div><div class="card-body"><div class="chart" id="c-lat"></div></div></section>
+      <section class="card"><div class="card-head"><h2>Erreurs</h2><span class="sub">% de réponses 5xx</span></div><div class="card-body"><div class="chart sm" id="c-err"></div></div></section>
+      <section class="card"><div class="card-head"><h2>Ressources du cluster</h2><span class="sub">moyenne des nœuds</span></div><div class="card-body"><div class="chart sm" id="c-res"></div></div></section>
+    </div>
+    <section class="card services"><div class="card-head"><h2>Services</h2><span class="sub">disponibilité sur 90 jours</span></div><div class="svc-list" id="svcs"></div></section>
+    <div class="grid infra"><div id="hosts"></div><section class="card"><div class="card-head"><h2>Données &amp; files</h2></div><div class="rows list" id="stores"></div></section></div>
+    <div class="grid fleet">
+      <section class="card map-card"><div class="card-head"><h2>Flotte GPS</h2><span class="sub" id="fleet-sub"></span></div><div id="map"></div></section>
+      <section class="card"><div class="card-head"><h2>Alertes actives</h2><span class="count" id="acount"></span></div><div class="rows list" id="alerts"></div></section>
+    </div>
+    <div class="grid two">
+      <section class="card"><div class="card-head"><h2>Capteurs des entrepôts</h2><span class="sub">IoT · rafraîchi toutes les 2 s</span></div><div class="card-body gauges" id="gauges"></div></section>
+      <section class="card"><div class="card-head"><h2>Tâches planifiées</h2></div><div class="rows list" id="jobs"></div></section>
+    </div>
+    <div class="grid logs-grid">
+      <section class="card"><div class="card-head"><h2>Incidents</h2><a href="#" onclick="return false">Historique</a></div><div class="incidents" id="incidents"></div></section>
+      <section class="card console-card"><div class="card-head"><h2>Journaux</h2><div class="lvls" id="lvls"></div></div>
+        <label class="searchbox log-search"><span class="mi">search</span><input type="search" id="logq" placeholder="Filtrer les journaux" aria-label="Filtrer les journaux"></label>
+        <div class="console" id="console" role="log" aria-live="polite"></div></section>
+    </div>
+  </main>
+
+  <script src="../../js/data/ex-utils.js"></script>
+  <script src="../../js/charts.js"></script>
+  <script src="../../js/data-table.js"></script>
+  <script src="../../js/map.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, r = D.seeded(42), $ = function (id) { return document.getElementById(id); }, nf = new Intl.NumberFormat('fr-FR'), C = function (v) { return Charts.cssVar('--' + v); };
+    var POINTS = 40, HEALTH = { up: ['Opérationnel', 'success'], degraded: ['Dégradé', 'warning'], down: ['Panne', 'error'], maintenance: ['Maintenance', 'info'] };
+    var S = { live: true, logLevel: 'all', logQ: '', logSeq: 0 };
+    function walk(base, amp, n) { var out = [], v = base; for (var i = 0; i < n; i++) { v = v + (r() - 0.5) * amp + (base - v) * 0.15; out.push(Math.round(v * 100) / 100); } return out; }
+    function svc(id, name, group, icon, status, uptime, latency, bad) { var days = Array.from({ length: 90 }, function (_, i) { return (bad || []).indexOf(i) >= 0 ? (i % 3 ? 'degraded' : 'down') : 'up'; }); if (status !== 'up') days[89] = status; return { id: id, name: name, group: group, icon: icon, status: status, uptime: uptime, latency: latency, days: days }; }
+    var services = [svc('api', 'API publique', 'Plateforme', 'api', 'up', 99.98, 84), svc('pay', 'Paiements Mobile Money', 'Plateforme', 'payments', 'degraded', 99.71, 412, [3, 17, 58]), svc('web', 'Application web', 'Plateforme', 'language', 'up', 99.99, 120),
+      svc('mobile', 'API mobile', 'Plateforme', 'smartphone', 'up', 99.95, 96, [22]), svc('gps', 'Passerelle GPS (balises)', 'Terrain', 'satellite_alt', 'up', 99.9, 38, [40, 41]), svc('sms', 'Envoi SMS', 'Tiers', 'sms', 'up', 99.6, 640, [8, 63, 64]),
+      svc('mail', 'E-mails transactionnels', 'Tiers', 'mail', 'maintenance', 99.92, 230), svc('backup', 'Sauvegardes', 'Infrastructure', 'backup', 'up', 100, 0)];
+    var now = Date.now(), labels = Array.from({ length: POINTS }, function (_, i) { return new Date(now - (POINTS - 1 - i) * 2000).toLocaleTimeString('fr-FR'); });
+    var rpm = walk(1850, 220, POINTS), p95 = walk(180, 40, POINTS), p50 = walk(72, 12, POINTS), errors = walk(0.6, 0.35, POINTS).map(function (v) { return Math.max(0.05, v); }), cpu = walk(46, 9, POINTS), mem = walk(63, 4, POINTS);
+    var hosts = [['api-prod-01', 'API', 'Abidjan-1', 48, 62, 41, 182, 'OK', '42 j'], ['api-prod-02', 'API', 'Abidjan-1', 55, 66, 41, 176, 'OK', '42 j'], ['pay-worker-01', 'Paiements', 'Abidjan-1', 87, 78, 52, 96, 'Charge élevée', '12 j'],
+      ['gps-ingest-01', 'Ingestion GPS', 'Abidjan-2', 39, 51, 68, 420, 'OK', '88 j'], ['db-primary', 'PostgreSQL', 'Abidjan-1', 34, 81, 74, 210, 'OK', '120 j'], ['db-replica', 'PostgreSQL', 'Abidjan-2', 21, 77, 74, 160, 'OK', '120 j'],
+      ['cache-01', 'Redis', 'Abidjan-1', 12, 58, 9, 300, 'OK', '64 j'], ['queue-01', 'RabbitMQ', 'Abidjan-1', 27, 44, 31, 140, 'OK', '64 j']]
+      .map(function (h, i) { return { id: 'h' + i, name: h[0], role: h[1], region: h[2], cpu: h[3], ram: h[4], disk: h[5], net: h[6], status: h[7], uptime: h[8] }; });
+    var sensors = [{ label: 'Chambre froide', site: 'Vridi', value: 3.8, unit: '°C', min: -2, max: 12, warn: 6, icon: 'ac_unit' }, { label: 'Humidité', site: 'Vridi', value: 61, unit: '%', min: 0, max: 100, warn: 75, icon: 'water_drop' },
+      { label: 'Température', site: 'Yopougon', value: 29.4, unit: '°C', min: 10, max: 45, warn: 35, icon: 'thermostat' }, { label: 'Groupe électrogène', site: 'San-Pédro', value: 72, unit: '% carburant', min: 0, max: 100, warn: 20, icon: 'bolt', low: true }];
+    var spots = [['CI-4521-AB', 5.36, -4.01], ['CI-9902-NP', 5.30, -4.02], ['CI-0418-GH', 5.34, -3.98], ['CI-6630-QR', 5.39, -4.06], ['CI-1287-KT', 5.29, -3.95], ['CI-7755-BD', 5.42, -3.99], ['CI-3310-MV', 5.33, -4.09], ['CI-5521-ZA', 5.37, -3.93], ['CI-8044-LP', 5.27, -4.04], ['CI-2190-FX', 5.40, -4.03]];
+    var fleet = spots.map(function (s, i) { return { lat: s[1], lng: s[2], title: s[0], icon: 'local_shipping', tone: i === 2 ? 'error' : i === 7 ? 'neutral' : i % 4 === 1 ? 'warning' : 'success', lines: [i === 2 ? 'Sortie de zone' : i === 7 ? 'Hors ligne depuis 2 h' : (30 + i * 4) + ' km/h'] }; });
+    var incidents = [{ id: 'INC-214', title: 'Latence élevée sur les callbacks Mobile Money', severity: 'majeur', status: 'en cours', started: 'il y a 38 min', service: 'Paiements', owner: 'Marc Yao' },
+      { id: 'INC-213', title: 'Échec de l’export Sage nocturne', severity: 'mineur', status: 'surveillance', started: 'il y a 7 h', service: 'Tâches planifiées', owner: 'Fatou Diabaté' },
+      { id: 'INC-211', title: 'Perte de signal de 2 balises sur l’axe nord', severity: 'mineur', status: 'résolu', started: 'hier', service: 'Passerelle GPS', owner: 'Aya Koné' },
+      { id: 'INC-207', title: 'Indisponibilité partielle des SMS (opérateur)', severity: 'critique', status: 'résolu', started: 'il y a 3 j', service: 'Envoi SMS', owner: 'Ibrahim Sanogo' }];
+    var logs = [], POOL = [['info', 'api', 'GET /v1/clients 200 · 84 ms'], ['info', 'api', 'POST /v1/factures 201 · 132 ms'], ['info', 'gps-ingest', 'Lot de 248 positions reçu (CI-4521-AB…)'], ['warn', 'payments', 'Callback Orange Money lent : 612 ms'],
+      ['info', 'auth', 'Connexion réussie · jean.kouassi'], ['debug', 'cache', 'Éviction LRU · 1 204 clés'], ['error', 'payments', 'Délai dépassé : callback MTN MoMo (txn 88412)'], ['info', 'scheduler', 'Synchronisation comptable · lot 14/20'],
+      ['warn', 'sms', 'Opérateur : file d’attente 1,2 s'], ['info', 'web', 'Déploiement v2.4.1 : 3/3 pods prêts'], ['error', 'scheduler', 'Export Sage : connexion refusée (port 1433)']];
+    function alarm(s) { return s.low ? s.value < s.warn : s.value > s.warn; }
+    function alerts() { return hosts.filter(function (h) { return h.cpu > 80; }).map(function (h) { return { icon: 'memory', tone: 'warning', text: 'CPU ' + h.cpu + ' % sur ' + h.name, at: 'en cours' }; })
+      .concat(sensors.filter(alarm).map(function (s) { return { icon: s.icon, tone: 'error', text: s.label + ' ' + s.site + ' : ' + nf.format(s.value) + ' ' + s.unit, at: 'en cours' }; }))
+      .concat([{ icon: 'payments', tone: 'warning', text: 'p95 callbacks paiements > 400 ms', at: 'depuis 38 min' }, { icon: 'schedule', tone: 'error', text: 'Tâche « Export Sage » en échec', at: 'depuis 7 h' }]); }
+    function pushLog(at) { var p = POOL[Math.floor(r() * POOL.length)]; logs.push({ id: ++S.logSeq, at: at, level: p[0], source: p[1], msg: p[2] }); if (logs.length > 200) logs.shift(); }
+    for (var i = 0; i < 18; i++) pushLog(new Date(Date.now() - (18 - i) * 4000));
+    function trend(v, inv) { if (!v) return ''; var good = (v >= 0) !== !!inv; return '<span class="trend ' + (good ? 'up' : 'down') + '"><span class="mi">' + (v >= 0 ? 'trending_up' : 'trending_down') + '</span>' + (v > 0 ? '+' : '') + nf.format(Math.round(v * 10) / 10) + ' %</span>'; }
+    function last(a) { return a[a.length - 1]; } function pct(a) { var p = a[a.length - 6] || a[0]; return (last(a) - p) / (p || 1) * 100; }
+    function arc(p) { var a = Math.PI * (1 - p); return 'M 10 50 A 40 40 0 0 1 ' + (50 + 40 * Math.cos(a)) + ' ' + (50 - 40 * Math.sin(a)); }
+
+    var table = DataTable.mount($('hosts'), { title: 'Serveurs', rows: hosts, pageSize: 8, maxHeight: 'none', searchable: false, columns: [
+      { key: 'name', label: 'Hôte', width: 150, type: 'mono', required: true, sticky: 'start' }, { key: 'role', label: 'Rôle', width: 118 }, { key: 'region', label: 'Zone', width: 100 },
+      { key: 'cpu', label: 'CPU', width: 118, type: 'progress', format: function (x) { return x.cpu + ' %'; } }, { key: 'ram', label: 'Mémoire', width: 118, type: 'progress', format: function (x) { return x.ram + ' %'; } },
+      { key: 'disk', label: 'Disque', width: 118, type: 'progress', format: function (x) { return x.disk + ' %'; } }, { key: 'net', label: 'Réseau', width: 110, type: 'number', format: function (x) { return x.net + ' Mb/s'; } },
+      { key: 'status', label: 'État', width: 130, type: 'badge', tone: function (x) { return x.status === 'OK' ? 'success' : 'warning'; } }, { key: 'uptime', label: 'Uptime', width: 80, hidden: true, align: 'right' }] });
+    $('stores').innerHTML = [['PostgreSQL', 'database', 312, 'req/s', '42 connexions · réplication 0,4 s', 'success'], ['Redis', 'memory', 96.4, '% hits', '1,2 Go · 18 k clés/s', 'success'], ['RabbitMQ', 'low_priority', 1284, 'en file', 'paiements.callbacks · 38 msg/s', 'warning'], ['Stockage objets', 'cloud', 6.6, 'To', '44 % du quota · 1,8 M objets', 'success']]
+      .map(function (d) { return '<div class="row"><span class="ic-tile tone-' + d[5] + '"><span class="mi">' + d[1] + '</span></span><span class="grow"><strong>' + d[0] + '</strong><small>' + d[4] + '</small></span><span class="num">' + nf.format(d[2]) + ' <small class="muted">' + d[3] + '</small></span></div>'; }).join('');
+    $('jobs').innerHTML = [['Relances automatiques', 'Chaque jour · 09:00', 'aujourd’hui 09:00', '42 s', 'ok'], ['Synchronisation comptable', 'Toutes les heures', 'il y a 12 min', '3 min 08', 'running'], ['Export Sage', 'Chaque nuit · 02:00', 'aujourd’hui 02:00', '—', 'failed'],
+      ['Sauvegarde complète', 'Chaque nuit · 03:30', 'aujourd’hui 03:30', '18 min', 'ok'], ['Purge des journaux', 'Dimanche · 04:00', 'il y a 5 j', '1 min 12', 'ok']].map(function (j) {
+        var t = { ok: 'success', running: 'info', failed: 'error' }[j[4]];
+        return '<div class="row"><span class="dot-lg bg-' + t + (j[4] === 'running' ? ' pulse' : '') + '"></span><span class="grow"><strong>' + j[0] + '</strong><small>' + j[1] + ' · dernier : ' + j[2] + '</small></span><span class="num muted">' + j[3] + '</span><span class="state tone-' + t + '">' + { ok: 'Réussie', running: 'En cours', failed: 'Échec' }[j[4]] + '</span></div>'; }).join('');
+    var mapRef; UIMap.create($('map'), { center: [5.35, -4.01], zoom: 11, height: '340px', markers: fleet }).then(function (m) { mapRef = m; });
+
+    function render() {
+      var counts = ['up', 'degraded', 'down', 'maintenance'].map(function (h) { return [h, services.filter(function (s) { return s.status === h; }).length]; });
+      var gs = services.some(function (s) { return s.status === 'down'; }) ? 'down' : services.some(function (s) { return s.status === 'degraded'; }) ? 'degraded' : 'up', tone = HEALTH[gs][1];
+      $('overall').className = 'card overall tone-' + tone;
+      $('overall').innerHTML = '<span class="o-ic tone-' + tone + '"><span class="mi">' + (gs === 'up' ? 'check_circle' : gs === 'degraded' ? 'error' : 'cancel') + '</span></span><div class="o-txt"><strong>' + (gs === 'up' ? 'Tous les systèmes sont opérationnels' : 'Perturbation partielle') + '</strong><span>' + services.length + ' services surveillés · dernier incident résolu il y a 18 h</span></div>' +
+        '<div class="o-counts">' + counts.map(function (c) { return '<span><i class="dot bg-' + HEALTH[c[0]][1] + '"></i>' + HEALTH[c[0]][0] + ' <b>' + c[1] + '</b></span>'; }).join('') + '</div>';
+      var al = alerts(), online = fleet.filter(function (m) { return m.tone !== 'neutral'; }).length;
+      $('kpis').innerHTML = [['Disponibilité (30 j)', '99,94', '%', 'verified', 0.02, false, 'SLO 99,9 %'], ['Requêtes / min', nf.format(Math.round(last(rpm))), '', 'swap_vert', pct(rpm), false, '5 dernières min'],
+        ['Latence p95', nf.format(Math.round(last(p95))), 'ms', 'speed', pct(p95), true, 'objectif < 250 ms'], ['Taux d’erreur', last(errors).toLocaleString('fr-FR', { maximumFractionDigits: 2 }), '%', 'error_outline', pct(errors), true, '5xx / total'],
+        ['Alertes actives', al.length, '', 'notifications_active', 0, true, '1 critique'], ['Balises en ligne', online, '/ ' + fleet.length, 'local_shipping', 0, false, 'flotte GPS']].map(function (k) {
+          return '<div class="card kpi"><span class="k-label"><span class="mi">' + k[3] + '</span>' + k[0] + '</span><span class="k-val">' + k[1] + (k[2] ? '<small>' + k[2] + '</small>' : '') + '</span><span class="k-foot">' + trend(k[4], k[5]) + k[6] + '</span></div>'; }).join('');
+      var base = { legend: true, height: 220 };
+      Charts.render($('c-traffic'), { type: 'line', labels: labels.map(function (l) { return l.slice(0, 5); }), series: [{ label: 'Requêtes / min', data: rpm, color: C('primary'), fill: true }], forceLegend: true });
+      Charts.render($('c-lat'), { type: 'line', labels: labels.map(function (l) { return l.slice(0, 5); }), yFormat: function (v) { return v + ' ms'; }, series: [{ label: 'p95', data: p95, color: C('warning') }, { label: 'p50', data: p50, color: C('info') }, { label: 'Seuil', data: labels.map(function () { return 250; }), color: C('error'), dash: true, width: 1 }] });
+      Charts.render($('c-err'), { type: 'bar', legend: false, labels: labels.map(function (l) { return l.slice(0, 5); }), yFormat: function (v) { return v + ' %'; }, series: [{ label: '% erreurs', data: errors, colors: errors.map(function (v) { return v > 1 ? C('error') : 'color-mix(in srgb, ' + C('error') + ' 45%, transparent)'; }) }] });
+      Charts.render($('c-res'), { type: 'line', labels: labels.map(function (l) { return l.slice(0, 5); }), yFormat: function (v) { return v + ' %'; }, series: [{ label: 'CPU', data: cpu, color: C('purple'), fill: true }, { label: 'Mémoire', data: mem, color: C('success') }] });
+      $('svcs').innerHTML = services.map(function (s) {
+        return '<div class="svc"><span class="ic-tile"><span class="mi">' + s.icon + '</span></span><div class="svc-name"><strong>' + s.name + '</strong><small>' + s.group + (s.latency ? ' · ' + s.latency + ' ms' : '') + '</small></div>' +
+          '<div class="uptime" aria-label="Disponibilité ' + s.uptime + ' %">' + s.days.map(function (d, i) { return '<i class="bg-' + HEALTH[d][1] + '" title="J-' + (89 - i) + ' · ' + HEALTH[d][0] + '"></i>'; }).join('') + '</div>' +
+          '<span class="pct tabular">' + s.uptime.toFixed(2).replace('.', ',') + ' %</span><span class="state tone-' + HEALTH[s.status][1] + '">' + HEALTH[s.status][0] + '</span></div>'; }).join('');
+      $('fleet-sub').textContent = online + ' balises en ligne sur ' + fleet.length;
+      $('acount').textContent = al.length;
+      $('alerts').innerHTML = al.map(function (a) { return '<div class="row"><span class="ic-tile tone-' + a.tone + '"><span class="mi">' + a.icon + '</span></span><span class="grow"><strong style="white-space:normal">' + a.text + '</strong><small>' + a.at + '</small></span><button class="ui-btn ui-btn--icon" title="Acquitter" aria-label="Acquitter"><span class="mi">done</span></button></div>'; }).join('');
+      $('gauges').innerHTML = sensors.map(function (s) { var g = Math.max(0, Math.min(1, (s.value - s.min) / (s.max - s.min)));
+        return '<div class="gauge' + (alarm(s) ? ' warn' : '') + '"><svg viewBox="0 0 100 58" aria-hidden="true"><path d="M 10 50 A 40 40 0 0 1 90 50" class="g-track"/><path d="' + arc(g) + '" class="g-val"/></svg>' +
+          '<span class="g-val-txt">' + nf.format(s.value) + '<small>' + s.unit.split(' ')[0] + '</small></span><span class="g-lbl"><span class="mi">' + s.icon + '</span>' + s.label + '</span><small class="g-site">' + s.site + '</small></div>'; }).join('');
+      $('incidents').innerHTML = incidents.map(function (x) {
+        return '<div class="inc' + (x.status === 'résolu' ? ' done' : '') + '"><span class="sev tone-' + { critique: 'error', majeur: 'warning', mineur: 'info' }[x.severity] + '">' + x.severity + '</span><div class="inc-body"><strong>' + x.title + '</strong><small><span class="mono">' + x.id + '</span> · ' + x.service + ' · ' + x.started + ' · ' + x.owner + '</small></div>' +
+          (x.status === 'en cours' ? '<button class="ui-btn ui-btn--outlined ui-btn--sm" data-ack="' + x.id + '">Prendre en charge</button>' : '<span class="state tone-' + (x.status === 'résolu' ? 'success' : 'info') + '">' + x.status + '</span>') + '</div>'; }).join('');
+      $('upd').textContent = 'Mis à jour à ' + new Date().toLocaleTimeString('fr-FR') + ' · services, infrastructure, flotte et capteurs';
+      renderLogs();
+    }
+    function renderLogs() {
+      $('lvls').innerHTML = ['all', 'info', 'warn', 'error', 'debug'].map(function (l) { return '<button class="' + (S.logLevel === l ? 'on' : '') + '" data-lvl="' + l + '">' + (l === 'all' ? 'Tous' : l) + '</button>'; }).join('');
+      var q = S.logQ.trim().toLowerCase(), box = $('console'), stick = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+      var vis = logs.filter(function (l) { return (S.logLevel === 'all' || l.level === S.logLevel) && (!q || (l.source + l.msg).toLowerCase().indexOf(q) >= 0); });
+      box.innerHTML = vis.length ? vis.map(function (l) { return '<div class="ln"><time>' + l.at.toLocaleTimeString('fr-FR') + '</time><span class="lv lv-' + l.level + '">' + l.level + '</span><span class="src">' + l.source + '</span><span class="msg">' + l.msg + '</span></div>'; }).join('') : '<div class="ln empty">Aucune ligne ne correspond.</div>';
+      if (stick) box.scrollTop = box.scrollHeight;
+    }
+    function step() {
+      function push(a, base, amp, min, max) { var v = last(a); a.shift(); a.push(Math.min(max === undefined ? Infinity : max, Math.max(min || 0, v + (r() - 0.5) * amp + (base - v) * 0.15))); }
+      push(rpm, 1850, 260, 900); push(p95, 190, 50, 90); push(p50, 72, 10, 40); push(errors, 0.6, 0.5, 0.05, 4); push(cpu, 48, 10, 5, 99); push(mem, 63, 3, 20, 99);
+      labels.shift(); labels.push(new Date().toLocaleTimeString('fr-FR'));
+      hosts.forEach(function (h) { h.cpu = Math.round(Math.min(99, Math.max(5, h.cpu + (r() - 0.5) * 8))); h.net = Math.max(20, Math.round(h.net + (r() - 0.5) * 30)); }); table.refresh();
+      sensors.forEach(function (s) { s.value = Math.round((s.value + (r() - 0.5) * (s.max - s.min) * 0.02) * 10) / 10; });
+      fleet.forEach(function (m, i) { if (m.tone === 'neutral') return; m.lat += (r() - 0.5) * 0.004; m.lng += (r() - 0.5) * 0.004; if (mapRef && mapRef.markerRefs[i]) mapRef.markerRefs[i].setLatLng([m.lat, m.lng]); });
+      services.forEach(function (s) { if (s.latency) s.latency = Math.max(20, Math.round(s.latency + (r() - 0.5) * s.latency * 0.1)); });
+      pushLog(new Date()); render();
+    }
+    setInterval(function () { if (S.live) step(); }, 2000);
+    document.getElementById('ex-content').addEventListener('click', function (e) {
+      var t = e.target.closest('[data-r],#toggle,[data-ack],[data-lvl]'); if (!t) return;
+      if (t.dataset.r) $('range').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === t); });
+      if (t.id === 'toggle') { S.live = !S.live; t.innerHTML = '<span class="mi">' + (S.live ? 'pause' : 'play_arrow') + '</span>' + (S.live ? 'Pause' : 'Reprendre'); $('live').classList.toggle('paused', !S.live); $('live').lastChild.textContent = S.live ? 'En direct' : 'En pause'; }
+      if (t.dataset.ack) { var x = incidents.find(function (i) { return i.id === t.dataset.ack; }); x.status = 'surveillance'; UIKit.toast(x.id + ' pris en charge'); render(); }
+      if (t.dataset.lvl) { S.logLevel = t.dataset.lvl; renderLogs(); }
+    });
+    $('logq').addEventListener('input', function (e) { S.logQ = e.target.value; renderLogs(); });
+    render();
+  })();
+  </script>
+</body>
+</html>

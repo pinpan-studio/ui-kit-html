@@ -1,0 +1,92 @@
+/* ==========================================================================
+   UI Kit HTML — Jetons de design (repris de ui-kit/src/styles.scss)
+   Mode : attribut data-mode="light|dark|system" sur <html>.
+   Couleur : classe .theme-<id> sur <html> (voir themes.css).
+   ========================================================================== */
+
+@font-face { font-family: 'ttwellingtons'; src: url('../assets/fonts/ttwellingtons-regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'ttwellingtons'; src: url('../assets/fonts/ttwellingtons-medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'ttwellingtons'; src: url('../assets/fonts/ttwellingtons-demibold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'ttwellingtons'; src: url('../assets/fonts/ttwellingtons-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+:root {
+  color-scheme: light;
+
+  /* Typographie */
+  --font-sans: 'ttwellingtons', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --text-xs: 12px; --text-sm: 14px; --text-md: 16px; --text-lg: 18px;
+  --text-xl: 22px; --text-2xl: 28px; --text-3xl: 36px;
+
+  /* Layout */
+  --sidebar-width: 272px;
+  --header-height: 68px;
+
+  /* Espacements (base 4px) */
+  --space-0: 0; --space-0-5: 2px; --space-1: 4px; --space-2: 8px; --space-3: 12px;
+  --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --space-10: 40px; --space-12: 48px; --space-16: 64px;
+
+  /* Rayons */
+  --radius-xs: 4px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
+  --radius-xl: 20px; --radius-2xl: 24px; --radius-full: 9999px;
+  --radius-card: var(--radius-2xl);
+  --radius-input: var(--radius-md);
+  --radius-button: var(--radius-full);
+
+  /* Ombres */
+  --shadow-1: 0 1px 2px rgb(0 0 0 / .06), 0 1px 3px rgb(0 0 0 / .08);
+  --shadow-2: 0 4px 12px rgb(0 0 0 / .10);
+  --shadow-3: 0 12px 32px rgb(0 0 0 / .18);
+
+  /* Mouvement */
+  --ease: cubic-bezier(.2, 0, 0, 1);
+  --dur: 160ms;
+
+  /* Couleurs de marque (surchargées par .theme-<id>) */
+  --primary: #006a6a;
+  --secondary: #4a6363;
+  --tertiary: #964900;
+  --primary-container: #00fbfb;
+  --on-primary: #ffffff;
+
+  /* Statuts */
+  --success: #22c55e; --success-text: #15803d;
+  --warning: #eab308; --warning-text: #a16207;
+  --error: #ef4444;   --error-text: #b91c1c;
+  --info: #3b82f6;    --info-text: #1d4ed8;
+
+  /* Surfaces & texte (clair) */
+  --bg: #f9fafb;
+  --card-bg: #ffffff;
+  --hover-bg: #f3f4f6;
+  --table-header-bg: #f8fafc;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+
+  /* Dérivés */
+  --primary-soft: color-mix(in srgb, var(--primary) 12%, transparent);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+/* Sombre (explicite ou système) */
+:root[data-mode="dark"] {
+  color-scheme: dark;
+  --on-primary: #00201f;
+  --success-text: #4ade80; --warning-text: #fbbf24; --error-text: #f87171; --info-text: #93c5fd;
+  --bg: #111827; --card-bg: #1f2937; --hover-bg: #374151; --table-header-bg: #1f2937;
+  --text-primary: #f9fafb; --text-secondary: #d1d5db; --text-muted: #9ca3af; --border: #374151;
+  --shadow-2: 0 4px 12px rgb(0 0 0 / .4); --shadow-3: 0 12px 32px rgb(0 0 0 / .55);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-mode="system"] {
+    color-scheme: dark;
+    --on-primary: #00201f;
+    --success-text: #4ade80; --warning-text: #fbbf24; --error-text: #f87171; --info-text: #93c5fd;
+    --bg: #111827; --card-bg: #1f2937; --hover-bg: #374151; --table-header-bg: #1f2937;
+    --text-primary: #f9fafb; --text-secondary: #d1d5db; --text-muted: #9ca3af; --border: #374151;
+    --shadow-2: 0 4px 12px rgb(0 0 0 / .4); --shadow-3: 0 12px 32px rgb(0 0 0 / .55);
+  }
+}

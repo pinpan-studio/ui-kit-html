@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion — UI Kit HTML</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .auth { min-height: 100vh; display: grid; place-items: center; padding: var(--space-4);
+      background: radial-gradient(circle at 20% 10%, var(--primary-soft), transparent 50%), var(--bg); }
+    .auth .ui-card { width: min(420px, 100%); }
+    .auth__logo { display: flex; justify-content: center; margin-bottom: var(--space-4); }
+  </style>
+</head>
+<body>
+  <main class="auth">
+    <form class="ui-card ui-card--elevated ui-stack" onsubmit="event.preventDefault(); UIKit.toast('Connexion simulée (aucun backend)')">
+      <div class="auth__logo"><img src="../assets/logo.png" alt="Logo" width="48" height="48"></div>
+      <div style="text-align:center">
+        <h1 style="font-size:var(--text-2xl)">Connexion</h1>
+        <p class="ui-muted">Accédez à votre espace.</p>
+      </div>
+      <label class="ui-field"><span class="ui-label">E-mail</span><input class="ui-input" type="email" required autocomplete="email" placeholder="nom@exemple.fr"></label>
+      <label class="ui-field"><span class="ui-label">Mot de passe</span><input class="ui-input" type="password" required autocomplete="current-password"></label>
+      <div class="ui-row" style="justify-content:space-between">
+        <label class="ui-check"><input type="checkbox"> Se souvenir de moi</label>
+        <a href="#">Mot de passe oublié ?</a>
+      </div>
+      <button class="ui-btn ui-btn--lg">Se connecter</button>
+      <p class="ui-muted" style="text-align:center;margin:0"><a href="../index.html">← Retour au catalogue</a></p>
+    </form>
+  </main>
+</body>
+</html>

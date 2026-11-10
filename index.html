@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UI Kit HTML — Catalogue</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="js/themes.js"></script>
+  <script src="js/ui-kit.js"></script>
+</head>
+<body>
+  <!-- Icônes SVG (sprite) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/></symbol>
+  </svg>
+
+  <div class="ui-shell">
+    <aside class="ui-sidebar" aria-label="Navigation du catalogue">
+      <div class="ui-sidebar__brand"><img src="assets/logo.png" alt="" width="28" height="28"> UI Kit HTML</div>
+      <nav>
+        <div class="ui-sidebar__group">Fondations</div>
+        <a class="ui-nav-link" href="#couleurs" aria-current="page">Couleurs &amp; thèmes</a>
+        <a class="ui-nav-link" href="#typo">Typographie</a>
+        <div class="ui-sidebar__group">Composants</div>
+        <a class="ui-nav-link" href="#boutons">Boutons</a>
+        <a class="ui-nav-link" href="#formulaires">Formulaires</a>
+        <a class="ui-nav-link" href="#cartes">Cartes</a>
+        <a class="ui-nav-link" href="#badges">Badges &amp; alertes</a>
+        <a class="ui-nav-link" href="#tableau">Tableau</a>
+        <a class="ui-nav-link" href="#onglets">Onglets</a>
+        <a class="ui-nav-link" href="#overlays">Dialogue, menu, toast</a>
+        <a class="ui-nav-link" href="#divers">Avatar, progression, vide</a>
+        <div class="ui-sidebar__group">Exemples</div>
+        <a class="ui-nav-link" href="examples/login.html">Connexion</a>
+      </nav>
+    </aside>
+    <div class="ui-scrim" data-nav-toggle></div>
+
+    <div class="ui-main">
+      <header class="ui-topbar">
+        <button class="ui-btn ui-btn--icon ui-menu-toggle" data-nav-toggle aria-label="Ouvrir le menu"><svg class="ui-icon"><use href="#i-menu"/></svg></button>
+        <h1 class="ui-topbar__title">Catalogue</h1>
+        <div class="ui-row" role="group" aria-label="Mode d'affichage">
+          <button class="ui-btn ui-btn--icon" data-set-mode="light" aria-label="Clair"><svg class="ui-icon"><use href="#i-sun"/></svg></button>
+          <button class="ui-btn ui-btn--icon" data-set-mode="dark" aria-label="Sombre"><svg class="ui-icon"><use href="#i-moon"/></svg></button>
+          <button class="ui-btn ui-btn--icon" data-set-mode="system" aria-label="Système"><svg class="ui-icon"><use href="#i-monitor"/></svg></button>
+        </div>
+      </header>
+
+      <main class="ui-content">
+
+        <section class="kit-section" id="couleurs">
+          <h2>Couleurs &amp; thèmes</h2>
+          <p class="ui-muted">Les 41 thèmes Material 3 de <code>ui-kit</code>. Cliquer une pastille applique <code>.theme-&lt;id&gt;</code> sur <code>&lt;html&gt;</code> (mémorisé).</p>
+          <div class="kit-themes" id="theme-picker"></div>
+          <div class="ui-grid" style="margin-top:var(--space-6)">
+            <div><div class="kit-swatch" style="background:var(--primary)"></div><small>--primary</small></div>
+            <div><div class="kit-swatch" style="background:var(--secondary)"></div><small>--secondary</small></div>
+            <div><div class="kit-swatch" style="background:var(--tertiary)"></div><small>--tertiary</small></div>
+            <div><div class="kit-swatch" style="background:var(--primary-container)"></div><small>--primary-container</small></div>
+            <div><div class="kit-swatch" style="background:var(--success)"></div><small>--success</small></div>
+            <div><div class="kit-swatch" style="background:var(--warning)"></div><small>--warning</small></div>
+            <div><div class="kit-swatch" style="background:var(--error)"></div><small>--error</small></div>
+            <div><div class="kit-swatch" style="background:var(--info)"></div><small>--info</small></div>
+          </div>
+        </section>
+
+        <section class="kit-section" id="typo">
+          <h2>Typographie</h2>
+          <div class="kit-demo ui-stack">
+            <h1>Titre 1 — 36px</h1><h2>Titre 2 — 28px</h2><h3>Titre 3 — 22px</h3><h4>Titre 4 — 18px</h4>
+            <p>Texte courant 14px, police TT Wellingtons. <a href="#typo">Lien</a>, <code>code</code>.</p>
+            <p class="ui-muted">Texte secondaire atténué.</p>
+          </div>
+        </section>
+
+        <section class="kit-section" id="boutons">
+          <h2>Boutons</h2>
+          <div class="kit-demo ui-stack">
+            <div class="ui-row">
+              <button class="ui-btn">Principal</button>
+              <button class="ui-btn ui-btn--tonal">Tonal</button>
+              <button class="ui-btn ui-btn--outlined">Contour</button>
+              <button class="ui-btn ui-btn--text">Texte</button>
+              <button class="ui-btn ui-btn--danger">Supprimer</button>
+              <button class="ui-btn" disabled>Désactivé</button>
+            </div>
+            <div class="ui-row">
+              <button class="ui-btn ui-btn--sm">Petit</button>
+              <button class="ui-btn">Moyen</button>
+              <button class="ui-btn ui-btn--lg">Grand</button>
+              <button class="ui-btn"><svg class="ui-icon"><use href="#i-plus"/></svg> Ajouter</button>
+              <button class="ui-btn ui-btn--icon" aria-label="Plus d'actions"><svg class="ui-icon"><use href="#i-more"/></svg></button>
+            </div>
+          </div>
+          <pre class="kit-code">&lt;button class="ui-btn ui-btn--tonal"&gt;Tonal&lt;/button&gt;</pre>
+        </section>
+
+        <section class="kit-section" id="formulaires">
+          <h2>Formulaires</h2>
+          <form class="kit-demo ui-grid" onsubmit="event.preventDefault(); UIKit.toast('Formulaire envoyé (démo)')">
+            <label class="ui-field"><span class="ui-label">Nom</span><input class="ui-input" placeholder="Jeanne Dupont"></label>
+            <label class="ui-field"><span class="ui-label">E-mail</span><input class="ui-input" type="email" placeholder="nom@exemple.fr"><span class="ui-hint">Jamais partagé.</span></label>
+            <label class="ui-field ui-field--error"><span class="ui-label">Téléphone</span><input class="ui-input" aria-invalid="true" value="06 12"><span class="ui-hint">Numéro incomplet.</span></label>
+            <label class="ui-field"><span class="ui-label">Statut</span>
+              <select class="ui-select"><option>Actif</option><option>En pause</option><option>Archivé</option></select></label>
+            <label class="ui-field" style="grid-column:1/-1"><span class="ui-label">Message</span><textarea class="ui-textarea" placeholder="Votre message…"></textarea></label>
+            <div class="ui-row" style="grid-column:1/-1">
+              <label class="ui-check"><input type="checkbox" checked> Case à cocher</label>
+              <label class="ui-check"><input type="radio" name="r" checked> Option A</label>
+              <label class="ui-check"><input type="radio" name="r"> Option B</label>
+              <label class="ui-switch"><input type="checkbox" role="switch" checked> Notifications</label>
+            </div>
+            <div class="ui-row" style="grid-column:1/-1"><button class="ui-btn">Envoyer</button><button class="ui-btn ui-btn--text" type="reset">Annuler</button></div>
+          </form>
+        </section>
+
+        <section class="kit-section" id="cartes">
+          <h2>Cartes</h2>
+          <div class="ui-grid">
+            <article class="ui-card"><h3 class="ui-card__title">Carte simple</h3><p class="ui-muted">Bordure fine, rayon 24px.</p><button class="ui-btn ui-btn--tonal ui-btn--sm">Action</button></article>
+            <article class="ui-card ui-card--elevated"><h3 class="ui-card__title">Carte élevée</h3><p class="ui-muted">Ombre portée, sans bordure.</p></article>
+            <article class="ui-card"><div class="ui-row"><span class="ui-avatar">JD</span><div><strong>Jeanne Dupont</strong><div class="ui-muted">Cheffe de projet</div></div></div></article>
+          </div>
+        </section>
+
+        <section class="kit-section" id="badges">
+          <h2>Badges &amp; alertes</h2>
+          <div class="kit-demo ui-stack">
+            <div class="ui-row">
+              <span class="ui-badge">Primaire</span><span class="ui-badge ui-badge--success">Terminé</span>
+              <span class="ui-badge ui-badge--warning">En attente</span><span class="ui-badge ui-badge--error">Échec</span>
+              <span class="ui-badge ui-badge--info">Info</span><span class="ui-badge ui-badge--neutral">Brouillon</span>
+            </div>
+            <div class="ui-alert" role="status"><div><strong>Information.</strong> Une mise à jour est disponible.</div></div>
+            <div class="ui-alert ui-alert--success" role="status"><div><strong>Succès.</strong> Les modifications sont enregistrées.</div></div>
+            <div class="ui-alert ui-alert--warning" role="status"><div><strong>Attention.</strong> L'abonnement expire dans 3 jours.</div></div>
+            <div class="ui-alert ui-alert--error" role="alert"><div><strong>Erreur.</strong> Impossible d'enregistrer le document.</div></div>
+          </div>
+        </section>
+
+        <section class="kit-section" id="tableau">
+          <h2>Tableau</h2>
+          <div class="ui-table-wrap">
+            <table class="ui-table">
+              <thead><tr><th>Référence</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th></tr></thead>
+              <tbody>
+                <tr><td>FAC-0142</td><td>Atelier Moreau</td><td>02/11/2026</td><td>1 240,00 €</td><td><span class="ui-badge ui-badge--success">Payée</span></td></tr>
+                <tr><td>FAC-0143</td><td>Studio Lumen</td><td>05/11/2026</td><td>860,50 €</td><td><span class="ui-badge ui-badge--warning">En attente</span></td></tr>
+                <tr><td>FAC-0144</td><td>Brasserie du Port</td><td>08/11/2026</td><td>3 100,00 €</td><td><span class="ui-badge ui-badge--error">En retard</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="kit-section" id="onglets">
+          <h2>Onglets</h2>
+          <div class="kit-demo" data-tabs>
+            <div class="ui-tabs__list" role="tablist">
+              <button class="ui-tabs__tab" role="tab" aria-controls="tab-1" aria-selected="true">Général</button>
+              <button class="ui-tabs__tab" role="tab" aria-controls="tab-2">Documents</button>
+              <button class="ui-tabs__tab" role="tab" aria-controls="tab-3">Historique</button>
+            </div>
+            <div class="ui-tabs__panel" id="tab-1" role="tabpanel">Contenu de l'onglet « Général ». Flèches ← → pour naviguer.</div>
+            <div class="ui-tabs__panel" id="tab-2" role="tabpanel">Aucun document pour le moment.</div>
+            <div class="ui-tabs__panel" id="tab-3" role="tabpanel">Créé le 02/11/2026.</div>
+          </div>
+        </section>
+
+        <section class="kit-section" id="overlays">
+          <h2>Dialogue, menu, toast</h2>
+          <div class="kit-demo ui-row">
+            <button class="ui-btn" data-dialog-open="demo-dialog">Ouvrir le dialogue</button>
+            <details class="ui-menu">
+              <summary class="ui-btn ui-btn--outlined">Menu ▾</summary>
+              <div class="ui-menu__panel" role="menu">
+                <button class="ui-menu__item" role="menuitem" data-toast="Modifier">Modifier</button>
+                <button class="ui-menu__item" role="menuitem" data-toast="Dupliquer">Dupliquer</button>
+                <button class="ui-menu__item" role="menuitem" data-toast="Supprimé (démo)">Supprimer</button>
+              </div>
+            </details>
+            <button class="ui-btn ui-btn--tonal" data-toast="Enregistré avec succès">Afficher un toast</button>
+          </div>
+          <dialog class="ui-dialog" id="demo-dialog" aria-labelledby="demo-dialog-title">
+            <div class="ui-dialog__body">
+              <h3 id="demo-dialog-title">Supprimer l'élément ?</h3>
+              <p class="ui-muted">Cette action est définitive.</p>
+            </div>
+            <div class="ui-dialog__actions">
+              <button class="ui-btn ui-btn--text" data-dialog-close>Annuler</button>
+              <button class="ui-btn ui-btn--danger" data-dialog-close="ok" data-toast="Élément supprimé (démo)">Supprimer</button>
+            </div>
+          </dialog>
+        </section>
+
+        <section class="kit-section" id="divers">
+          <h2>Avatar, progression, état vide, squelette</h2>
+          <div class="ui-grid">
+            <div class="kit-demo ui-stack">
+              <div class="ui-row"><span class="ui-avatar">AB</span><span class="ui-avatar">CM</span><span class="ui-avatar">LK</span></div>
+              <div class="ui-progress" role="progressbar" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100"><span style="width:64%"></span></div>
+            </div>
+            <div class="kit-demo ui-empty">
+              <svg class="ui-icon" style="width:40px;height:40px;margin:0 auto var(--space-2)"><use href="#i-inbox"/></svg>
+              <p><strong>Aucun résultat</strong></p><p class="ui-muted">Modifiez vos filtres.</p>
+            </div>
+            <div class="kit-demo ui-stack" aria-busy="true">
+              <div class="ui-skeleton" style="width:60%"></div><div class="ui-skeleton"></div><div class="ui-skeleton" style="width:80%"></div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Pastilles de thème générées depuis js/themes.js
+    var picker = document.getElementById('theme-picker');
+    UIKIT_THEMES.forEach(function (t) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.title = t.label;
+      b.setAttribute('aria-label', 'Thème ' + t.label);
+      b.setAttribute('data-set-theme', t.id);
+      b.style.background = t.light;
+      picker.appendChild(b);
+    });
+    UIKit.setTheme(document.documentElement.className.match(/theme-([\w-]+)/)[1]);
+
+    // Lien actif de la sidebar au défilement
+    var links = document.querySelectorAll('.ui-nav-link[href^="#"]');
+    document.querySelectorAll('.ui-nav-link').forEach(function (a) {
+      a.addEventListener('click', function () { document.querySelector('.ui-shell').removeAttribute('data-nav-open'); });
+    });
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (l) {
+          if (l.getAttribute('href') === '#' + e.target.id) l.setAttribute('aria-current', 'page');
+          else l.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    document.querySelectorAll('.kit-section').forEach(function (s) { spy.observe(s); });
+  </script>
+</body>
+</html>

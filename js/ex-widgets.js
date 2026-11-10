@@ -123,9 +123,23 @@
     el.querySelector('.sig__clear').addEventListener('click', function () { ctx.clearRect(0, 0, c.width, c.height); has = false; hint.hidden = false; o.onChange && o.onChange(null); });
   }
 
+  /* Compteur animé : <span data-count="4250000" data-format="compact|number|percent" data-decimals="2"></span> */
+  function fmtNum(v, f, d) {
+    if (f === 'compact') return new Intl.NumberFormat('fr-FR', { notation: 'compact', maximumFractionDigits: d }).format(v);
+    if (f === 'percent') return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: d, minimumFractionDigits: d }).format(v) + ' %';
+    return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: d, minimumFractionDigits: d }).format(v);
+  }
+  function counters(root) {
+    (root || document).querySelectorAll('[data-count]').forEach(function (el) {
+      var to = +el.dataset.count, f = el.dataset.format || 'number', d = +(el.dataset.decimals || 0), t0 = performance.now(), dur = 900;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = fmtNum(to, f, d); return; }
+      (function step(t) { var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = fmtNum(to * e, f, d); if (k < 1) requestAnimationFrame(step); })(t0);
+    });
+  }
+
   function fcfa(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(n)) + ' FCFA'; }
 
-  window.ExW = { dropzone: dropzone, qr: qr, calendar: calendar, amountInWords: amountInWords, signature: signature, result: result, fmtSize: fmtSize, fileIcon: fileIcon, fcfa: fcfa,
-    init: function (root) { (root || document).querySelectorAll('[data-dropzone]').forEach(dropzone); } };
+  window.ExW = { counters: counters, fmtNum: fmtNum, dropzone: dropzone, qr: qr, calendar: calendar, amountInWords: amountInWords, signature: signature, result: result, fmtSize: fmtSize, fileIcon: fileIcon, fcfa: fcfa,
+    init: function (root) { (root || document).querySelectorAll('[data-dropzone]').forEach(dropzone); counters(root); } };
   document.addEventListener('DOMContentLoaded', function () { window.ExW.init(); });
 })();

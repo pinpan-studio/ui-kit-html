@@ -55,6 +55,7 @@
   --warning: #eab308; --warning-text: #a16207;
   --error: #ef4444;   --error-text: #b91c1c;
   --info: #3b82f6;    --info-text: #1d4ed8;
+  --neutral: #9ca3af; --purple: #a855f7; --cyan: #06b6d4;
 
   /* Surfaces & texte (clair) */
   --bg: #f9fafb;

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tableau de bord</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--radius-sm); background: var(--hover-bg); }
+    .seg button { height: 32px; padding: 0 var(--space-3); border: 0; border-radius: 6px; background: none; font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .seg button.on { background: var(--card-bg); color: var(--text-primary); font-weight: 600; box-shadow: var(--shadow-1); }
+    @media (max-width: 767px) { .page-head .actions .seg { flex: 1 1 100%; } .seg button { flex: 1; } }
+    .alert { margin-bottom: var(--space-4); align-items: center; }
+    .alert .grow { flex: 1; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+    .grid .span-2 { grid-column: span 2; } .grid .span-3 { grid-column: 1 / -1; }
+    @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid .span-2, .grid .span-3 { grid-column: 1 / -1; } }
+    @media (max-width: 767px) { .grid { grid-template-columns: minmax(0, 1fr); } .grid .span-2, .grid .span-3 { grid-column: auto; } }
+    .chart { position: relative; height: 270px; } @media (max-width: 767px) { .chart { height: 220px; } }
+    .donut { position: relative; height: 176px; margin-top: 4px; }
+    .donut .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+    .donut .center strong { font-size: 28px; font-weight: 600; } .donut .center span { font-size: 12px; color: var(--text-muted); }
+    .legend { margin: var(--space-5) 0 0; padding: 0; list-style: none; }
+    .legend li { display: grid; grid-template-columns: 10px 1fr auto 44px; align-items: center; gap: var(--space-3); padding: 7px 0; font-size: 13px; color: var(--text-secondary); }
+    .legend i { width: 10px; height: 10px; border-radius: 3px; } .legend b { color: var(--text-primary); } .legend em { font-style: normal; text-align: right; color: var(--text-muted); }
+    .list { padding: var(--space-2) 0; }
+    .rank { width: 24px; flex: none; font-weight: 600; font-size: 13px; color: var(--text-muted); }
+    .live { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 12px; color: var(--text-muted); }
+    .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 20%, transparent); }
+    .feed { margin: 0; padding: var(--space-3) var(--space-5) var(--space-4); list-style: none; }
+    .feed li { position: relative; display: flex; gap: var(--space-3); padding-bottom: var(--space-4); }
+    .feed li::before { content: ''; position: absolute; left: 4px; top: 16px; bottom: 0; width: 1px; background: var(--border); }
+    .feed li:last-child { padding-bottom: 0; } .feed li:last-child::before { display: none; }
+    .feed .dot { width: 9px; height: 9px; flex: none; margin-top: 8px; border-radius: 50%; }
+    .feed .dot.tone-primary { background: var(--primary); } .feed .dot.tone-success { background: var(--success); } .feed .dot.tone-info { background: var(--info); }
+    .feed .dot.tone-warning { background: var(--warning); } .feed .dot.tone-purple { background: var(--purple); } .feed .dot.tone-error { background: var(--error); }
+    .feed p { margin: 0; font-size: 13px; line-height: 1.45; } .feed small { font-size: 12px; color: var(--text-muted); }
+    .goals { display: flex; flex-direction: column; gap: var(--space-5); padding-top: var(--space-3); }
+    .g-top { display: flex; justify-content: space-between; margin-bottom: var(--space-2); font-size: 13px; color: var(--text-secondary); } .g-top strong { color: var(--text-primary); }
+    .goals small { display: block; margin-top: var(--space-2); font-size: 12px; color: var(--text-muted); }
+    .dash-tabs { display: flex; gap: var(--space-1); margin-bottom: var(--space-5); overflow-x: auto; scrollbar-width: none; }
+    .dash-tabs button { position: relative; display: inline-flex; align-items: center; gap: var(--space-2); height: 42px; padding: 0 var(--space-4); border: 0; background: none; cursor: pointer; white-space: nowrap; font: 500 14px var(--font-sans); color: var(--text-secondary); }
+    .dash-tabs .mi { font-size: 18px; } .dash-tabs button:hover { color: var(--text-primary); }
+    .dash-tabs button.on { color: var(--text-primary); font-weight: 600; }
+    .dash-tabs button.on::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; border-radius: 2px; background: var(--primary); }
+    .kpi { position: relative; container-type: inline-size; }
+    .spark { position: absolute; right: 16px; top: 16px; width: 88px; height: 34px; pointer-events: none; }
+    @container (max-width: 240px) { .spark { display: none; } }
+    .trend { display: inline-flex; align-items: center; gap: 2px; font-weight: 600; } .trend .mi { font-size: 16px; }
+    .trend.up { color: var(--success-text); } .trend.down { color: var(--error-text); }
+    .tag { padding: 2px var(--space-2); border-radius: var(--radius-sm); background: var(--hover-bg); font-size: 11px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+    .treemap { display: flex; gap: 4px; height: 260px; } @media (max-width: 600px) { .treemap { flex-direction: column; height: 420px; } }
+    .tm-group { flex-basis: 0; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .tm-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tm-kids { flex: 1; display: flex; flex-direction: column; gap: 4px; min-height: 0; }
+    .tm-cell { flex-basis: 0; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); overflow: hidden; background: var(--tone); color: #fff; }
+    .tm-cell strong { font-size: 13px; } .tm-cell span { font-size: 12px; opacity: .9; }
+    .funnel { display: flex; flex-direction: column; gap: var(--space-3); }
+    .f-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 70px 52px; align-items: center; gap: var(--space-3); font-size: 13px; }
+    @media (max-width: 600px) { .f-row { grid-template-columns: 110px minmax(0, 1fr) 60px; } .f-rate { display: none; } }
+    .f-lbl { color: var(--text-secondary); } .f-track { height: 28px; display: flex; justify-content: center; }
+    .f-bar { height: 100%; border-radius: var(--radius-sm); background: var(--primary); transition: width .6s ease; }
+    .f-val { text-align: right; font-weight: 600; } .f-rate { text-align: right; font-size: 12px; color: var(--text-muted); }
+    .f-foot { margin: var(--space-2) 0 0; font-size: 13px; color: var(--text-secondary); }
+    .rings { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4) var(--space-3); }
+    .ring { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .ring svg { width: 92px; height: 92px; transform: rotate(-90deg); }
+    .ring .r-track { fill: none; stroke: var(--hover-bg); stroke-width: 10; } .ring .r-val { fill: none; stroke: var(--tone); stroke-width: 10; stroke-linecap: round; }
+    .ring strong { position: absolute; top: 33px; font-size: 16px; font-weight: 600; } .ring span { margin-top: var(--space-2); font-size: 12px; line-height: 1.35; color: var(--text-secondary); }
+    .heat { display: grid; grid-template-columns: 34px repeat(14, minmax(0, 1fr)); gap: 3px; align-items: center; }
+    .heat i { display: block; aspect-ratio: 1.6; border-radius: 3px; } .heat i:hover { outline: 2px solid var(--text-primary); outline-offset: -1px; }
+    .heat .hx { font-size: 10px; color: var(--text-muted); text-align: center; white-space: nowrap; } .heat .hy { font-size: 12px; color: var(--text-muted); }
+    .legend-scale { display: flex; align-items: center; justify-content: flex-end; gap: 3px; margin-top: var(--space-3); font-size: 11px; color: var(--text-muted); }
+    .legend-scale span { margin: 0 4px; } .legend-scale i { width: 12px; height: 12px; border-radius: 3px; }
+    .ranking { display: flex; flex-direction: column; gap: var(--space-4); }
+    .rk { display: flex; gap: var(--space-3); align-items: flex-start; } .rk-pos { width: 22px; font-weight: 600; color: var(--text-muted); }
+    .rk-main { flex: 1; min-width: 0; } .rk-top { display: flex; justify-content: space-between; font-size: 13px; } .rk-top span { color: var(--text-secondary); }
+    .rk-bar { height: 6px; margin: var(--space-2) 0 4px; border-radius: 4px; background: var(--hover-bg); overflow: hidden; }
+    .rk-bar i { display: block; height: 100%; border-radius: 4px; background: var(--info); } .rk-bar i.over { background: var(--success); }
+    .rk small { font-size: 12px; color: var(--text-muted); }
+    .cal-wrap { overflow-x: auto; } .acal { min-width: 720px; }
+    .cal-months { display: grid; grid-template-columns: 30px repeat(52, minmax(0, 1fr)); margin-bottom: 4px; font-size: 11px; color: var(--text-muted); } .cal-months span { white-space: nowrap; }
+    .cal-grid { display: grid; grid-template-columns: 30px repeat(52, minmax(0, 1fr)); gap: 3px; }
+    .cal-days, .cal-week { display: grid; grid-template-rows: repeat(7, 1fr); gap: 3px; } .cal-days { font-size: 10px; color: var(--text-muted); } .cal-days span { align-self: center; line-height: 1; }
+    .cal-week i { display: block; aspect-ratio: 1; border-radius: 2px; }
+    .lv0 { background: var(--hover-bg); } .lv1 { background: color-mix(in srgb, var(--primary) 25%, var(--hover-bg)); } .lv2 { background: color-mix(in srgb, var(--primary) 50%, var(--hover-bg)); }
+    .lv3 { background: color-mix(in srgb, var(--primary) 75%, var(--hover-bg)); } .lv4 { background: var(--primary); }
+    .map-card .um { border-radius: 0 0 var(--radius-md) var(--radius-md); margin-top: var(--space-3); }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Tableau de bord" data-crumb="Accueil">
+  <main id="ex-content">
+    <div class="page-head">
+      <div class="titles"><span class="eyebrow">Vendredi 17 octobre 2026</span><h1>Tableau de bord</h1><p>Activité commerciale et encaissements de SC Storage.</p></div>
+      <div class="actions">
+        <div class="seg" role="radiogroup" aria-label="Période" id="periods"></div>
+        <button class="ui-btn ui-btn--outlined" onclick="UIKit.toast('Export PDF généré (démo)')"><span class="mi">download</span>Exporter</button>
+        <button class="ui-btn"><span class="mi">add</span>Nouvelle facture</button>
+      </div>
+    </div>
+    <nav class="dash-tabs" aria-label="Sections du tableau de bord" id="tabs"></nav>
+    <div id="view"></div>
+  </main>
+
+  <script src="../../js/data/examples.js"></script>
+  <script src="../../js/data/ex-utils.js"></script>
+  <script src="../../js/charts.js"></script>
+  <script src="../../js/data-table.js"></script>
+  <script src="../../js/map.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, $ = function (id) { return document.getElementById(id); }, nf = new Intl.NumberFormat('fr-FR');
+    var PERIODS = [{ id: '7j', label: '7 jours', compare: 'vs semaine précédente' }, { id: '30j', label: '30 jours', compare: 'vs mois précédent' }, { id: '12m', label: '12 mois', compare: 'vs année précédente' }];
+    var TABS = [{ id: 'overview', label: 'Vue d\'ensemble', icon: 'space_dashboard' }, { id: 'sales', label: 'Ventes', icon: 'bar_chart' }, { id: 'customers', label: 'Clients', icon: 'pie_chart' }, { id: 'operations', label: 'Opérations', icon: 'insights' }];
+    var SERIES = {
+      '7j': { kpi: [27.9e6, 22.1e6, 9, 7.3e6], trend: [6.2, 4.8, 12.5, -3.1], labels: ['Sam', 'Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven'], a: [2.1, 0.8, 4.6, 5.2, 3.9, 6.1, 5.4], b: [1.8, 0.6, 3.1, 4.4, 3.2, 4.9, 4.1] },
+      '30j': { kpi: [119e6, 96.1e6, 38, 7.3e6], trend: [9.4, 8.1, 4.6, -2.3], labels: ['S1', 'S2', 'S3', 'S4'], a: [24, 31, 28, 36], b: [19, 26, 24, 27] },
+      '12m': { kpi: [1.14e9, 0.99e9, 412, 7.3e6], trend: [12.4, 10.2, 18.0, -8.5], labels: ['Nov', 'Déc', 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct'], a: [82, 95, 71, 78, 90, 99, 104, 97, 88, 93, 115, 128], b: [70, 81, 66, 70, 79, 84, 92, 85, 80, 82, 98, 96] }
+    };
+    var MONTHS = SERIES['12m'].labels, DAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+    var tab = { ventes: 'sales', clients: 'customers', operations: 'operations' }[new URLSearchParams(location.search).get('tab')] || 'overview', period = '12m';
+    var C = function (v) { return Charts.cssVar('--' + v); };
+
+    function renderControls() {
+      $('periods').innerHTML = PERIODS.map(function (p) { return '<button type="button" role="radio" aria-checked="' + (p.id === period) + '" class="' + (p.id === period ? 'on' : '') + '" data-period="' + p.id + '">' + p.label + '</button>'; }).join('');
+      $('periods').hidden = tab !== 'overview';
+      $('tabs').innerHTML = TABS.map(function (t) { return '<button type="button" class="' + (t.id === tab ? 'on' : '') + '" data-tab="' + t.id + '"><span class="mi">' + t.icon + '</span>' + t.label + '</button>'; }).join('');
+    }
+    function trend(v, inverse) { var good = (v >= 0) !== !!inverse; return '<span class="trend ' + (good ? 'up' : 'down') + '"><span class="mi">' + (v >= 0 ? 'trending_up' : 'trending_down') + '</span>' + (v > 0 ? '+' : '') + nf.format(v) + ' %</span>'; }
+    function card(title, tag, body, cls) { return '<section class="card ' + (cls || '') + '"><div class="card-head"><h2>' + title + '</h2>' + (tag ? '<span class="tag">' + tag + '</span>' : '') + '</div><div class="card-body">' + body + '</div></section>'; }
+
+    // ─── Vue d'ensemble ─────────────────────────────────────
+    function overview() {
+      var d = SERIES[period], cmp = PERIODS.find(function (p) { return p.id === period; }).compare;
+      var kpis = [
+        { label: 'Chiffre d\'affaires', icon: 'payments', value: d.kpi[0], format: 'compact', dec: 1, unit: 'FCFA', trend: d.trend[0], s: d.a },
+        { label: 'Encaissé', icon: 'account_balance_wallet', value: d.kpi[1], format: 'compact', dec: 1, unit: 'FCFA', trend: d.trend[1], s: d.b },
+        { label: 'Nouveaux clients', icon: 'person_add', value: d.kpi[2], format: 'number', dec: 0, unit: '', trend: d.trend[2], s: d.a.map(function (v, i) { return Math.round(v / 3 + (i % 3) * 2); }) },
+        { label: 'Impayés', icon: 'schedule', value: d.kpi[3], format: 'compact', dec: 1, unit: 'FCFA', trend: d.trend[3], inverse: true, s: d.a.map(function (v, i) { return Math.round(18 - i * 0.6 + (i % 2) * 2); }) }
+      ];
+      var statuses = Object.keys(D.CLIENT_STATUS).map(function (k) { return { key: k, label: D.CLIENT_STATUS[k].label, tone: D.CLIENT_STATUS[k].color, n: D.EX_CLIENTS.filter(function (c) { return c.status === k; }).length }; });
+      var top = D.EX_CLIENTS.slice().sort(function (a, b) { return b.revenue - a.revenue; }).slice(0, 5);
+      $('view').innerHTML =
+        '<div class="ui-alert ui-alert--warning alert" role="status"><span class="mi" style="color:var(--warning-text)">warning</span><div class="grow"><strong>3 factures en retard.</strong> 7,3 M FCFA d\'encours dépassent l\'échéance de plus de 30 jours.</div><button class="ui-btn ui-btn--text ui-btn--sm">Voir les relances</button></div>' +
+        '<div class="kpis">' + kpis.map(function (k, i) {
+          return '<div class="card kpi"><span class="k-label"><span class="mi">' + k.icon + '</span>' + k.label + '</span><span class="k-val"><span data-count="' + k.value + '" data-format="' + k.format + '" data-decimals="' + k.dec + '"></span>' + (k.unit ? '<small>' + k.unit + '</small>' : '') + '</span>' +
+            '<span class="k-foot">' + trend(k.trend, k.inverse) + cmp + '</span><div class="spark" id="spark' + i + '"></div></div>';
+        }).join('') + '</div>' +
+        '<div class="grid">' +
+          '<section class="card span-2"><div class="card-head"><h2>Chiffre d\'affaires</h2><span class="sub">en millions de FCFA</span></div><div class="card-body"><div class="chart" id="line"></div></div></section>' +
+          '<section class="card"><div class="card-head"><h2>Portefeuille clients</h2></div><div class="card-body"><div class="donut"><div id="donut" style="height:176px"></div><div class="center"><strong>' + D.EX_CLIENTS.length + '</strong><span>comptes</span></div></div>' +
+            '<ul class="legend">' + statuses.map(function (s) { return '<li><i style="background:var(--' + s.tone + ')"></i><span>' + s.label + '</span><b>' + s.n + '</b><em>' + Math.round(s.n / D.EX_CLIENTS.length * 100) + ' %</em></li>'; }).join('') + '</ul></div></section>' +
+          '<section class="card"><div class="card-head"><h2>Meilleurs clients</h2><a href="clients.html">Tout voir</a></div><div class="rows list">' + top.map(function (c, i) {
+            return '<a class="row" href="client.html?id=' + c.id + '"><span class="rank">' + (i + 1) + '</span><span class="grow"><strong>' + c.name + '</strong><small>' + c.city + ' · ' + c.sector + '</small></span><span class="num">' + nf.format((c.revenue / 1e6).toFixed(1)) + ' M</span></a>'; }).join('') + '</div></section>' +
+          '<section class="card"><div class="card-head"><h2>Activité récente</h2><span class="live"><i></i>En direct</span></div><ol class="feed">' + D.EX_ACTIVITY.slice(0, 5).map(function (a) {
+            return '<li><span class="dot tone-' + a.tone + '"></span><div><p>' + a.text + '</p><small>' + a.who + ' · ' + a.at + '</small></div></li>'; }).join('') + '</ol></section>' +
+          card('Objectifs du trimestre', '', '<div class="goals">' + [{ l: 'Chiffre d\'affaires', v: 72, d: '128,4 M sur 178 M FCFA' }, { l: 'Taux d\'encaissement', v: 88, d: 'Cible 90 %' }, { l: 'Nouveaux comptes', v: 45, d: '38 sur 85' }].map(function (g) {
+            return '<div><div class="g-top"><span>' + g.l + '</span><strong class="tabular">' + g.v + ' %</strong></div><div class="ui-progress"><span style="width:' + g.v + '%"></span></div><small>' + g.d + '</small></div>'; }).join('') + '</div>') +
+          '<div class="span-3" id="late"></div>' +
+        '</div>';
+      ExW.counters($('view'));
+      kpis.forEach(function (k, i) { var up = k.s[k.s.length - 1] >= k.s[0]; Charts.render($('spark' + i), { type: 'spark', data: k.s, color: up !== !!k.inverse ? C('success') : C('error') }); });
+      Charts.render($('line'), { type: 'line', labels: d.labels, series: [{ label: 'Facturé', data: d.a, color: C('primary'), fill: true }, { label: 'Encaissé', data: d.b, color: C('text-muted'), dash: true, width: 1.5 }] });
+      Charts.render($('donut'), { type: 'doughnut', labels: statuses.map(function (s) { return s.label; }), data: statuses.map(function (s) { return s.n; }), colors: statuses.map(function (s) { return C(s.tone); }), cutout: 0.76, legend: false });
+      DataTable.mount($('late'), { title: 'Comptes à surveiller', rows: D.EX_CLIENTS.filter(function (c) { return c.status !== 'actif'; }), pageSize: 5, maxHeight: 'none', searchable: false, clickable: true,
+        onRowClick: function (r) { location.href = 'client.html?id=' + r.id; },
+        columns: [
+          { key: 'name', label: 'Client', width: 220, required: true }, { key: 'owner', label: 'Responsable', width: 160 }, { key: 'city', label: 'Ville', width: 130 },
+          { key: 'status', label: 'Statut', width: 120, type: 'badge', format: function (r) { return D.CLIENT_STATUS[r.status].label; }, tone: function (r) { return D.CLIENT_STATUS[r.status].color; } },
+          { key: 'invoices', label: 'Factures', width: 100, type: 'number' },
+          { key: 'revenue', label: 'Encours', width: 150, type: 'currency', align: 'right', format: function (r) { return nf.format(Math.round(r.revenue / 10)) + ' F'; } }] });
+    }
+
+    // ─── Ventes ─────────────────────────────────────────────
+    function sales() {
+      $('view').innerHTML = '<div class="grid">' +
+        card('Chiffre d\'affaires par région', 'Barres groupées', '<div class="chart" id="c1"></div>', 'span-2') + card('Meilleures ventes', 'Barres horizontales', '<div class="chart" id="c2"></div>') +
+        card('Encaissements par moyen de paiement', 'Barres empilées', '<div class="chart" id="c3"></div>', 'span-2') + card('Du CA au résultat', 'Cascade', '<div class="chart" id="c4"></div>') +
+        card('Commandes et panier moyen', 'Mixte · double axe', '<div class="chart" id="c5"></div>', 'span-2') + card('Stock de balises', 'Escalier', '<div class="chart" id="c6"></div>') +
+        card('Visites par canal', 'Aires empilées', '<div class="chart" id="c7"></div>', 'span-3') + '</div>';
+      var p = C('primary'), m = function (v) { return nf.format(v) + ' M'; };
+      Charts.render($('c1'), { type: 'bar', labels: ['Abidjan', 'Bouaké', 'San-Pédro', 'Yamoussoukro', 'Korhogo', 'Daloa'], yFormat: m, format: m,
+        series: [{ label: '2025', data: [412, 128, 96, 74, 41, 38], color: 'color-mix(in srgb, ' + p + ' 35%, transparent)' }, { label: '2026', data: [486, 141, 122, 81, 52, 36], color: p }] });
+      Charts.render($('c2'), { type: 'bar', horizontal: true, legend: false, labels: ['Balise GPS 4G', 'Abonnement Premium', 'Capteur carburant', 'Caméra embarquée', 'Installation', 'Formation', 'Lecteur RFID'],
+        series: [{ label: 'Unités', data: [1240, 980, 610, 455, 390, 210, 140], colors: [0, 1, 2, 3, 4, 5, 6].map(function (i) { return i ? 'color-mix(in srgb, ' + p + ' ' + (55 - i * 5) + '%, transparent)' : p; }) }] });
+      var r = D.seeded(3), mk = function (b) { return MONTHS.map(function (_, i) { return Math.round(b * (0.8 + r() * 0.5) * (1 + i * 0.03)); }); };
+      Charts.render($('c3'), { type: 'bar', stacked: true, labels: MONTHS, yFormat: m, format: m, series: [
+        { label: 'Orange Money', data: mk(28), color: C('warning') }, { label: 'MTN MoMo', data: mk(19), color: 'color-mix(in srgb, ' + C('warning') + ' 55%, transparent)' },
+        { label: 'Wave', data: mk(14), color: C('info') }, { label: 'Virement', data: mk(22), color: p }, { label: 'Carte', data: mk(9), color: C('purple') }] });
+      var steps = [['CA', 1140], ['Achats', -412], ['Salaires', -286], ['Loyers', -64], ['Marketing', -58], ['Autres', -41], ['Impôts', -71]], acc = 0;
+      var bars = steps.map(function (s, i) { var from = i === 0 ? 0 : acc; acc = i === 0 ? s[1] : acc + s[1]; return [from, acc]; }); bars.push([0, acc]);
+      Charts.render($('c4'), { type: 'bar', legend: false, labels: steps.map(function (s) { return s[0]; }).concat('Résultat'), yFormat: m, format: m,
+        series: [{ label: 'Montant', data: bars, colors: bars.map(function (b, i) { return i === 0 || i === bars.length - 1 ? p : b[1] < b[0] ? 'color-mix(in srgb, ' + C('error') + ' 75%, transparent)' : C('success'); }) }] });
+      Charts.render($('c5'), { type: 'bar', labels: MONTHS, y2Format: function (v) { return v + ' k'; }, series: [
+        { label: 'Commandes', data: [312, 340, 288, 301, 356, 372, 398, 384, 361, 377, 420, 451], color: 'color-mix(in srgb, ' + C('info') + ' 55%, transparent)' },
+        { label: 'Panier moyen', type: 'line', axis: 'y2', points: true, data: [182, 188, 176, 179, 185, 191, 196, 194, 190, 198, 205, 212], color: C('warning') }] });
+      var lv = [420, 420, 380, 380, 310, 260, 260, 190, 140, 620, 620, 560, 500, 500, 430];
+      Charts.render($('c6'), { type: 'line', labels: lv.map(function (_, i) { return (i + 1) + ' oct.'; }), series: [
+        { label: 'Stock balises', data: lv, color: p, fill: true, step: true }, { label: 'Seuil', data: lv.map(function () { return 200; }), color: C('error'), dash: true, width: 1 }] });
+      var r2 = D.seeded(9), mk2 = function (b) { return DAYS.concat(DAYS).map(function (_, i) { return Math.round(b * (0.7 + r2() * 0.6) * (i % 7 > 4 ? 0.6 : 1)); }); };
+      Charts.render($('c7'), { type: 'line', stacked: true, labels: DAYS.concat(DAYS).map(function (d, i) { return d + ' ' + (i < 7 ? 'S1' : 'S2'); }), series: [
+        { label: 'Direct', data: mk2(420), color: p, fill: true, fillOpacity: .55 }, { label: 'Recherche', data: mk2(310), color: C('info'), fill: true, fillOpacity: .45 },
+        { label: 'Réseaux sociaux', data: mk2(180), color: C('purple'), fill: true, fillOpacity: .4 }, { label: 'E-mail', data: mk2(90), color: C('warning'), fill: true, fillOpacity: .4 }] });
+    }
+
+    // ─── Clients ────────────────────────────────────────────
+    function customers() {
+      var TM = [
+        { label: 'Abonnements', v: 46, tone: 'primary', kids: [['Premium', 28], ['Standard', 13], ['Essentiel', 5]] },
+        { label: 'Matériel', v: 31, tone: 'info', kids: [['Balises', 18], ['Capteurs', 8], ['Caméras', 5]] },
+        { label: 'Services', v: 23, tone: 'purple', kids: [['Installation', 11], ['Formation', 7], ['Support', 5]] }];
+      $('view').innerHTML = '<div class="grid">' +
+        card('CA par secteur', 'Camembert', '<div class="chart" id="c1"></div>') + card('Tickets par catégorie', 'Aire polaire', '<div class="chart" id="c2"></div>') + card('Satisfaction', 'Radar', '<div class="chart" id="c3"></div>') +
+        card('Délai de paiement selon le montant', 'Nuage de points', '<div class="chart" id="c4"></div>', 'span-2') + card('Portefeuille grands comptes', 'Bulles', '<div class="chart" id="c5"></div>') +
+        card('Répartition du chiffre d\'affaires', 'Treemap', '<div class="treemap">' + TM.map(function (g) {
+          return '<div class="tm-group" style="flex-grow:' + g.v + ';--tone:var(--' + g.tone + ')"><span class="tm-title">' + g.label + ' · ' + g.v + ' %</span><div class="tm-kids">' + g.kids.map(function (k, i) {
+            return '<div class="tm-cell" style="flex-grow:' + k[1] + ';opacity:' + (1 - i * 0.22) + '" title="' + k[0] + ' : ' + k[1] + ' %"><strong>' + k[0] + '</strong><span>' + k[1] + ' %</span></div>'; }).join('') + '</div></div>'; }).join('') + '</div>', 'span-2') +
+        '<section class="card map-card"><div class="card-head"><h2>Ventes par ville</h2><span class="tag">Carte</span></div><div id="map"></div></section></div>';
+      var SEC = [['Transport', 31], ['Agro-industrie', 22], ['BTP', 14], ['Santé', 11], ['Finance', 9], ['Télécoms', 7], ['Autres', 6]];
+      Charts.render($('c1'), { type: 'pie', labels: SEC.map(function (s) { return s[0]; }), data: SEC.map(function (s) { return s[1]; }), format: function (v) { return v + ' %'; } });
+      Charts.render($('c2'), { type: 'polar', labels: ['Facturation', 'Balises', 'Application', 'Livraison', 'Compte', 'Autre'], data: [48, 36, 29, 22, 14, 9] });
+      Charts.render($('c3'), { type: 'radar', max: 5, labels: ['Rapidité', 'Facilité', 'Fiabilité', 'Support', 'Prix', 'Application mobile'], series: [
+        { label: 'T3', data: [3.6, 4.1, 4.0, 3.4, 3.2, 3.5], color: C('text-muted') }, { label: 'T4', data: [4.2, 4.3, 4.4, 4.0, 3.4, 4.1], color: C('primary') }] });
+      var r = D.seeded(21), pts = function (n, late) { return Array.from({ length: n }, function () { var x = Math.round(r() * 12) / 2 + 0.5; return { x: x, y: Math.round((late ? 35 : 12) + r() * (late ? 40 : 22) + x * 2) }; }); };
+      Charts.render($('c4'), { type: 'scatter', xLabel: 'Montant (M FCFA)', yFormat: function (v) { return v + ' j'; }, xFormat: function (v) { return v + ' M'; }, forceLegend: true,
+        series: [{ label: 'Payées à temps', data: pts(38, false), color: C('success') }, { label: 'En retard', data: pts(14, true), color: C('error') }] });
+      var B = [['Cacao Plus', 121, 34, 14], ['Orca Télécom', 111, 22, 9], ['Energie Nord', 101, 28, 11], ['Ivoire Agro', 87, 31, 8], ['Clinique Riviera', 77, 18, 4], ['Hôtel Assinie', 67, 25, 3], ['Banque Lagune', 44, 38, 6], ['Batim CI', 34, 15, 5]];
+      Charts.render($('c5'), { type: 'bubble', legend: false, xLabel: 'CA (M FCFA)', yFormat: function (v) { return v + ' %'; }, xFormat: function (v) { return v + ' M'; },
+        series: B.map(function (b) { return { label: b[0], data: [{ x: b[1], y: b[2], r: 4 + b[3] * 1.4 }] }; }) });
+      UIMap.create($('map'), { center: [7.2, -5.6], zoom: 6, height: '260px', fitBounds: true, markers: [['Abidjan', 5.345, -4.024, 486], ['Bouaké', 7.69, -5.03, 141], ['San-Pédro', 4.75, -6.64, 122], ['Yamoussoukro', 6.82, -5.28, 81], ['Korhogo', 9.46, -5.63, 52], ['Daloa', 6.88, -6.45, 36], ['Man', 7.41, -7.55, 24]]
+        .map(function (c) { return { lat: c[1], lng: c[2], title: c[0], lines: [c[3] + ' M FCFA'], icon: 'storefront', tone: c[3] > 120 ? 'primary' : c[3] > 50 ? 'info' : 'neutral' }; }) });
+    }
+
+    // ─── Opérations ─────────────────────────────────────────
+    function operations() {
+      var funnel = [['Visiteurs', 48200], ['Demandes de démo', 3120], ['Démos réalisées', 1480], ['Devis envoyés', 920], ['Contrats signés', 412]];
+      var rings = [['Livraisons à l\'heure', 94, 'success'], ['Tickets résolus < 24 h', 81, 'info'], ['Taux d\'occupation', 67, 'warning'], ['Objectif mensuel', 72, 'primary']];
+      var hours = Array.from({ length: 14 }, function (_, i) { return i + 7; }), r = D.seeded(7);
+      var heat = DAYS.map(function (_, d) { return hours.map(function (h) { var peak = Math.exp(-Math.pow(h - 10, 2) / 6) + Math.exp(-Math.pow(h - 15, 2) / 5) * 0.8; return Math.round((peak * (d > 4 ? 0.35 : 1) + r() * 0.25) * 100); }); });
+      var hmax = Math.max.apply(null, heat.reduce(function (a, x) { return a.concat(x); }, []));
+      var hc = function (v) { return 'color-mix(in srgb, var(--primary) ' + Math.round(v / hmax * 100) + '%, var(--hover-bg))'; };
+      var rc = D.seeded(11), start = new Date(2025, 9, 20);
+      var cal = Array.from({ length: 52 }, function (_, w) { return Array.from({ length: 7 }, function (_, d) {
+        var date = new Date(start); date.setDate(start.getDate() + w * 7 + d); var base = d > 4 ? 0.15 : 0.6 + (w / 52) * 0.3, v = rc() < 0.1 ? 0 : Math.round(base * rc() * 40);
+        return { date: date, v: v, lvl: v === 0 ? 0 : v < 8 ? 1 : v < 16 ? 2 : v < 24 ? 3 : 4 }; }); });
+      var ranking = [['Aya Koné', 'Opérations', 148, 160], ['Marc Yao', 'Technique', 131, 120], ['Sarah Bamba', 'Formation', 117, 130], ['Jean Kouassi', 'Direction', 96, 100], ['Aïcha Diallo', 'Données', 88, 110]];
+      var L = 2 * Math.PI * 40;
+      $('view').innerHTML = '<div class="grid">' +
+        card('Tunnel de conversion', 'Entonnoir', '<div class="funnel">' + funnel.map(function (f, i) {
+          return '<div class="f-row"><span class="f-lbl">' + f[0] + '</span><div class="f-track"><div class="f-bar" style="width:' + Math.max(6, Math.sqrt(f[1] / funnel[0][1]) * 100) + '%;opacity:' + (1 - i * 0.14) + '"></div></div>' +
+            '<span class="f-val tabular">' + nf.format(f[1]) + '</span><span class="f-rate tabular">' + (i ? Math.round(f[1] / funnel[i - 1][1] * 100) + ' %' : '—') + '</span></div>'; }).join('') +
+          '<p class="f-foot">Largeurs en échelle racine carrée · conversion globale : <strong>' + (funnel[4][1] / funnel[0][1] * 100).toFixed(2).replace('.', ',') + ' %</strong> des visiteurs</p></div>', 'span-2') +
+        card('Qualité de service', 'Anneaux', '<div class="rings">' + rings.map(function (g) {
+          return '<div class="ring" style="--tone:var(--' + g[2] + ')"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" class="r-track"/><circle cx="50" cy="50" r="40" class="r-val" stroke-dasharray="' + (L * g[1] / 100) + ' ' + L + '"/></svg><strong class="tabular">' + g[1] + ' %</strong><span>' + g[0] + '</span></div>'; }).join('') + '</div>') +
+        card('Commandes par heure', 'Heatmap', '<div class="heat" role="table" aria-label="Commandes par jour et par heure"><span></span>' + hours.map(function (h) { return '<span class="hx">' + h + ' h</span>'; }).join('') +
+          heat.map(function (row, d) { return '<span class="hy">' + DAYS[d] + '</span>' + row.map(function (v, h) { return '<i style="background:' + hc(v) + '" title="' + DAYS[d] + ' ' + hours[h] + ' h : ' + v + ' commandes"></i>'; }).join(''); }).join('') +
+          '</div><div class="legend-scale"><span>Moins</span>' + [0.1, 0.3, 0.5, 0.7, 0.9].map(function (s) { return '<i style="background:' + hc(s * hmax) + '"></i>'; }).join('') + '<span>Plus</span></div>', 'span-2') +
+        card('Objectifs de l\'équipe', 'Classement', '<div class="ranking">' + ranking.map(function (p, i) { var pc = p[2] / p[3] * 100;
+          return '<div class="rk"><span class="rk-pos">' + (i + 1) + '</span><div class="rk-main"><div class="rk-top"><strong>' + p[0] + '</strong><span class="tabular">' + p[2] + ' / ' + p[3] + '</span></div><div class="rk-bar"><i style="width:' + Math.min(100, pc) + '%" class="' + (p[2] >= p[3] ? 'over' : '') + '"></i></div><small>' + p[1] + '</small></div></div>'; }).join('') + '</div>') +
+        card('Interventions sur 12 mois', 'Calendrier d\'activité', '<div class="cal-wrap"><div class="acal"><div class="cal-months">' + MONTHS.map(function (m, i) { return '<span style="grid-column:' + (Math.round(i * 52 / 12) + 2) + '">' + m + '</span>'; }).join('') + '</div>' +
+          '<div class="cal-grid"><div class="cal-days">' + DAYS.map(function (d, i) { return '<span>' + (i % 2 === 0 ? d : '') + '</span>'; }).join('') + '</div>' + cal.map(function (w) {
+            return '<div class="cal-week">' + w.map(function (c) { return '<i class="lv' + c.lvl + '" title="' + c.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) + ' : ' + c.v + ' intervention(s)"></i>'; }).join('') + '</div>'; }).join('') +
+          '</div></div></div><div class="legend-scale"><span>Moins</span>' + [0, 1, 2, 3, 4].map(function (l) { return '<i class="lv' + l + '"></i>'; }).join('') + '<span>Plus</span></div>', 'span-3') + '</div>';
+    }
+
+    function render() { renderControls(); ({ overview: overview, sales: sales, customers: customers, operations: operations })[tab](); }
+    document.querySelector('.page-head').addEventListener('click', function (e) { var b = e.target.closest('[data-period]'); if (b) { period = b.dataset.period; render(); } });
+    $('tabs').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tab]'); if (!b) return; tab = b.dataset.tab;
+      var u = new URL(location.href); var map = { sales: 'ventes', customers: 'clients', operations: 'operations' };
+      tab === 'overview' ? u.searchParams.delete('tab') : u.searchParams.set('tab', map[tab]); history.replaceState(null, '', u);
+      render();
+    });
+    render();
+  })();
+  </script>
+</body>
+</html>

@@ -237,3 +237,86 @@ img { max-width: 100%; display: block; }
   background: var(--card-bg); color: var(--text-secondary); font: 500 13px var(--font-sans); cursor: pointer; text-decoration: none; }
 .ui-chip .mi { font-size: 18px; }
 .ui-chip[aria-pressed="true"], .ui-chip.active { background: var(--primary-soft); border-color: transparent; color: var(--primary); }
+
+/* ---------- Graphiques (js/charts.js) ---------- */
+.ch { position: relative; width: 100%; min-width: 0; }
+.ch svg { display: block; overflow: visible; font-family: var(--font-sans); }
+.ch [data-tip] { cursor: default; }
+.ch rect[data-tip]:hover, .ch path[data-tip]:hover { opacity: .85; }
+.ch-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 14px; font-size: 12px; color: var(--text-muted); min-height: 26px; align-items: center; overflow: hidden; }
+.ch-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.ch-legend i { width: 10px; height: 10px; border-radius: 3px; }
+.ch-tip { position: absolute; z-index: 5; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: #1f2937; color: #f9fafb; font-size: 12px; white-space: nowrap; box-shadow: var(--shadow-2); }
+[data-mode="dark"] .ch-tip { background: #f9fafb; color: #1f2937; }
+
+/* ---------- Table de données (js/data-table.js) ---------- */
+.dt { --row-h: 44px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; color: var(--text-primary); }
+.dt--compact { --row-h: 34px; } .dt--comfortable { --row-h: 56px; }
+.dt .spacer { flex: 1; } .dt .muted { color: var(--text-muted); }
+.dt-toolbar, .dt-bulk { display: flex; align-items: center; gap: var(--space-2); min-height: 56px; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); }
+.dt-title { font-weight: 600; font-size: 15px; }
+.dt-count { padding: 1px var(--space-2); border-radius: var(--radius-md); background: var(--hover-bg); font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.dt-search { display: flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); margin-left: var(--space-2); border-radius: var(--radius-xl); border: 1px solid var(--border); background: var(--hover-bg); width: 240px; max-width: 40vw; }
+.dt-search:focus-within { border-color: var(--primary); background: var(--card-bg); }
+.dt-search .mi { font-size: 18px; color: var(--text-muted); }
+.dt-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text-primary); font: 13.5px var(--font-sans); }
+.dt-tool { display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--card-bg); color: var(--text-secondary); font: 500 13px var(--font-sans); cursor: pointer; list-style: none; }
+.dt-tool::-webkit-details-marker { display: none; }
+.dt-tool .mi { font-size: 19px; } .dt-tool em { font-style: normal; font-size: 11px; padding: 0 var(--space-2); border-radius: var(--radius-sm); background: var(--primary); color: var(--on-primary); }
+.dt-tool:hover { border-color: var(--primary); color: var(--primary); }
+.dt-bulk { background: var(--primary-soft); color: var(--primary); animation: dt-slide .18s ease; }
+@keyframes dt-slide { from { opacity: 0; transform: translateY(-6px); } }
+.dt-link { border: 0; background: none; color: var(--primary); font: 500 13px var(--font-sans); text-decoration: underline; cursor: pointer; }
+.dt-bulk-btn { display: inline-flex; align-items: center; gap: var(--space-2); height: 34px; padding: 0 var(--space-3); border-radius: 17px; border: 0; cursor: pointer; background: var(--card-bg); color: var(--text-primary); font: 500 13px var(--font-sans); box-shadow: var(--shadow-1); }
+.dt-bulk-btn .mi { font-size: 18px; color: var(--primary); } .dt-bulk-btn.danger, .dt-bulk-btn.danger .mi { color: var(--error); }
+.dt-icon { width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; display: inline-grid; place-items: center; }
+.dt-icon .mi { font-size: 20px; } .dt-icon:hover:not(:disabled) { background: var(--hover-bg); } .dt-icon:disabled { opacity: .35; cursor: default; }
+.dt-scroll { overflow: auto; position: relative; }
+.dt table { border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 13.5px; }
+.dt th, .dt td { height: var(--row-h); padding: 0 var(--space-3); border-bottom: 1px solid var(--border); background: var(--card-bg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dt thead th { position: sticky; top: 0; z-index: 2; height: 42px; background: var(--table-header-bg); font-size: 12px; font-weight: 600; color: var(--text-secondary); user-select: none; overflow: visible; }
+.dt thead th[data-sort] { cursor: pointer; } .dt thead th[data-sort]:hover { color: var(--text-primary); }
+.dt thead th[aria-sort] { color: var(--primary); }
+.dt .th-in { display: flex; align-items: center; gap: var(--space-1); overflow: hidden; }
+.dt .th-sort { font-size: 16px; opacity: .35; } .dt .th-sort.on, .dt th:hover .th-sort { opacity: 1; } .dt .th-edit { font-size: 13px; opacity: .5; }
+.dt .resizer { position: absolute; top: 8px; bottom: 8px; right: 0; width: 9px; cursor: col-resize; touch-action: none; }
+.dt .resizer::after { content: ''; position: absolute; right: 4px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.dt .resizer:hover::after { width: 3px; right: 3px; background: var(--primary); }
+.dt .sticky-s { position: sticky; z-index: 1; } .dt thead .sticky-s { z-index: 3; }
+.dt .tech { padding: 0; text-align: center; }
+.dt tbody tr:hover td { background: color-mix(in srgb, var(--hover-bg) 70%, var(--card-bg)); }
+.dt tbody tr.sel td { background: color-mix(in srgb, var(--primary) 7%, var(--card-bg)); }
+.dt tbody tr.clickable { cursor: pointer; }
+.dt td.editable { cursor: cell; }
+.dt td.edited { position: relative; } .dt td.edited::before { content: ''; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; border-radius: 50%; background: var(--warning); }
+.dt-edit-input { width: 100%; height: calc(var(--row-h) - 12px); padding: 0 var(--space-2); border: 2px solid var(--primary); border-radius: var(--radius-sm); background: var(--card-bg); color: var(--text-primary); font: 13.5px var(--font-sans); outline: 0; }
+.dt td code { font-size: 12.5px; padding: 1px var(--space-2); border-radius: 5px; background: var(--hover-bg); }
+.dt-badge { display: inline-flex; align-items: center; gap: var(--space-2); padding: 2px var(--space-3); border-radius: var(--radius-md); font-size: 12px; font-weight: 600; color: var(--tone); background: color-mix(in srgb, var(--tone) 13%, transparent); }
+.dt-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--tone); }
+.dt-progress { display: inline-block; width: calc(100% - 46px); height: 6px; border-radius: 4px; background: var(--hover-bg); vertical-align: middle; overflow: hidden; }
+.dt-progress i { display: block; height: 100%; border-radius: 4px; background: var(--success); } .dt-progress i.low { background: var(--error); }
+.dt-pct { display: inline-block; width: 40px; text-align: right; font-style: normal; font-size: 12px; color: var(--text-secondary); }
+.dt-check { display: inline-block; width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--text-muted); position: relative; cursor: pointer; vertical-align: middle; }
+.dt-check.on, .dt-check.some { background: var(--primary); border-color: var(--primary); }
+.dt-check.on::after { content: ''; position: absolute; left: 4px; top: .5px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.dt-check.some::after { content: ''; position: absolute; left: 2.5px; right: 2.5px; top: 6px; height: 2px; background: #fff; }
+.dt-exp { width: 28px; height: 28px; border: 0; border-radius: 50%; background: transparent; color: var(--text-secondary); cursor: pointer; display: inline-grid; place-items: center; }
+.dt-exp .mi { transition: transform .15s ease; } .dt-exp:hover { background: var(--hover-bg); }
+.dt tr.open .dt-exp .mi { transform: rotate(90deg); color: var(--primary); }
+.dt .dt-detail td { height: auto; padding: 0; white-space: normal; background: var(--table-header-bg) !important; }
+.dt-detail-in { position: sticky; left: 0; padding: var(--space-4) var(--space-5) var(--space-4) 84px; animation: dt-slide .18s ease; }
+.dt .dt-empty td { height: 140px; text-align: center; color: var(--text-muted); white-space: normal; }
+.dt .dt-empty .mi { display: block; margin: 0 auto var(--space-2); font-size: 30px; }
+.dt tfoot td { position: sticky; bottom: 0; z-index: 1; font-weight: 700; background: var(--table-header-bg); border-top: 2px solid var(--border); border-bottom: 0; font-variant-numeric: tabular-nums; }
+.dt-foot { display: flex; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-3); border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-secondary); }
+.dt-page { min-width: 54px; text-align: center; font-variant-numeric: tabular-nums; }
+.dt .ui-menu__panel { right: 0; }
+@media (max-width: 599px) { .dt .hide-xs { display: none; } .dt-bulk-btn span { display: none; } .dt-search { width: auto; flex: 1; } .dt-detail-in { padding-left: var(--space-4); } }
+
+/* ---------- Cartes (js/map.js) ---------- */
+.um { position: relative; width: 100%; border-radius: var(--radius-md); overflow: hidden; background: var(--hover-bg); z-index: 0; }
+.um-loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--text-muted); font-size: 13px; }
+.um-pin { background: none; border: 0; }
+.um-pin__in { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--tone); box-shadow: 0 2px 6px rgb(0 0 0 / .3); border: 2px solid #fff; }
+.um-pin__in .mi { transform: rotate(45deg); font-size: 15px; color: #fff; }
+.um .leaflet-popup-content { font: 13px/1.45 var(--font-sans); }

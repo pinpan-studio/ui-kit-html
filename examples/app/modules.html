@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modules</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .hero { padding: var(--space-6) 0 var(--space-8); }
+    .hero h1 { margin: var(--space-2) 0 0; font-size: var(--text-3xl); font-weight: 700; letter-spacing: -.02em; }
+    .hero p { margin: var(--space-1) 0 var(--space-5); font-size: 16px; color: var(--text-secondary); }
+    .quick { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); } .quick .chip-filter { text-decoration: none; }
+    @media (max-width: 767px) { .hero { padding-top: var(--space-2); } .hero h1 { font-size: var(--text-2xl); } }
+    .big-search { display: flex; align-items: center; gap: var(--space-3); max-width: 720px; height: 52px; padding: 0 var(--space-2) 0 var(--space-4); border-radius: var(--radius-md); background: var(--hover-bg); color: var(--text-muted); }
+    .big-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 16px var(--font-sans); color: var(--text-primary); }
+    .big-search:focus-within { box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 45%, transparent); }
+    .big-search .palette { display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-sm); background: var(--card-bg); font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
+    @media (max-width: 600px) { .big-search .palette .lbl { display: none; } }
+    .today { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: var(--space-8); border-radius: var(--radius-md); background: var(--hover-bg); }
+    .t-item { display: flex; flex-direction: column; gap: 2px; padding: var(--space-4) var(--space-5); }
+    .t-val { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; } .t-val small { margin-left: 4px; font-size: 12px; font-weight: 500; color: var(--text-muted); }
+    .t-lbl { font-size: 12px; color: var(--text-muted); }
+    @media (max-width: 767px) { .today { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-8); }
+    .tiles .none { grid-column: 1 / -1; }
+    @media (max-width: 767px) { .tiles { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); } }
+    .tile { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: var(--space-4); row-gap: var(--space-2); align-items: start; padding: var(--space-4); color: inherit; text-decoration: none; }
+    .tile:hover { background: var(--hover-bg); }
+    .t-ic { width: 40px; height: 40px; border-radius: var(--radius-md); display: grid; place-items: center; background: color-mix(in srgb, var(--c) 12%, var(--card-bg)); color: color-mix(in srgb, var(--c) 80%, var(--text-primary)); }
+    .t-ic .mi { font-size: 22px; }
+    .t-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .t-txt strong { display: flex; align-items: center; gap: var(--space-2); font-weight: 600; }
+    .t-txt b { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; display: inline-grid; place-items: center; font: 600 11px var(--font-sans); background: var(--error); color: #fff; }
+    .t-txt span { font-size: 13px; line-height: 1.4; color: var(--text-secondary); }
+    .tile small { grid-column: 2; font-size: 12px; color: var(--text-muted); }
+    .bottom { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+    @media (max-width: 1100px) { .bottom { grid-template-columns: 1fr; } }
+    .list { padding: var(--space-2) 0; } .chev { color: var(--text-muted); }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Modules">
+  <main id="ex-content">
+    <div class="wrap">
+      <section class="hero">
+        <span class="eyebrow">Vendredi 17 octobre</span>
+        <h1>Bonjour Jean</h1>
+        <p>Que voulez-vous faire aujourd'hui ?</p>
+        <label class="big-search">
+          <span class="mi">search</span>
+          <input type="search" id="q" placeholder="Filtrer les modules…" aria-label="Filtrer les modules">
+          <button type="button" class="palette" onclick="EX.palette()"><span class="lbl">Toutes les commandes</span> <span class="kbd">⌘K</span></button>
+        </label>
+        <div class="quick">
+          <a class="chip-filter" href="dashboard.html"><span class="mi">receipt_long</span>Nouvelle facture</a>
+          <a class="chip-filter" href="clients.html"><span class="mi">person_add</span>Ajouter un client</a>
+          <a class="chip-filter" href="board.html"><span class="mi">event</span>Planifier</a>
+          <a class="chip-filter" href="../forms/booking.html"><span class="mi">meeting_room</span>Réserver une salle</a>
+        </div>
+      </section>
+
+      <div class="today">
+        <div class="t-item"><span class="t-val"><span data-count="4250000" data-format="compact" data-decimals="2"></span><small>FCFA</small></span><span class="t-lbl">Encaissé aujourd'hui</span></div>
+        <div class="t-item"><span class="t-val"><span data-count="14"></span></span><span class="t-lbl">Interventions prévues</span></div>
+        <div class="t-item"><span class="t-val"><span data-count="7"></span></span><span class="t-lbl">Tickets ouverts</span></div>
+        <div class="t-item"><span class="t-val"><span data-count="98.2" data-format="percent" data-decimals="1"></span></span><span class="t-lbl">Taux de service</span></div>
+      </div>
+
+      <div class="section-title"><h2>Modules</h2><span id="n"></span></div>
+      <div class="tiles" id="tiles"></div>
+
+      <div class="bottom">
+        <section class="card">
+          <div class="card-head"><h2>Récemment consultés</h2></div>
+          <div class="rows list">
+            <a href="client.html?id=c-104" class="row"><span class="ic-tile"><span class="mi">business</span></span><span class="grow"><strong>Cacao Plus</strong><small>Client · modifié il y a 10 min</small></span><span class="mi chev">chevron_right</span></a>
+            <a href="clients.html" class="row"><span class="ic-tile"><span class="mi">group</span></span><span class="grow"><strong>Clients actifs</strong><small>Liste · 12 résultats</small></span><span class="mi chev">chevron_right</span></a>
+            <a href="board.html" class="row"><span class="ic-tile"><span class="mi">view_kanban</span></span><span class="grow"><strong>Déploiement Sotra</strong><small>Projet · 10 tâches</small></span><span class="mi chev">chevron_right</span></a>
+            <a href="catalog.html" class="row"><span class="ic-tile"><span class="mi">inventory_2</span></span><span class="grow"><strong>Catalogue matériel</strong><small>Catalogue · 12 articles</small></span><span class="mi chev">chevron_right</span></a>
+          </div>
+        </section>
+        <section class="card">
+          <div class="card-head"><h2>Activité</h2><a href="feed.html">Fil d'équipe</a></div>
+          <div class="rows list" id="activity"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="../../js/data/examples.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+    (function () {
+      var LINK = { crm: 'clients.html', billing: 'dashboard.html', stock: 'catalog.html', planning: 'board.html', support: 'inbox.html', settings: 'settings.html', docs: 'docs.html', reports: 'dashboard.html' };
+      var tiles = document.getElementById('tiles');
+      function render(q) {
+        q = (q || '').trim().toLowerCase();
+        var list = DATA.EX_MODULES.filter(function (m) { return !q || (m.label + m.description).toLowerCase().indexOf(q) >= 0; });
+        document.getElementById('n').textContent = list.length + ' disponibles';
+        tiles.innerHTML = list.length ? list.map(function (m) {
+          return '<a class="card tile" href="' + (LINK[m.id] || 'modules.html') + '" style="--c:' + m.color + '"><span class="t-ic"><span class="mi">' + m.icon + '</span></span>' +
+            '<span class="t-txt"><strong>' + m.label + (m.badge ? '<b>' + m.badge + '</b>' : '') + '</strong><span>' + m.description + '</span></span>' + (m.count ? '<small>' + m.count + '</small>' : '') + '</a>';
+        }).join('') : '<div class="card none ui-empty"><span class="mi" style="font-size:40px">search_off</span><p><strong>Aucun module</strong></p><p class="muted">Essayez un autre mot-clé ou ouvrez la palette de commandes.</p></div>';
+      }
+      document.getElementById('q').addEventListener('input', function (e) { render(e.target.value); });
+      document.getElementById('activity').innerHTML = DATA.EX_ACTIVITY.slice(0, 4).map(function (a) {
+        return '<div class="row"><span class="ic-tile tone-' + a.tone + '"><span class="mi">' + a.icon + '</span></span><span class="grow"><strong style="white-space:normal">' + a.text + '</strong><small>' + a.who + ' · ' + a.at + '</small></span></div>';
+      }).join('');
+      render();
+    })();
+  </script>
+</body>
+</html>

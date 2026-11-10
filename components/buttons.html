@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boutons</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .toolbar-like { width: 100%; padding: 4px 8px; border-radius: var(--radius-md); background: var(--bg); }
+    .toolbar-like .spacer, .row .spacer { flex: 1; }
+    .avatar-sm { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; }
+    .page-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .create-btn { height: 42px; border-radius: 10px; }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/buttons.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Boutons" data-icon="smart_button"
+      data-subtitle="Boutons du kit en HTML/CSS natifs : variante pleine (primaire), en relief, contour, texte, danger, succès ; boutons icône, actions de page, groupes segmentés, menus, FAB, tailles et formes.">
+
+      <section class="doc-section" id="variants" data-title="Variantes" data-toc="Variantes" data-source=".ui-btn · --outlined · --text · --danger · --success"
+        data-desc="Primary = <code>.ui-btn</code> ; Secondary = <code>--outlined</code> ; Outline neutre = <code>--outlined --neutral</code> ; Ghost = <code>--text</code> ; Danger = <code>--danger</code>. « Success » et « Tertiary » sont dérivées des jetons de couleur.">
+        <div class="demo" data-label="Toutes les variantes">
+          <div class="row">
+            <button class="ui-btn">Primary</button>
+            <button class="ui-btn ui-btn--raised">Raised</button>
+            <button class="ui-btn ui-btn--outlined">Secondary</button>
+            <button class="ui-btn ui-btn--outlined ui-btn--neutral">Outline</button>
+            <button class="ui-btn ui-btn--text">Ghost</button>
+            <button class="ui-btn ui-btn--tonal">Tonal</button>
+            <button class="ui-btn ui-btn--danger">Danger</button>
+            <button class="ui-btn ui-btn--danger ui-btn--outlined">Danger outline</button>
+            <button class="ui-btn ui-btn--success">Success</button>
+            <button class="ui-btn ui-btn--tertiary">Tertiary</button>
+          </div>
+        </div>
+        <div class="demo" data-label="Avec icône (Icon + Text)">
+          <div class="row">
+            <button class="ui-btn"><span class="mi">save</span>Enregistrer</button>
+            <button class="ui-btn ui-btn--outlined"><span class="mi">edit</span>Modifier</button>
+            <button class="ui-btn ui-btn--outlined ui-btn--neutral"><span class="mi">file_download</span>Exporter</button>
+            <button class="ui-btn ui-btn--text"><span class="mi">visibility</span>Voir</button>
+            <button class="ui-btn ui-btn--danger ui-btn--outlined"><span class="mi">delete</span>Supprimer</button>
+            <button class="ui-btn ui-btn--success"><span class="mi">check_circle</span>Valider</button>
+            <button class="ui-btn ui-btn--text">Fiche produit<span class="mi end">arrow_forward</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="states" data-title="États" data-cols="2" data-desc="Désactivé, chargement (spinner intégré, cliquable pour simuler), focus clavier.">
+        <div class="demo" data-label="Disabled">
+          <div class="row">
+            <button class="ui-btn" disabled>Primary</button>
+            <button class="ui-btn ui-btn--outlined ui-btn--neutral" disabled>Outline</button>
+            <button class="ui-btn ui-btn--text" disabled>Ghost</button>
+            <button class="ui-btn ui-btn--icon" disabled aria-label="Supprimer"><span class="mi">delete</span></button>
+          </div>
+        </div>
+        <div class="demo" data-label="Loading" data-hint="cliquez">
+          <div class="row">
+            <button class="ui-btn" data-load="save"><span class="mi">save</span><span>Enregistrer</span></button>
+            <button class="ui-btn ui-btn--outlined" data-load="sync"><span class="mi">sync</span>Synchroniser</button>
+            <button class="ui-btn ui-btn--icon" data-load="refresh" title="Rafraîchir" aria-label="Rafraîchir"><span class="mi">refresh</span></button>
+          </div>
+        </div>
+        <div class="demo" data-label="Pleine largeur (dialogues, auth)">
+          <div class="stack">
+            <button class="ui-btn ui-btn--block">Accepter et continuer</button>
+            <button class="ui-btn ui-btn--outlined ui-btn--block">Connectez-vous par e-mail</button>
+          </div>
+        </div>
+        <div class="demo" data-label="Connexion Google">
+          <button class="ui-btn ui-btn--raised"><span class="mi">login</span>Se connecter avec Google</button>
+        </div>
+      </section>
+
+      <section class="doc-section" id="icon" data-title="Boutons icône" data-cols="3" data-source=".ui-btn--icon">
+        <div class="demo" data-label="Icon button">
+          <div class="row">
+            <button class="ui-btn ui-btn--icon" title="Modifier" aria-label="Modifier"><span class="mi">edit</span></button>
+            <button class="ui-btn ui-btn--icon ui-btn--primary" title="Ajouter" aria-label="Ajouter"><span class="mi">add_circle</span></button>
+            <button class="ui-btn ui-btn--icon ui-btn--danger" title="Supprimer" aria-label="Supprimer"><span class="mi">delete</span></button>
+            <button class="ui-btn ui-btn--icon" title="Options" aria-label="Options"><span class="mi">more_vert</span></button>
+          </div>
+        </div>
+        <div class="demo" data-label="Rafraîchir / filtres / export">
+          <div class="row">
+            <button class="ui-btn ui-btn--icon" title="Rafraîchir" aria-label="Rafraîchir"><span class="mi">refresh</span></button>
+            <button class="ui-btn ui-btn--icon" title="Filtres" aria-label="Filtres"><span class="mi">tune</span></button>
+            <button class="ui-btn ui-btn--icon" title="Exporter" aria-label="Exporter"><span class="mi">file_download</span></button>
+          </div>
+        </div>
+        <div class="demo" data-label="Barre d'outils (shell)">
+          <div class="row toolbar-like">
+            <button class="ui-btn ui-btn--icon" aria-label="Menu"><span class="mi">menu</span></button>
+            <span class="spacer"></span>
+            <button class="ui-btn ui-btn--icon" aria-label="Mode sombre"><span class="mi">dark_mode</span></button>
+            <button class="ui-btn ui-btn--icon ui-badge-dot" aria-label="Tâches"><span class="mi">checklist</span><b class="primary">7</b></button>
+            <button class="ui-btn ui-btn--icon ui-badge-dot" aria-label="Notifications"><span class="mi">notifications</span><b>3</b></button>
+            <span class="avatar-sm">JK</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="header" data-title="Actions de page" data-desc="Groupe d'actions en haut à droite des pages liste : bascule cartes/liste, rafraîchir, créer, suppression groupée.">
+        <div class="demo" data-label="En-tête de liste">
+          <div class="page-actions">
+            <div class="ui-segmented" role="group" aria-label="Affichage"><button class="on" data-seg aria-label="Liste"><span class="mi">view_list</span></button><button data-seg aria-label="Cartes"><span class="mi">grid_view</span></button></div>
+            <button class="ui-btn ui-btn--icon" title="Rafraîchir" aria-label="Rafraîchir"><span class="mi">refresh</span></button>
+            <button class="ui-btn ui-btn--raised create-btn"><span class="mi">add</span>Nouveau produit</button>
+            <button class="ui-btn ui-btn--danger ui-btn--outlined"><span class="mi">delete</span>(3)</button>
+          </div>
+        </div>
+        <div class="demo" data-label="En-tête de fiche (détail)">
+          <div class="row">
+            <button class="ui-btn ui-btn--icon" aria-label="Retour"><span class="mi">arrow_back</span></button>
+            <span class="spacer"></span>
+            <button class="ui-btn ui-btn--outlined ui-btn--neutral"><span class="mi">edit</span>Modifier</button>
+            <button class="ui-btn ui-btn--danger ui-btn--outlined"><span class="mi">delete</span>Supprimer</button>
+            <button class="ui-btn"><span class="mi">send</span>Envoyer</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="segmented" data-title="Segmentés & toggles" data-cols="3" data-source=".ui-segmented · .ui-toggle-group · .ui-filter-chip">
+        <div class="demo" data-label="Filtre segmenté">
+          <div class="ui-segmented" role="group" aria-label="Période"><button class="on" data-seg>Mois</button><button data-seg>Trimestre</button><button data-seg>Année</button></div>
+        </div>
+        <div class="demo" data-label="Onglets de graphique">
+          <div class="ui-toggle-group" role="group" aria-label="Période"><button class="on" data-seg>Mois</button><button data-seg>Trimestre</button><button data-seg>Année</button></div>
+        </div>
+        <div class="demo" data-label="Bascule liste / cartes">
+          <div class="row"><div class="ui-segmented" role="group" aria-label="Affichage" id="vm"><button class="on" data-seg data-v="list" aria-label="Liste"><span class="mi">view_list</span></button><button data-seg data-v="cards" aria-label="Cartes"><span class="mi">grid_view</span></button></div><span class="muted small" id="vm-out">mode = list</span></div>
+        </div>
+        <div class="demo" data-label="Chips de filtre" data-hint=".ui-filter-chip">
+          <div class="row">
+            <button class="ui-filter-chip on" data-chip>Tous <span class="count">48</span></button>
+            <button class="ui-filter-chip success" data-chip>Actifs <span class="count">31</span></button>
+            <button class="ui-filter-chip warning" data-chip>Planifiés <span class="count">6</span></button>
+            <button class="ui-filter-chip danger" data-chip>Désinstallés <span class="count">4</span></button>
+          </div>
+        </div>
+        <div class="demo" data-label="Groupe de bascules">
+          <div class="ui-toggle-group" role="group" aria-label="Vue"><button data-seg class="on">Jour</button><button data-seg>Semaine</button><button data-seg>Mois</button></div>
+        </div>
+        <div class="demo" data-label="Lien d'action">
+          <span class="ui-link-action" tabindex="0" role="button">Voir l'historique</span>
+        </div>
+      </section>
+
+      <section class="doc-section" id="menu" data-title="Menu & split" data-cols="2" data-source="details.ui-menu">
+        <div class="demo" data-label="Bouton menu">
+          <details class="ui-menu">
+            <summary class="ui-btn ui-btn--outlined ui-btn--neutral"><span class="mi">file_download</span>Exporter<span class="mi end">expand_more</span></summary>
+            <div class="ui-menu__panel" style="left:0;right:auto">
+              <button class="ui-menu__item"><span class="mi">table_view</span> Excel</button>
+              <button class="ui-menu__item"><span class="mi">picture_as_pdf</span> PDF</button>
+              <hr class="ui-menu__sep">
+              <button class="ui-menu__item" style="color:var(--error-text)"><span class="mi">delete</span> Supprimer</button>
+            </div>
+          </details>
+        </div>
+        <div class="demo" data-label="Split button">
+          <details class="ui-menu">
+            <summary class="ui-split" style="list-style:none"><span class="ui-btn"><span class="mi">send</span>Envoyer</span><span class="ui-btn" aria-label="Plus d'options"><span class="mi">arrow_drop_down</span></span></summary>
+            <div class="ui-menu__panel" style="left:0;right:auto">
+              <button class="ui-menu__item"><span class="mi">schedule_send</span> Programmer l'envoi</button>
+              <button class="ui-menu__item"><span class="mi">drafts</span> Enregistrer en brouillon</button>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section class="doc-section" id="fab" data-title="FAB" data-cols="2" data-source=".ui-btn--fab · --fab-ext" data-desc="Boutons d'action flottants, fournis pour compléter le kit.">
+        <div class="demo" data-label="FAB">
+          <div class="row">
+            <button class="ui-btn ui-btn--fab" aria-label="Ajouter"><span class="mi">add</span></button>
+            <button class="ui-btn ui-btn--fab ui-btn--sm" aria-label="Modifier"><span class="mi">edit</span></button>
+            <button class="ui-btn ui-btn--fab-ext"><span class="mi">add</span>Nouvelle mission</button>
+          </div>
+        </div>
+        <div class="demo" data-label="Bouton d'action principale (shell)">
+          <button class="ui-btn ui-btn--outlined"><span class="mi">bolt</span>Action rapide</button>
+        </div>
+      </section>
+
+      <section class="doc-section" id="sizes" data-title="Tailles & formes" data-cols="2" data-desc="Hauteurs : compact 32px, standard 40px, création 42px, large 48px ; rayons : pilule (par défaut), 10px, carré arrondi.">
+        <div class="demo" data-label="Hauteurs">
+          <div class="row">
+            <button class="ui-btn ui-btn--sm">Compact</button>
+            <button class="ui-btn">Standard</button>
+            <button class="ui-btn ui-btn--raised create-btn">Création</button>
+            <button class="ui-btn ui-btn--lg">Large</button>
+          </div>
+        </div>
+        <div class="demo" data-label="Formes">
+          <div class="row">
+            <button class="ui-btn">Pilule</button>
+            <button class="ui-btn ui-btn--raised create-btn">Rayon 10px</button>
+            <button class="ui-btn ui-btn--outlined" style="border-radius:var(--radius-sm)">Carré arrondi</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+    document.addEventListener('click', function (e) {
+      var s = e.target.closest('[data-seg]');
+      if (s) { s.parentNode.querySelectorAll('[data-seg]').forEach(function (b) { b.classList.toggle('on', b === s); }); if (s.dataset.v) document.getElementById('vm-out').textContent = 'mode = ' + s.dataset.v; }
+      var c = e.target.closest('[data-chip]');
+      if (c) c.parentNode.querySelectorAll('[data-chip]').forEach(function (b) { b.classList.toggle('on', b === c); });
+      var l = e.target.closest('[data-load]');
+      if (l && !l.disabled) {
+        var ic = l.querySelector('.mi'), label = l.querySelector('span:not(.mi)'), old = label && label.textContent;
+        l.disabled = true;
+        if (l.dataset.load === 'save') { ic.outerHTML = '<span class="ui-spinner"></span>'; label.textContent = 'Enregistrement…'; } else ic.classList.add('spin');
+        setTimeout(function () {
+          l.disabled = false;
+          var sp = l.querySelector('.ui-spinner'); if (sp) sp.outerHTML = '<span class="mi">save</span>';
+          var i2 = l.querySelector('.mi'); i2.classList.remove('spin'); if (label) label.textContent = old;
+          UIKit.toast('Action simulée — aucune requête envoyée');
+        }, 1400);
+      }
+    });
+  </script>
+</body>
+</html>

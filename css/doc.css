@@ -1,0 +1,38 @@
+/* Pages de documentation du catalogue (voir js/doc.js). */
+.doc-page { max-width: 1280px; margin: 0 auto; padding: var(--space-8) var(--space-8) 96px; box-sizing: border-box; min-width: 0; }
+@media (max-width: 767px) { .doc-page { padding: var(--space-5) var(--space-4) 64px; } }
+.doc-hero { display: flex; align-items: center; gap: var(--space-5); margin-bottom: var(--space-8); }
+.hero-icon { display: grid; place-items: center; width: 56px; height: 56px; flex: 0 0 56px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); } .hero-icon .mi { font-size: 28px; }
+.doc-hero .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+.doc-hero h1 { margin: 2px 0 var(--space-1); font-size: 28px; }
+.doc-hero p { margin: 0; max-width: 760px; font-size: 14px; color: var(--text-secondary); }
+.doc-toc { position: sticky; top: 0; z-index: 3; display: flex; flex-wrap: wrap; gap: var(--space-2); margin: calc(var(--space-4) - var(--space-8)) 0 var(--space-8); padding: var(--space-3) 0; background: var(--bg); }
+.toc-chip { padding: 5px var(--space-3); border-radius: var(--radius-full); background: var(--hover-bg); color: var(--text-secondary); font-size: 12px; font-weight: 600; text-decoration: none; transition: all .15s; }
+.toc-chip:hover { color: var(--primary); background: var(--primary-soft); }
+.doc-section { scroll-margin-top: 72px; margin-bottom: var(--space-12); min-width: 0; }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-3); }
+.doc-section h2 { margin: 0; font-size: 20px; }
+.doc-section .source { padding: 2px var(--space-2); border-radius: var(--radius-sm); background: var(--hover-bg); font: 11px var(--font-mono); color: var(--text-muted); }
+.section-desc { margin: var(--space-3) 0 0; max-width: 820px; font-size: 13px; color: var(--text-secondary); }
+.section-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); margin-top: var(--space-5); }
+.section-body.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .section-body.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1199px) { .section-body.cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .section-body.cols-2, .section-body.cols-3 { grid-template-columns: minmax(0, 1fr); } }
+.demo { display: flex; flex-direction: column; min-width: 0; height: 100%; box-sizing: border-box; border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; }
+.demo-head { display: flex; align-items: center; gap: var(--space-2); min-height: 40px; padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4); background: color-mix(in srgb, var(--hover-bg) 50%, transparent); }
+.demo-label { font-size: 12px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+.demo-hint { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; color: var(--text-muted); }
+.demo-head .spacer { flex: 1; }
+.demo-btn { width: 32px; height: 32px; color: var(--text-muted); } .demo-btn .mi { font-size: 18px; }
+.demo-stage { flex: 1 1 auto; min-width: 0; padding: var(--space-6); overflow-x: auto; }
+.demo-stage.pad-none { padding: 0; } .demo-stage.stage-muted { background: var(--bg); } .demo.dense .demo-stage { padding: var(--space-4); }
+@media (max-width: 767px) { .demo-stage { padding: var(--space-4); } }
+.demo-code { position: relative; background: #0f172a; }
+.demo-code pre { margin: 0; max-height: 360px; overflow: auto; padding: var(--space-4) var(--space-12) var(--space-4) var(--space-4); }
+.demo-code code { font: 12px/1.55 var(--font-mono); color: #e2e8f0; white-space: pre; }
+.demo-code .copy-btn { position: absolute; top: 4px; right: 4px; color: #94a3b8; }
+/* Petits utilitaires des galeries */
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.stack { display: flex; flex-direction: column; gap: var(--space-3); }
+.muted { color: var(--text-muted); } .small { font-size: 12px; }
+.spec { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 13px; } .spec dt { color: var(--text-muted); } .spec dd { margin: 0; }

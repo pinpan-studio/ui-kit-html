@@ -76,6 +76,37 @@
     setTimeout(function () { el.remove(); }, duration || 3000);
   }
 
+  /* ---------- Dialogues : UIKit.confirm({title,message,confirmLabel,type}) / UIKit.prompt({title,label,value,confirm,icon}) → Promise ---------- */
+  function escH(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function modal(html, onOk) {
+    return new Promise(function (resolve) {
+      var d = document.createElement('dialog'); d.className = 'ui-dialog'; d.innerHTML = html; document.body.appendChild(d);
+      function done(v) { d.close(); d.remove(); resolve(v); }
+      d.addEventListener('click', function (e) {
+        if (e.target === d) return done(undefined);
+        var b = e.target.closest('[data-res]'); if (!b) return;
+        done(b.dataset.res === 'ok' ? onOk(d) : undefined);
+      });
+      d.addEventListener('submit', function (e) { e.preventDefault(); done(onOk(d)); });
+      d.addEventListener('cancel', function (e) { e.preventDefault(); done(undefined); });
+      d.showModal(); var i = d.querySelector('input'); if (i) { i.focus(); i.select(); }
+    });
+  }
+  function confirmDlg(o) {
+    o = o || {};
+    return modal('<div class="ui-dialog__body"><div class="ui-row" style="align-items:flex-start;gap:16px">' + (o.type === 'danger' ? '<span class="ic-tile tone-error" style="width:40px;height:40px;border-radius:50%"><span class="mi">warning</span></span>' : '') +
+      '<div><h3 style="margin:0 0 8px">' + escH(o.title || 'Confirmer') + '</h3><p class="ui-muted" style="margin:0">' + escH(o.message || '') + '</p></div></div></div>' +
+      '<div class="ui-dialog__actions"><button class="ui-btn ui-btn--text" data-res="cancel">' + escH(o.cancelLabel || 'Annuler') + '</button><button class="ui-btn' + (o.type === 'danger' ? ' ui-btn--danger' : '') + '" data-res="ok">' + escH(o.confirmLabel || 'Confirmer') + '</button></div>',
+      function () { return true; }).then(function (v) { return !!v; });
+  }
+  function promptDlg(o) {
+    o = o || {};
+    return modal('<form><div class="ui-dialog__body"><h3 style="margin:0 0 16px;display:flex;align-items:center;gap:8px">' + (o.icon ? '<span class="mi" style="color:var(--primary)">' + o.icon + '</span>' : '') + escH(o.title || '') + '</h3>' +
+      '<label class="ui-field"><span class="ui-label">' + escH(o.label || '') + '</span><input class="ui-input" value="' + escH(o.value || '') + '" required></label></div>' +
+      '<div class="ui-dialog__actions"><button type="button" class="ui-btn ui-btn--text" data-res="cancel">Annuler</button><button class="ui-btn">' + escH(o.confirm || 'OK') + '</button></div></form>',
+      function (d) { var v = d.querySelector('input').value.trim(); return v || undefined; });
+  }
+
   /* ---------- Délégation d'événements ---------- */
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-set-mode],[data-set-theme],[data-dialog-open],[data-dialog-close],[data-toast],[data-nav-toggle]');
@@ -127,5 +158,5 @@
     initTabs(document);
   });
 
-  window.UIKit = { setMode: setMode, setTheme: setTheme, toast: toast, initTabs: initTabs };
+  window.UIKit = { setMode: setMode, setTheme: setTheme, toast: toast, initTabs: initTabs, confirm: confirmDlg, prompt: promptDlg };
 })();

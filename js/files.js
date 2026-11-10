@@ -114,7 +114,16 @@
       var k = S.sort.key, d = S.sort.dir, v = function (i) { return k === 'name' ? i.name.toLowerCase() : k === 'size' ? i.size : +i.modified; };
       return list.slice().sort(function (a, b) { return (a.kind === 'folder') !== (b.kind === 'folder') ? (a.kind === 'folder' ? -1 : 1) : (v(a) > v(b) ? 1 : v(a) < v(b) ? -1 : 0) * d; });
     }
-    function setSel(l) { S.sel = l; render(); o.onSelection && o.onSelection(l); }
+    // La sélection met à jour les classes sans reconstruire le DOM (sinon le double-clic perd sa cible).
+    function paintSel() {
+      el.querySelectorAll('[data-id]').forEach(function (n) {
+        var on = S.sel.some(function (s) { return s.id === n.dataset.id; }); n.classList.toggle('sel', on);
+        var c = n.querySelector('.check'), th = n.querySelector('.thumb');
+        if (on && !c && th) { th.insertAdjacentHTML('beforeend', '<span class="check on"><span class="mi">check</span></span>'); }
+        else if (c) { if (!on && !o.picker) c.remove(); else c.classList.toggle('on', on); }
+      });
+    }
+    function setSel(l) { S.sel = l; paintSel(); o.onSelection && o.onSelection(l); }
     function sortIcon(k) { return S.sort.key !== k ? '' : S.sort.dir === 1 ? 'arrow_upward' : 'arrow_downward'; }
     function render() {
       var r = rows(), folders = r.filter(function (i) { return i.kind === 'folder'; }), files = r.filter(function (i) { return i.kind !== 'folder'; }), path = F.path(o.folder);
@@ -164,7 +173,16 @@
       if (t.dataset.view) { o.view = t.dataset.view; o.onView && o.onView(o.view); return render(); }
       var f = F.get(t.dataset.id); if (f && accepts(f)) click(f, e);
     });
-    el.addEventListener('dblclick', function (e) { var t = e.target.closest('[data-id]'); if (t) open(F.get(t.dataset.id)); });
+    // Le premier clic peut faire bouger la mise en page (panneau de détails) : on retient l'élément cliqué.
+    var last = { id: null, t: 0 };
+    el.addEventListener('mousedown', function (e) { if (e.detail > 1) return; var t = e.target.closest('[data-id]'); last = { id: t ? t.dataset.id : null, t: Date.now() }; }, true);
+    // Écoute au niveau du document : si le DOM a bougé, la cible du double-clic est un ancêtre commun.
+    document.addEventListener('dblclick', function (e) {
+      if (!el.isConnected || !(el.contains(e.target) || e.target.contains(el))) return;
+      var t = el.contains(e.target) && e.target.closest('[data-id]');
+      var i = Date.now() - last.t < 800 && last.id ? last.id : t ? t.dataset.id : null;
+      if (i && F.get(i)) open(F.get(i));
+    });
     el.addEventListener('keydown', function (e) { var t = e.target.closest('[data-id]'); if (t && e.key === 'Enter') { e.preventDefault(); open(F.get(t.dataset.id)); } });
     el.addEventListener('input', function (e) { if (e.target.dataset.fb === 'q') { S.q = e.target.value; S.sel = []; render(); } });
     el.addEventListener('contextmenu', function (e) {

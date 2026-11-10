@@ -204,5 +204,33 @@
     return { set: function (nv) { v = nv.slice(); ins[0].value = v[0]; ins[1].value = v[1]; paint(); } };
   }
 
-  window.UIComp = { stars: stars, rangeSlider: rangeSlider, esc: esc, initials: initials, md: md, copyField: copyField, descList: descList, auditLog: auditLog, commentThread: commentThread };
+  /* ── Corps d'article (typographie éditoriale) ────────────── */
+  function slugify(t) { return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  function inl(t) { return window.UIKitUtils && UIKitUtils.markdownInline ? UIKitUtils.markdownInline(t) : esc(t); }
+  var CALLOUT = { info: 'info', success: 'check_circle', warning: 'warning', error: 'error', neutral: 'lightbulb' };
+  function articleToc(blocks) { return blocks.filter(function (b) { return b.type === 'h2' || b.type === 'h3'; }).map(function (b) { return { id: b.id || slugify(b.text), text: b.text, level: b.type === 'h2' ? 2 : 3 }; }); }
+  function articleBody(blocks, o) {
+    o = o || {};
+    return '<div class="prose size-' + (o.size || 'lg') + (o.serif ? ' serif' : '') + '">' + blocks.map(function (b, i) {
+      switch (b.type) {
+        case 'lead': return '<p class="lead">' + inl(b.text) + '</p>';
+        case 'p': return '<p' + (b.dropcap ? ' class="dropcap"' : '') + '>' + inl(b.text) + '</p>';
+        case 'h2': case 'h3': var id = b.id || slugify(b.text);
+          return '<' + b.type + ' id="' + id + '">' + esc(b.text) + (o.anchors !== false ? '<a class="anchor" href="#' + id + '" aria-label="Lien vers cette section">#</a>' : '') + '</' + b.type + '>';
+        case 'quote': return '<blockquote><p>' + inl(b.text) + '</p>' + (b.cite ? '<cite>— ' + esc(b.cite) + '</cite>' : '') + '</blockquote>';
+        case 'pullquote': return '<aside class="pullquote"><p>' + esc(b.text) + '</p></aside>';
+        case 'list': var tag = b.ordered ? 'ol' : 'ul'; return '<' + tag + '>' + b.items.map(function (it) { return '<li>' + inl(it) + '</li>'; }).join('') + '</' + tag + '>';
+        case 'code': return '<figure class="code"><figcaption><span class="dots"><i></i><i></i><i></i></span><span class="fname">' + esc(b.filename || b.lang || 'code') + '</span>' + (b.lang ? '<span class="lang">' + esc(b.lang) + '</span>' : '') +
+          '<button type="button" data-copy="' + esc(b.code) + '" aria-label="Copier le code" title="Copier"><span class="mi">content_copy</span></button></figcaption><pre><code>' + esc(b.code) + '</code></pre></figure>';
+        case 'figure': return '<figure class="figure' + (b.wide ? ' wide' : '') + '"><div class="art" style="--h:' + (b.hue || 190) + '"><span class="mi">' + b.icon + '</span></div>' + (b.caption ? '<figcaption>' + esc(b.caption) + '</figcaption>' : '') + '</figure>';
+        case 'callout': return '<div class="callout ' + b.tone + '" role="note"><span class="mi">' + CALLOUT[b.tone] + '</span><div>' + (b.title ? '<strong>' + esc(b.title) + '</strong>' : '') + '<p>' + inl(b.text) + '</p></div></div>';
+        case 'table': return '<div class="table-wrap"><table>' + (b.caption ? '<caption>' + esc(b.caption) + '</caption>' : '') + '<thead><tr>' + b.head.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          b.rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + inl(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+        case 'divider': return '<hr>';
+      }
+      return '';
+    }).join('') + '</div>';
+  }
+
+  window.UIComp = { articleBody: articleBody, articleToc: articleToc, slugify: slugify, stars: stars, rangeSlider: rangeSlider, esc: esc, initials: initials, md: md, copyField: copyField, descList: descList, auditLog: auditLog, commentThread: commentThread };
 })();

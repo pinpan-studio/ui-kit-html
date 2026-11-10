@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Article</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .progress { position: sticky; top: -8px; z-index: 5; height: 3px; margin: -8px -24px 5px -8px; }
+    .progress span { display: block; height: 100%; background: var(--primary); border-radius: 0 4px 4px 0; transition: width .1s linear; }
+    @media (max-width: 959px) { .progress { margin: -8px -16px 5px; } }
+    .hero { max-width: 760px; margin: var(--space-3) auto var(--space-8); }
+    .hero h1 { margin: var(--space-4) 0; font-size: clamp(30px, 5.2vw, 46px); font-weight: 700; letter-spacing: -.03em; line-height: 1.12; text-wrap: balance; }
+    .dek { margin: 0 0 var(--space-6); font-size: clamp(17px, 2.2vw, 21px); line-height: 1.5; color: var(--text-secondary); }
+    .crumbs { display: flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 500; } .crumbs a { color: var(--primary); text-decoration: none; } .crumbs span { color: var(--text-muted); } .crumbs .mi { font-size: 16px; }
+    .byline { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; padding: var(--space-4) 0; } .byline .ava { width: 44px; height: 44px; }
+    .who { display: flex; flex-direction: column; } .who span { font-size: 13px; color: var(--text-muted); }
+    .reading { display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 99px; background: var(--hover-bg); }
+    .reading i { width: 1px; height: 18px; margin: 0 3px; background: var(--border); }
+    .reading button { min-width: 34px; height: 30px; padding: 0 8px; border: 0; border-radius: 99px; background: none; color: var(--text-secondary); cursor: pointer; }
+    .reading button.on { background: var(--card-bg); color: var(--text-primary); box-shadow: var(--shadow-1); }
+    .a-sm { font: 600 12px var(--font-sans); } .a-lg { font: 600 17px var(--font-sans); } .f-sans { font: 600 14px var(--font-sans); } .f-serif { font: 600 15px Georgia, serif; }
+    .cover { max-width: 1100px; margin: 0 auto var(--space-10); aspect-ratio: 21 / 8; border-radius: var(--radius-lg); display: grid; place-items: center; background: hsl(var(--h) 24% 92%); }
+    .cover .mi { font-size: 96px; color: hsl(var(--h) 25% 40%); opacity: .7; }
+    [data-mode="dark"] .cover, [data-mode="dark"] .r-art { background: hsl(var(--h) 14% 18%); } [data-mode="dark"] .cover .mi, [data-mode="dark"] .r-art .mi { color: hsl(var(--h) 25% 70%); }
+    @media (max-width: 767px) { .cover { aspect-ratio: 16 / 9; margin-bottom: var(--space-8); } .cover .mi { font-size: 64px; } }
+    .layout { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 200px minmax(0, 680px) 56px; justify-content: center; gap: var(--space-12); align-items: start; }
+    @media (max-width: 1100px) { .layout { grid-template-columns: minmax(0, 680px); gap: 0; } .toc { display: none; } }
+    .toc { position: sticky; top: 16px; } .toc ol { margin: var(--space-3) 0 0; padding: 0; list-style: none; border-left: 2px solid var(--border); }
+    .toc li.sub a { padding-left: 26px; font-size: 12.5px; }
+    .toc a { display: block; margin-left: -2px; padding: 8px 12px 8px 16px; border-left: 2px solid transparent; font-size: 13px; line-height: 1.4; color: var(--text-secondary); text-decoration: none; }
+    .toc a:hover { color: var(--text-primary); } .toc a.on { border-left-color: var(--primary); color: var(--primary); font-weight: 600; }
+    .main { min-width: 0; } .main .prose { max-width: none; }
+    .rail { position: sticky; top: 16px; display: flex; flex-direction: column; gap: var(--space-2); }
+    .rail button { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 52px; padding: 8px 0; border: 0; border-radius: var(--radius-lg); background: none; color: var(--text-secondary); cursor: pointer; }
+    .rail b { font-size: 11.5px; font-weight: 600; } .rail .mi { font-size: 22px; } .rail button:hover { background: var(--hover-bg); color: var(--text-primary); } .rail button.on { color: var(--primary); }
+    @media (max-width: 1100px) { .rail { position: fixed; z-index: 10; left: 50%; bottom: 20px; top: auto; transform: translateX(-50%); flex-direction: row; padding: 4px 8px; border-radius: 99px; background: var(--card-bg); box-shadow: var(--shadow-3); }
+      .rail button { flex-direction: row; width: auto; padding: 8px 12px; gap: 8px; } }
+    .tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-8) 0; } .tags span { font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: var(--radius-sm); background: var(--hover-bg); color: var(--text-secondary); }
+    .author { display: flex; align-items: center; gap: var(--space-5); padding: var(--space-6); margin-bottom: var(--space-12); flex-wrap: wrap; }
+    .author .ava { width: 56px; height: 56px; font-size: 16px; } .author > div { flex: 1 1 260px; min-width: 0; } .author h2 { margin: 2px 0 4px; font-size: var(--text-lg); font-weight: 600; } .author p { margin: 0; color: var(--text-secondary); }
+    .comments { scroll-margin-top: 16px; padding-top: var(--space-8); margin-bottom: 56px; }
+    .related { max-width: 1100px; margin: 0 auto var(--space-8); padding-top: var(--space-8); } .related h2 { margin: 0 0 var(--space-5); font-size: var(--text-xl); font-weight: 600; }
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); }
+    .rel { display: flex; gap: var(--space-4); padding: var(--space-3); text-decoration: none; color: inherit; } .rel:hover { background: var(--hover-bg); } .rel:hover strong { color: var(--primary); }
+    .r-art { width: 84px; flex: none; aspect-ratio: 1; border-radius: var(--radius-md); display: grid; place-items: center; background: hsl(var(--h) 24% 92%); } .r-art .mi { color: hsl(var(--h) 25% 40%); opacity: .7; }
+    .r-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; } .r-body strong { line-height: 1.35; } .r-body small { font-size: 12px; color: var(--text-muted); }
+    .cat { font: 600 11px/1.4 var(--font-sans); text-transform: uppercase; letter-spacing: .06em; color: var(--primary); }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Article" data-crumb="Blog">
+  <main id="ex-content"><div class="progress" role="progressbar" aria-label="Progression de lecture" aria-valuemin="0" aria-valuemax="100"><span id="bar"></span></div><div id="app"></div></main>
+
+  <script src="../../js/data/content.js"></script>
+  <script src="../../js/data/ex-utils.js"></script>
+  <script src="../../js/lib/markdown.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, slug = new URLSearchParams(location.search).get('slug');
+    var a = D.ARTICLES.find(function (x) { return x.slug === slug; }) || D.ARTICLES[0];
+    var S = { size: 'lg', serif: false, claps: 128, clapped: false, saved: false };
+    var toc = UIComp.articleToc(a.blocks), app = document.getElementById('app');
+    document.title = a.title + ' — SC Storage';
+    document.querySelector('.ex-bar__title .cur').textContent = a.title;
+    app.innerHTML = '<header class="hero"><nav class="crumbs" aria-label="Fil d\'Ariane"><a href="blog.html">Blog</a><span class="mi">chevron_right</span><span>' + a.category + '</span></nav><h1>' + a.title + '</h1><p class="dek">' + a.dek + '</p>' +
+      '<div class="byline"><span class="ava" style="background:' + a.author.color + '">' + D.initials(a.author.name) + '</span><div class="who"><strong>' + a.author.name + '</strong><span><time datetime="' + a.date + '">' +
+      new Date(a.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) + '</time> · ' + a.minutes + ' min de lecture</span></div><span class="spacer"></span>' +
+      '<div class="reading" role="group" aria-label="Réglages de lecture"><button type="button" data-size="md" title="Texte standard" aria-label="Texte standard"><span class="a-sm">A</span></button><button type="button" data-size="lg" title="Grand texte" aria-label="Grand texte"><span class="a-lg">A</span></button><i></i>' +
+      '<button type="button" data-serif="0" title="Sans empattement" aria-label="Police sans empattement"><span class="f-sans">Aa</span></button><button type="button" data-serif="1" title="Avec empattement" aria-label="Police à empattement"><span class="f-serif">Aa</span></button></div></div></header>' +
+      '<div class="cover" style="--h:' + a.hue + '"><span class="mi">' + a.icon + '</span></div>' +
+      '<div class="layout"><aside class="toc" aria-label="Sommaire"><span class="text-overline">Sommaire</span><ol>' + toc.map(function (t) { return '<li class="' + (t.level === 3 ? 'sub' : '') + '"><a href="#' + t.id + '" data-toc="' + t.id + '">' + t.text + '</a></li>'; }).join('') + '</ol></aside>' +
+      '<article class="main"><div id="body"></div><div class="tags">' + a.tags.map(function (t) { return '<span>#' + t + '</span>'; }).join('') + '</div>' +
+      '<section class="author card"><span class="ava" style="background:' + a.author.color + '">' + D.initials(a.author.name) + '</span><div><span class="text-overline">Écrit par</span><h2>' + a.author.name + '</h2><p>' + (a.author.bio || a.author.role || '') + '</p></div><button class="ui-btn ui-btn--outlined" onclick="this.textContent=this.textContent===\'Suivre\'?\'Abonné\':\'Suivre\'">Suivre</button></section>' +
+      '<section id="comments" class="comments"></section></article>' +
+      '<aside class="rail" aria-label="Actions"><button type="button" data-act="clap" title="J\'apprécie"><span class="mi">favorite_border</span><b>128</b></button><button type="button" data-act="comments" title="Commentaires"><span class="mi">chat_bubble_outline</span><b>' + D.COMMENTS.length + '</b></button>' +
+      '<button type="button" data-act="save" title="Enregistrer"><span class="mi">bookmark_border</span></button><button type="button" data-act="share" title="Copier le lien"><span class="mi">ios_share</span></button></aside></div>' +
+      '<section class="related"><h2>À lire ensuite</h2><div class="rel-grid">' + D.ARTICLES.filter(function (r) { return r.slug !== a.slug; }).slice(0, 3).map(function (r) {
+        return '<a class="card rel" href="article.html?slug=' + r.slug + '"><div class="r-art" style="--h:' + r.hue + '"><span class="mi">' + r.icon + '</span></div><div class="r-body"><span class="cat">' + r.category + '</span><strong>' + r.title + '</strong><small>' + r.minutes + ' min de lecture</small></div></a>'; }).join('') + '</div></section>';
+    function body() {
+      document.getElementById('body').innerHTML = UIComp.articleBody(a.blocks, { size: S.size, serif: S.serif });
+      app.querySelectorAll('[data-size]').forEach(function (b) { b.classList.toggle('on', b.dataset.size === S.size); });
+      app.querySelectorAll('[data-serif]').forEach(function (b) { b.classList.toggle('on', (b.dataset.serif === '1') === S.serif); });
+    }
+    body();
+    UIComp.commentThread(document.getElementById('comments'), { comments: D.COMMENTS, me: D.ME, mentionables: D.PEOPLE, moderator: true });
+    var scroller = document.querySelector('.ex-content');
+    function onScroll() {
+      var max = scroller.scrollHeight - scroller.clientHeight, p = max > 0 ? Math.min(100, scroller.scrollTop / max * 100) : 0;
+      document.getElementById('bar').style.width = p + '%'; document.querySelector('.progress').setAttribute('aria-valuenow', Math.round(p));
+      var top = scroller.getBoundingClientRect().top + 120, cur = '';
+      app.querySelectorAll('.prose h2, .prose h3').forEach(function (h) { if (h.getBoundingClientRect().top < top) cur = h.id; });
+      app.querySelectorAll('[data-toc]').forEach(function (l) { l.classList.toggle('on', l.dataset.toc === cur); });
+    }
+    scroller.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    app.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-size],[data-serif],[data-toc],[data-act]'); if (!t) return;
+      if (t.dataset.size) { S.size = t.dataset.size; body(); }
+      if (t.dataset.serif) { S.serif = t.dataset.serif === '1'; body(); }
+      if (t.dataset.toc) { e.preventDefault(); document.getElementById(t.dataset.toc).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      var act = t.dataset.act;
+      if (act === 'clap') { S.clapped = !S.clapped; S.claps += S.clapped ? 1 : -1; t.classList.toggle('on', S.clapped); t.innerHTML = '<span class="mi">' + (S.clapped ? 'favorite' : 'favorite_border') + '</span><b>' + S.claps + '</b>'; }
+      if (act === 'comments') document.getElementById('comments').scrollIntoView({ behavior: 'smooth' });
+      if (act === 'save') { S.saved = !S.saved; t.classList.toggle('on', S.saved); t.firstChild.textContent = S.saved ? 'bookmark' : 'bookmark_border'; }
+      if (act === 'share') { try { navigator.clipboard.writeText(location.href); } catch (x) {} t.firstChild.textContent = 'check'; t.title = 'Lien copié'; setTimeout(function () { t.firstChild.textContent = 'ios_share'; t.title = 'Copier le lien'; }, 1600); }
+    });
+  })();
+  </script>
+</body>
+</html>

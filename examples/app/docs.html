@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentation</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .docs { position: relative; display: grid; grid-template-columns: 232px minmax(0, 1fr) 200px; gap: var(--space-8); align-items: start; }
+    .tree { position: sticky; top: 0; display: flex; flex-direction: column; gap: var(--space-3); } .tree .searchbox { height: 36px; }
+    .group { margin-bottom: 4px; }
+    .g-head { width: 100%; display: flex; align-items: center; gap: var(--space-3); height: 36px; padding: 0 var(--space-3); border: 0; background: none; cursor: pointer; border-radius: var(--radius-sm); font: 600 13px var(--font-sans); color: var(--text-primary); }
+    .g-head span:nth-child(2) { flex: 1; text-align: left; } .g-head .mi { font-size: 18px; color: var(--text-muted); } .g-head .chev { transition: transform .2s; } .g-head .chev.shut { transform: rotate(-90deg); } .g-head:hover { background: var(--hover-bg); }
+    .leaf { display: flex; align-items: center; gap: 8px; margin-left: 19px; padding: 8px 12px 8px 16px; font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+    .leaf:hover { color: var(--text-primary); } .leaf.on { color: var(--primary); font-weight: 600; border-left: 2px solid var(--primary); padding-left: 14px; }
+    .leaf .badge { margin-left: auto; padding: 0 8px; border-radius: 4px; font: 600 10.5px/18px var(--font-sans); background: var(--primary-soft); color: var(--primary); }
+    .doc { min-width: 0; padding: var(--space-8) clamp(20px, 4vw, 48px); } .doc > * { max-width: 720px; }
+    .crumbs { display: flex; align-items: center; gap: 2px; font-size: 13px; color: var(--text-muted); } .crumbs .mi { font-size: 16px; } .crumbs .cur { color: var(--text-primary); font-weight: 500; }
+    .doc-title { margin: 8px 0; font-size: var(--text-2xl); font-weight: 700; letter-spacing: -.02em; }
+    .meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); padding-bottom: var(--space-5); font-size: 12px; color: var(--text-muted); }
+    .meta code { font-size: 12px; padding: 2px 8px; border-radius: 4px; background: var(--hover-bg); color: var(--text-secondary); }
+    .nav-btn { display: none !important; }
+    .feedback { margin-top: var(--space-10); padding: var(--space-4) var(--space-5); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); border-radius: var(--radius-md); background: var(--hover-bg); }
+    .feedback > strong { flex: 1; } .votes { display: flex; gap: 8px; }
+    .thanks { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 500; color: var(--success-text); }
+    .why { flex: 1; display: flex; flex-direction: column; gap: var(--space-3); } .reasons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    @media (max-width: 600px) { .reasons { grid-template-columns: 1fr; } }
+    .why .row { display: flex; justify-content: flex-end; gap: 8px; }
+    .pager { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-top: var(--space-4); }
+    .pager a { display: flex; flex-direction: column; gap: 2px; padding: var(--space-4); border-radius: var(--radius-md); background: var(--hover-bg); text-decoration: none; color: inherit; }
+    .pager small { font-size: 12px; color: var(--text-muted); } .pager strong { display: flex; align-items: center; gap: 8px; color: var(--primary); } .pager .mi { font-size: 18px; }
+    .pager .next { text-align: right; align-items: flex-end; }
+    .otp { position: sticky; top: 0; display: flex; flex-direction: column; gap: 2px; } .otp .text-overline { margin-bottom: 8px; }
+    .otp a { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 13px; color: var(--text-secondary); text-decoration: none; } .otp a.sub { padding-left: 12px; font-size: 12px; } .otp a:hover { color: var(--primary); } .otp .mi { font-size: 16px; }
+    .otp hr { width: 100%; border: 0; margin: 12px 0; }
+    .scrim { display: none; }
+    @media (max-width: 1280px) { .docs { grid-template-columns: 220px minmax(0, 1fr); } .otp { display: none; } }
+    @media (max-width: 1100px) { .docs { grid-template-columns: minmax(0, 1fr); } .nav-btn { display: inline-flex !important; }
+      .tree { position: fixed; z-index: 70; top: 0; bottom: 0; left: 0; width: min(300px, 86%); padding: var(--space-4); overflow-y: auto; background: var(--card-bg); transform: translateX(-105%); transition: transform .28s var(--ease); }
+      .tree.open { transform: none; } .scrim.open { display: block; position: fixed; inset: 0; z-index: 69; background: rgba(0,0,0,.32); } }
+    @media (max-width: 767px) { .doc { padding: var(--space-5) var(--space-4) var(--space-6); } .pager { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Documentation" data-crumb="Ressources">
+  <main id="ex-content">
+    <div class="page-head">
+      <div class="titles"><span class="eyebrow">Ressources</span><h1>Documentation</h1><p>Guides, fondations et référence des composants du kit.</p></div>
+      <div class="actions"><button class="ui-btn ui-btn--outlined nav-btn" id="nav-btn"><span class="mi">menu_book</span>Sommaire</button><button class="ui-btn ui-btn--outlined"><span class="mi">edit</span>Modifier cette page</button></div>
+    </div>
+    <div class="docs">
+      <aside class="tree" id="tree" aria-label="Arborescence de la documentation">
+        <label class="searchbox"><span class="mi">search</span><input type="search" id="q" placeholder="Filtrer" aria-label="Filtrer"></label><nav id="nav"></nav>
+      </aside>
+      <div class="scrim" id="scrim"></div>
+      <article class="card doc" id="doc"></article>
+      <aside class="otp" aria-label="Sur cette page" id="otp"></aside>
+    </div>
+  </main>
+
+  <script src="../../js/data/content.js"></script>
+  <script src="../../js/lib/markdown.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, $ = function (id) { return document.getElementById(id); };
+    var S = { q: '', current: 'commentaires', closed: ['Guides'], vote: null, sent: false };
+    var REASONS = ['Information manquante', 'Exemple de code incorrect', 'Difficile à comprendre', 'Faute ou coquille'];
+    var toc = UIComp.articleToc(D.DOC_PAGE);
+    function label() { var l = ''; D.DOCS_NAV.forEach(function (g) { (g.children || []).forEach(function (c) { if (c.slug === S.current) l = c.label; }); }); return l; }
+    function nav() {
+      var q = S.q.trim().toLowerCase();
+      $('nav').innerHTML = D.DOCS_NAV.map(function (g) {
+        var kids = (g.children || []).filter(function (c) { return !q || c.label.toLowerCase().indexOf(q) >= 0; }); if (!kids.length) return '';
+        var shut = S.closed.indexOf(g.label) >= 0 && !q;
+        return '<div class="group"><button type="button" class="g-head" data-g="' + g.label + '" aria-expanded="' + !shut + '"><span class="mi">' + g.icon + '</span><span>' + g.label + '</span><span class="mi chev' + (shut ? ' shut' : '') + '">expand_more</span></button>' +
+          (shut ? '' : kids.map(function (p) { return '<a href="#" class="leaf' + (p.slug === S.current ? ' on' : '') + '" data-open="' + p.slug + '">' + p.label + (p.badge ? '<span class="badge">' + p.badge + '</span>' : '') + '</a>'; }).join('')) + '</div>';
+      }).join('');
+    }
+    function feedback() {
+      if (S.vote === null) return '<strong>Cette page vous a-t-elle aidé ?</strong><div class="votes"><button class="ui-btn ui-btn--outlined" data-vote="up"><span class="mi">thumb_up</span>Oui</button><button class="ui-btn ui-btn--outlined" data-vote="down"><span class="mi">thumb_down</span>Non</button></div>';
+      if (S.vote === 'down' && !S.sent) return '<form class="why" id="why"><strong>Que pouvons-nous améliorer ?</strong><div class="reasons">' + REASONS.map(function (r) { return '<label class="ui-check"><input type="checkbox"> ' + r + '</label>'; }).join('') + '</div>' +
+        '<div class="field-box textarea-box"><textarea rows="3" placeholder="Précisez (facultatif)" aria-label="Précisions" style="min-height:70px"></textarea></div><div class="row"><button type="button" class="ui-btn ui-btn--text" data-vote="">Annuler</button><button class="ui-btn">Envoyer</button></div></form>';
+      return S.vote === 'down' ? '<p class="thanks"><span class="mi">check_circle</span>Merci, l\'équipe documentation va revoir cette page.</p>' : '<p class="thanks"><span class="mi">favorite</span>Merci pour votre retour !</p>';
+    }
+    function doc() {
+      $('doc').innerHTML = '<nav class="crumbs" aria-label="Fil d\'Ariane"><span>Composants</span><span class="mi">chevron_right</span><span class="cur">' + label() + '</span></nav><h2 class="doc-title">' + label() + '</h2>' +
+        '<div class="meta"><span class="ui-badge ui-badge--info">Stable</span><code>shared/components/content</code><span>Mis à jour le 17 octobre 2026</span></div>' + UIComp.articleBody(D.DOC_PAGE, { size: 'md' }) +
+        '<section class="feedback" id="fb">' + feedback() + '</section><nav class="pager" aria-label="Pages voisines"><a href="#" data-open="formulaires"><small>Précédent</small><strong><span class="mi">arrow_back</span>Formulaires</strong></a>' +
+        '<a href="#" class="next" data-open="article"><small>Suivant</small><strong>Article<span class="mi">arrow_forward</span></strong></a></nav>';
+    }
+    $('otp').innerHTML = '<span class="text-overline">Sur cette page</span>' + toc.map(function (t) { return '<a href="#" class="' + (t.level === 3 ? 'sub' : '') + '" data-to="' + t.id + '">' + t.text + '</a>'; }).join('') +
+      '<hr><a href="#" onclick="UIKit.toast(\'Signalement envoyé (démo)\');return false"><span class="mi">bug_report</span>Signaler un problème</a>';
+    function drawer(o) { $('tree').classList.toggle('open', o); $('scrim').classList.toggle('open', o); }
+    document.getElementById('ex-content').addEventListener('click', function (e) {
+      var t = e.target.closest('[data-g],[data-open],[data-to],[data-vote],#nav-btn,#scrim'); if (!t) return;
+      if (t.dataset.g) { var i = S.closed.indexOf(t.dataset.g); i < 0 ? S.closed.push(t.dataset.g) : S.closed.splice(i, 1); nav(); }
+      if (t.dataset.open) { e.preventDefault(); S.current = t.dataset.open; S.vote = null; S.sent = false; drawer(false); nav(); doc(); document.querySelector('.ex-content').scrollTo({ top: 0, behavior: 'smooth' }); }
+      if (t.dataset.to) { e.preventDefault(); document.getElementById(t.dataset.to).scrollIntoView({ behavior: 'smooth' }); }
+      if (t.dataset.vote !== undefined && t.hasAttribute('data-vote')) { S.vote = t.dataset.vote || null; $('fb').innerHTML = feedback(); }
+      if (t.id === 'nav-btn') drawer(true); if (t.id === 'scrim') drawer(false);
+    });
+    document.addEventListener('submit', function (e) { if (e.target.id === 'why') { e.preventDefault(); S.sent = true; $('fb').innerHTML = feedback(); } });
+    $('q').addEventListener('input', function (e) { S.q = e.target.value; nav(); });
+    nav(); doc();
+  })();
+  </script>
+</body>
+</html>

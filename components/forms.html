@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formulaires</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .req { color: var(--error); }
+    /* Champ « outline » à libellé flottant (équivalent mat-form-field appearance="outline") */
+    .ui-outline { position: relative; display: flex; flex-direction: column; gap: 4px; }
+    .ui-outline .box { position: relative; display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 14px; border: 1px solid var(--border); border-radius: 8px; }
+    .ui-outline input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; font: 15px var(--font-sans); color: var(--text-primary); }
+    .ui-outline label { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); padding: 0 4px; background: var(--card-bg); font-size: 15px; color: var(--text-muted); pointer-events: none; transition: all .15s; }
+    .ui-outline input:focus ~ label, .ui-outline input:not(:placeholder-shown) ~ label { top: 0; font-size: 12px; }
+    .ui-outline .box:focus-within { border: 2px solid var(--primary); padding: 0 13px; } .ui-outline .box:focus-within label { color: var(--primary); }
+    .ui-outline .mi { color: var(--text-muted); } .ui-outline small { padding: 0 16px; font-size: 12px; color: var(--text-muted); }
+    .ui-outline.error .box { border-color: var(--error); } .ui-outline.error label, .ui-outline.error small { color: var(--error-text); }
+    .ui-outline.fill .box { border: 0; border-bottom: 1px solid var(--text-muted); border-radius: 8px 8px 0 0; background: var(--hover-bg); } .ui-outline.fill label { background: none; } .ui-outline.fill input:not(:placeholder-shown) ~ label { top: 12px; }
+    .ui-outline.fill input { padding-top: 16px; } .ui-outline.disabled { opacity: .55; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip-opt { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .chip-opt.on { background: var(--primary-soft); border-color: transparent; color: var(--primary); } .chip-opt.on::before { content: 'check'; font-family: 'Material Icons'; font-size: 16px; }
+    .indent { padding-left: 28px; }
+    .choice-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; } @media (max-width: 600px) { .choice-cards { grid-template-columns: 1fr; } }
+    .choice-card { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card-bg); text-align: left; font: inherit; color: inherit; cursor: pointer; }
+    .choice-card .mi { color: var(--text-muted); } .choice-card span { font-size: 12px; color: var(--text-muted); }
+    .choice-card.on { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); background: var(--primary-soft); } .choice-card.on .mi { color: var(--primary); }
+    .range2 { position: relative; height: 28px; } .range2 input { position: absolute; inset: 0; width: 100%; pointer-events: none; background: none; appearance: none; -webkit-appearance: none; }
+    .range2 input::-webkit-slider-thumb { pointer-events: auto; } .range2 input::-moz-range-thumb { pointer-events: auto; }
+    .range2 .track { position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: var(--hover-bg); } .range2 .fill { position: absolute; top: 12px; height: 4px; border-radius: 2px; background: var(--primary); }
+    input[type=range] { accent-color: var(--primary); width: 100%; }
+    .drop-zone { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 24px 16px; border: 2px dashed var(--border); border-radius: var(--radius-md); text-align: center; cursor: pointer; }
+    .drop-zone:hover, .drop-zone.over { border-color: var(--primary); background: var(--primary-soft); } .drop-zone .mi { font-size: 32px; color: var(--primary); } .drop-zone span { font-size: 12px; color: var(--text-muted); }
+    .code-tag { display: inline-flex; padding: 2px 8px; border-radius: 6px; background: var(--hover-bg); font: 12px var(--font-mono); }
+    .file-field { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 6px 0 12px; border: 1px dashed var(--border); border-radius: var(--radius-input); cursor: pointer; } .file-field.has { border-style: solid; }
+    .file-field .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; } .file-field .ph { color: var(--text-muted); } .file-field.disabled { opacity: .5; pointer-events: none; }
+    .photo-field { display: grid; place-items: center; width: 120px; height: 120px; border: 2px dashed var(--border); border-radius: 50%; overflow: hidden; cursor: pointer; color: var(--text-muted); } .photo-field img { width: 100%; height: 100%; object-fit: cover; }
+    .search-unified { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--card-bg); }
+    .search-unified .sw { flex: 1 1 220px; display: flex; align-items: center; gap: 8px; padding: 0 10px; } .search-unified input { flex: 1; min-width: 0; height: 36px; border: 0; outline: 0; background: none; font: 14px var(--font-sans); color: var(--text-primary); }
+    .search-unified .divider { width: 1px; height: 24px; background: var(--border); } .search-unified .mi { color: var(--text-muted); }
+    .result-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; } .more { font-size: 12px; color: var(--text-muted); }
+    .compact-search { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--radius-full); background: var(--hover-bg); color: var(--text-muted); } .compact-search input { flex: 1; border: 0; outline: 0; background: none; font: 14px var(--font-sans); color: var(--text-primary); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } .span-2 { grid-column: 1 / -1; } @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); } .form-actions .spacer { flex: 1; }
+    .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); } .status.ok { color: var(--success-text); } .status .mi { font-size: 18px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; } @media (max-width: 767px) { .grid-2 { grid-template-columns: 1fr; } }
+    .cal-inline { max-width: 320px; }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/forms.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Formulaires" data-icon="edit_note"
+      data-subtitle="Champs de saisie du kit : le motif « field-box » (ui-field / ui-label / field-box), les champs « outline » à libellé flottant, les sélecteurs riches, les dates, les choix et la validation.">
+
+      <section class="doc-section" id="input" data-title="Input" data-cols="3" data-source=".ui-field > .field-box"
+        data-desc="Motif de champ utilisé dans la quasi-totalité des formulaires et dialogues. Fond carte, bordure 1px, rayon 12px, halo primaire au focus.">
+        <div class="demo" data-label="Default">
+          <div class="ui-field"><label class="ui-label">Raison sociale</label><div class="field-box"><span class="mi">business</span><input placeholder="Ex : Transports Yao &amp; Fils"></div></div>
+        </div>
+        <div class="demo" data-label="Focused" data-hint="état :focus-within">
+          <div class="ui-field"><label class="ui-label">Raison sociale</label><div class="field-box is-focused"><span class="mi">business</span><input placeholder="Saisie en cours…"></div></div>
+        </div>
+        <div class="demo" data-label="Filled">
+          <div class="ui-field"><label class="ui-label">Raison sociale</label><div class="field-box"><span class="mi">business</span><input value="Transports Yao &amp; Fils"></div></div>
+        </div>
+        <div class="demo" data-label="Disabled">
+          <div class="ui-field"><label class="ui-label">Code client</label><div class="field-box is-disabled"><span class="mi">tag</span><input value="CLI-1040" disabled></div></div>
+        </div>
+        <div class="demo" data-label="Readonly">
+          <div class="ui-field"><label class="ui-label">Référence</label><div class="field-box is-readonly"><span class="mi">lock</span><input value="CLI-1043" readonly></div></div>
+        </div>
+        <div class="demo" data-label="Error">
+          <div class="ui-field"><label class="ui-label">E-mail *</label><div class="field-box field-invalid"><span class="mi">alternate_email</span><input value="jean.kouassi@" aria-invalid="true"></div><span class="field-error">Adresse e-mail invalide</span></div>
+        </div>
+        <div class="demo" data-label="Success">
+          <div class="ui-field"><label class="ui-label">E-mail</label><div class="field-box field-valid"><span class="mi">alternate_email</span><input value="jean.kouassi@example.com"><span class="mi ok">check_circle</span></div></div>
+        </div>
+        <div class="demo" data-label="Required">
+          <div class="ui-field"><label class="ui-label">Téléphone <span class="req">*</span></label><div class="field-box"><span class="mi">phone</span><input placeholder="+225 07 00 00 00 00" required></div></div>
+        </div>
+        <div class="demo" data-label="Icône / action">
+          <div class="ui-field"><label class="ui-label">Montant</label><div class="field-box"><span class="mi">payments</span><input type="number" value="250000" id="amount"><span class="unit">FCFA</span><button type="button" class="ui-btn ui-btn--icon" title="Effacer" aria-label="Effacer" data-clear="amount"><span class="mi">close</span></button></div></div>
+        </div>
+        <div class="demo" data-label="Texte d'aide">
+          <div class="ui-field"><label class="ui-label">IMEI de la balise</label><div class="field-box"><span class="mi">router</span><input placeholder="15 chiffres"></div><span class="field-hint">Inscrit sous le boîtier, 15 chiffres sans espace.</span></div>
+        </div>
+        <div class="demo" data-label="Loading">
+          <div class="ui-field"><label class="ui-label">Vérification du code</label><div class="field-box"><span class="mi">qr_code</span><input value="SC-77812"><span class="ui-spinner" style="color:var(--primary)"></span></div></div>
+        </div>
+        <div class="demo" data-label="Password">
+          <div class="ui-field"><label class="ui-label">Mot de passe</label><div class="field-box"><span class="mi">lock</span><input type="password" value="motdepasse" id="pw"><button type="button" class="ui-btn ui-btn--icon" data-eye="pw" aria-label="Afficher"><span class="mi">visibility</span></button></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="input-material" data-title="Input outline / fill" data-toc="Outline / fill" data-cols="3" data-source=".ui-outline"
+        data-desc="Champs à libellé flottant, utilisés par les écrans de compte (profil, mot de passe, inscription).">
+        <div class="demo" data-label="Outline">
+          <div class="ui-outline"><div class="box"><input placeholder=" " value="Marie Yao" id="o1"><label for="o1">Nom complet</label><span class="mi">person</span></div><small>Affiché sur les documents</small></div>
+        </div>
+        <div class="demo" data-label="Outline — erreur">
+          <div class="ui-outline error"><div class="box"><input placeholder=" " value="abc" id="o2" aria-invalid="true"><label for="o2">E-mail</label><span class="mi">alternate_email</span></div><small>Vous devez renseigner une adresse e-mail valide</small></div>
+        </div>
+        <div class="demo" data-label="Fill — disabled">
+          <div class="ui-outline fill disabled"><div class="box"><input placeholder=" " value="jean.kouassi@example.com" disabled id="o3"><label for="o3">E-mail</label></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="textarea" data-title="Textarea" data-cols="3" data-source=".field-box.textarea-box">
+        <div class="demo" data-label="Default">
+          <div class="ui-field"><label class="ui-label">Description</label><div class="field-box textarea-box"><textarea rows="3" placeholder="Décrivez la demande…"></textarea></div></div>
+        </div>
+        <div class="demo" data-label="Filled + compteur">
+          <div class="ui-field"><label class="ui-label">Commentaire</label><div class="field-box textarea-box"><textarea rows="3" maxlength="200" data-counter="ta-count">Le client signale une perte de signal récurrente entre 18 h et 20 h sur l'axe Yopougon–Abobo.</textarea></div><span class="field-hint right" id="ta-count"></span></div>
+        </div>
+        <div class="demo" data-label="Disabled">
+          <div class="ui-field"><label class="ui-label">Notes internes</label><div class="field-box textarea-box is-disabled"><textarea rows="3" disabled>Lecture seule.</textarea></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="mask" data-title="Masque de saisie" data-cols="2" data-source="input[data-mask] · UIForms.mask()"
+        data-desc="Formate la saisie au fil de la frappe (0 chiffre, A lettre, * alphanumérique, autres caractères insérés automatiquement).">
+        <div class="demo" data-label="Téléphone" data-hint="+225 00 00 00 00 00">
+          <div class="ui-field"><label class="ui-label">Téléphone</label><div class="field-box"><span class="mi">call</span><input data-mask="+225 00 00 00 00 00" placeholder="+225 07 00 00 00 00" inputmode="tel" data-echo></div><span class="field-hint">Valeur : —</span></div>
+        </div>
+        <div class="demo" data-label="Immatriculation" data-hint="0000 AA 00">
+          <div class="ui-field"><label class="ui-label">Immatriculation</label><div class="field-box"><span class="mi">directions_car</span><input data-mask="0000 AA 00" placeholder="1234 AB 01" data-echo></div><span class="field-hint">Valeur : —</span></div>
+        </div>
+        <div class="demo" data-label="Date saisie au clavier" data-hint="00/00/0000">
+          <div class="ui-field"><label class="ui-label">Date de naissance</label><div class="field-box"><span class="mi">cake</span><input data-mask="00/00/0000" placeholder="JJ/MM/AAAA" inputmode="numeric" data-echo></div><span class="field-hint">Valeur : —</span></div>
+        </div>
+        <div class="demo" data-label="Code avec préfixe" data-hint="CLI-00000">
+          <div class="ui-field"><label class="ui-label">Code client</label><div class="field-box"><span class="mi">tag</span><input data-mask="CLI-00000" placeholder="CLI-00000" inputmode="numeric" data-echo></div><span class="field-hint">Valeur : —</span></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="select" data-title="Select" data-cols="3" data-source="UIForms.select() · select natif"
+        data-desc="Deux variantes : le sélecteur riche recherchable (icônes, couleurs, descriptions, clavier, effaçable, valeur nulle) et le select natif dans une field-box.">
+        <div class="demo" data-label="Simple"><template class="demo-code">&lt;div id="ville"&gt;&lt;/div&gt;
+UIForms.select(document.getElementById('ville'), { options: VILLE_OPTIONS, value: 'Abidjan', icon: 'location_on' });</template>
+          <div class="ui-field"><span class="ui-label">Ville</span><div id="sel-ville"></div></div>
+        </div>
+        <div class="demo" data-label="Riche, recherchable"><template class="demo-code">UIForms.select(el, { options: [{ value: 'HAUTE', label: 'Haute', icon: 'arrow_upward', color: '#f59e0b', description: 'Traitement sous 24 h' }, …],
+  value: 'NORMALE', icon: 'flag', clearable: true });</template>
+          <div class="ui-field"><span class="ui-label">Priorité</span><div id="sel-prio"></div></div>
+        </div>
+        <div class="demo" data-label="Vide + valeur nulle" data-nocode>
+          <div class="ui-field"><span class="ui-label">Secteur</span><div id="sel-sect"></div></div>
+        </div>
+        <div class="demo" data-label="Disabled" data-nocode>
+          <div class="ui-field"><span class="ui-label">Ville (verrouillée)</span><div id="sel-dis"></div></div>
+        </div>
+        <div class="demo" data-label="Natif">
+          <div class="ui-field"><label class="ui-label" for="nat">Secteur</label><div class="field-box"><span class="mi">category</span><select id="nat"><option>Transport</option><option>Logistique</option><option>BTP</option><option>Distribution</option><option>Agro-industrie</option></select><span class="mi">expand_more</span></div></div>
+        </div>
+        <div class="demo" data-label="Erreur" data-nocode>
+          <div class="ui-field invalid"><span class="ui-label">Ville *</span><div id="sel-err"></div><span class="field-error">La ville est requise</span></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="multi-select" data-title="Multi-select" data-cols="2" data-source="UIForms.multiSelect() · chips">
+        <div class="demo" data-label="Menu à cases" data-nocode>
+          <div class="ui-field"><span class="ui-label">Zones couvertes</span><div id="multi"></div><span class="field-hint" id="multi-n"></span></div>
+        </div>
+        <div class="demo" data-label="Chips">
+          <div class="ui-field"><span class="ui-label">Secteurs</span><div class="chips" role="group" aria-label="Secteurs"><button type="button" class="chip-opt on" data-toggle>Transport</button><button type="button" class="chip-opt on" data-toggle>Logistique</button><button type="button" class="chip-opt" data-toggle>BTP</button><button type="button" class="chip-opt" data-toggle>Distribution</button><button type="button" class="chip-opt" data-toggle>Agro-industrie</button></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="autocomplete" data-title="Autocomplete" data-cols="2" data-source="UIForms.autocomplete() · datalist"
+        data-desc="Recherche avec temporisation, indicateur de chargement, bouton d'effacement et état « aucun résultat ». Ici la fonction de recherche filtre une liste statique.">
+        <div class="demo" data-label="Recherche de client" data-hint="tapez « trans » ou « CLI-10 »"><template class="demo-code">UIForms.autocomplete(el, {
+  placeholder: 'Rechercher un client…', icon: 'business',
+  searchFn: function (q) { return fetchClients(q); },          // Promise ou tableau
+  displayFn: function (c) { return c.code + ' — ' + c.raison_sociale; }
+});
+el.addEventListener('change', function (e) { console.log(e.detail); });</template>
+          <div class="ui-field"><span class="ui-label">Client</span><div id="auto"></div><span class="field-hint" id="auto-out"></span></div>
+        </div>
+        <div class="demo" data-label="Natif (datalist)">
+          <div class="ui-field"><label class="ui-label" for="dl">Ville</label><div class="field-box"><span class="mi">location_on</span><input id="dl" list="villes" placeholder="Commencez à taper…"></div><datalist id="villes"><option>Abidjan</option><option>Bouaké</option><option>Yamoussoukro</option><option>San-Pédro</option><option>Korhogo</option><option>Daloa</option></datalist></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="date" data-title="Date picker" data-cols="3" data-source="UIForms.datePicker() · input[type=date]">
+        <div class="demo" data-label="Champ + calendrier" data-nocode>
+          <div class="ui-field"><span class="ui-label">Date d'installation</span><div id="dp1"></div></div>
+        </div>
+        <div class="demo" data-label="Bornes (2026)" data-nocode>
+          <div class="ui-field"><span class="ui-label">Échéance</span><div id="dp2"></div><span class="field-hint">Du 01/01/2026 au 31/12/2026</span></div>
+        </div>
+        <div class="demo" data-label="Calendrier inline" data-nocode><div class="cal-inline" id="cal-inline"></div></div>
+      </section>
+
+      <section class="doc-section" id="date-range" data-title="Date range" data-cols="2">
+        <div class="demo" data-label="Période">
+          <div class="ui-field"><label class="ui-label">Période de facturation</label><div class="field-box"><span class="mi">date_range</span><input type="date" value="2026-10-01" aria-label="Début"><span class="unit">→</span><input type="date" value="2026-10-31" aria-label="Fin"></div></div>
+        </div>
+        <div class="demo" data-label="Raccourcis de période">
+          <div class="ui-segmented" role="group" aria-label="Période"><button class="on" data-seg>Ce mois</button><button data-seg>Trimestre</button><button data-seg>Année</button><button data-seg>Personnalisé</button></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="time" data-title="Time picker" data-cols="2">
+        <div class="demo" data-label="Heure (pas de 15 min)">
+          <div class="ui-field"><label class="ui-label" for="tm">Heure de passage</label><div class="field-box"><span class="mi">schedule</span><input type="time" id="tm" value="08:30" step="900" list="quarters"></div><datalist id="quarters"><option>08:00</option><option>08:15</option><option>08:30</option><option>08:45</option><option>09:00</option></datalist></div>
+        </div>
+        <div class="demo" data-label="Créneau">
+          <div class="ui-field"><span class="ui-label">Créneau</span><div class="field-box"><span class="mi">schedule</span><input type="time" value="08:30" aria-label="Début"><span class="unit">→</span><input type="time" value="10:00" aria-label="Fin"></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="checkbox" data-title="Checkbox" data-cols="3" data-source=".ui-check">
+        <div class="demo" data-label="États">
+          <div class="stack">
+            <label class="ui-check"><input type="checkbox" checked>Coché</label>
+            <label class="ui-check"><input type="checkbox">Non coché</label>
+            <label class="ui-check"><input type="checkbox" checked disabled>Coché désactivé</label>
+            <label class="ui-check"><input type="checkbox" disabled>Désactivé</label>
+          </div>
+        </div>
+        <div class="demo" data-label="Indéterminé (tout sélectionner)" data-nocode>
+          <div class="stack">
+            <label class="ui-check"><input type="checkbox" id="all"><strong>Canaux de notification</strong></label>
+            <div class="stack indent" id="chans">
+              <label class="ui-check"><input type="checkbox" checked>SMS</label>
+              <label class="ui-check"><input type="checkbox">E-mail</label>
+              <label class="ui-check"><input type="checkbox" checked>Push</label>
+            </div>
+          </div>
+        </div>
+        <div class="demo" data-label="Erreur (CGU)">
+          <label class="ui-check" style="color:var(--error-text)"><input type="checkbox" aria-invalid="true" style="outline:2px solid var(--error);outline-offset:1px">J'accepte les conditions générales</label>
+          <span class="field-error">Vous devez accepter les conditions</span>
+        </div>
+      </section>
+
+      <section class="doc-section" id="radio" data-title="Radio" data-cols="2">
+        <div class="demo" data-label="Vertical">
+          <div class="stack" role="radiogroup">
+            <label class="ui-check"><input type="radio" name="freq" value="MENSUEL" checked>Mensuel</label>
+            <label class="ui-check"><input type="radio" name="freq" value="TRIMESTRIEL">Trimestriel</label>
+            <label class="ui-check"><input type="radio" name="freq" value="ANNUEL">Annuel</label>
+            <label class="ui-check"><input type="radio" name="freq" value="PONCTUEL" disabled>Ponctuel (indisponible)</label>
+          </div>
+        </div>
+        <div class="demo" data-label="Cartes de choix">
+          <div class="choice-cards" role="radiogroup" id="cards">
+            <button type="button" class="choice-card on" data-v="MENSUEL" role="radio" aria-checked="true"><span class="mi">calendar_view_month</span><strong>Mensuel</strong><span>Facture chaque mois</span></button>
+            <button type="button" class="choice-card" data-v="TRIMESTRIEL" role="radio" aria-checked="false"><span class="mi">date_range</span><strong>Trimestriel</strong><span>−5 % de remise</span></button>
+            <button type="button" class="choice-card" data-v="ANNUEL" role="radio" aria-checked="false"><span class="mi">event_repeat</span><strong>Annuel</strong><span>−12 % de remise</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="toggle" data-title="Toggle" data-cols="2" data-source=".ui-switch · .ui-toggle-group">
+        <div class="demo" data-label="Interrupteur">
+          <div class="stack">
+            <label class="ui-switch"><input type="checkbox" checked>Notifications actives</label>
+            <label class="ui-switch"><input type="checkbox">Mode maintenance</label>
+            <label class="ui-switch"><input type="checkbox" checked disabled>Verrouillé</label>
+          </div>
+        </div>
+        <div class="demo" data-label="Groupe de bascules">
+          <div class="ui-toggle-group" role="group" aria-label="Vue"><button data-seg aria-label="Cartes"><span class="mi">grid_view</span></button><button data-seg class="on" aria-label="Liste"><span class="mi">view_list</span></button><button data-seg aria-label="Calendrier"><span class="mi">calendar_month</span></button></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="slider" data-title="Slider" data-cols="2">
+        <div class="demo" data-label="Valeur simple">
+          <input type="range" min="0" max="100" step="5" value="40" id="sl" aria-label="Seuil d'alerte batterie">
+          <span class="field-hint" id="sl-out">Seuil d'alerte batterie : 40 %</span>
+        </div>
+        <div class="demo" data-label="Intervalle" data-nocode>
+          <div class="range2" id="r2"><span class="track"></span><span class="fill"></span><input type="range" min="0" max="100" value="25" aria-label="Minimum"><input type="range" min="0" max="100" value="75" aria-label="Maximum"></div>
+          <span class="field-hint" id="r2-out"></span>
+        </div>
+      </section>
+
+      <section class="doc-section" id="upload" data-title="File upload" data-cols="3" data-desc="Le fichier choisi est lu localement (URL blob) : aucun envoi réseau. Modes « champ » et « photo ».">
+        <div class="demo" data-label="Champ — vide">
+          <label class="file-field"><span class="mi">attach_file</span><span class="name ph">Joindre un document</span><input type="file" accept="application/pdf" hidden data-file></label>
+        </div>
+        <div class="demo" data-label="Champ — fichier joint">
+          <label class="file-field has"><span class="mi" style="color:var(--error)">picture_as_pdf</span><span class="name">contrat-cadre-2026.pdf <span class="muted small">· 1,2 Mo</span></span><button type="button" class="ui-btn ui-btn--icon" aria-label="Retirer"><span class="mi">close</span></button></label>
+        </div>
+        <div class="demo" data-label="Photo">
+          <label class="photo-field" id="photo"><span class="mi" style="font-size:32px">add_a_photo</span><input type="file" accept="image/*" hidden></label>
+        </div>
+        <div class="demo" data-label="Zone de dépôt" data-hint="écrans d'import">
+          <label class="drop-zone" id="dz"><input type="file" hidden><span class="mi">cloud_upload</span><strong>Glissez un fichier ici</strong><span>ou cliquez pour parcourir — CSV, XLSX (max 10 Mo)</span><span class="code-tag" hidden></span></label>
+        </div>
+        <div class="demo" data-label="Disabled">
+          <label class="file-field disabled"><span class="mi">attach_file</span><span class="name ph">Pièce justificative</span><input type="file" hidden disabled></label>
+        </div>
+      </section>
+
+      <section class="doc-section" id="search" data-title="Search" data-source="UIForms.filterDropdown()" data-desc="Barre de recherche unifiée des pages liste : champ + séparateur + filtres popover recherchables. Filtrage local en direct.">
+        <div class="demo" data-label="Recherche unifiée + filtres" data-nocode>
+          <div class="search-unified"><div class="sw"><span class="mi">search</span><input id="sq" placeholder="Rechercher par code, raison sociale…" aria-label="Rechercher"></div><span class="divider"></span><div id="f-statut"></div><div id="f-ville"></div></div>
+          <div class="result-chips" id="results"></div>
+        </div>
+        <div class="grid-2">
+          <div class="demo" data-label="Barre compacte"><div class="compact-search"><span class="mi">search</span><input placeholder="Rechercher…" aria-label="Rechercher"></div></div>
+          <div class="demo" data-label="Filtre seul" data-nocode><div id="f-solo"></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="validation" data-title="Form validation" data-source="validation native + .field-error" data-desc="Validation visuelle : les erreurs apparaissent après interaction ou à la soumission. Rien n'est envoyé.">
+        <div class="demo" data-label="Formulaire client" data-nocode>
+          <form class="validation-form" id="vf" novalidate>
+            <div class="form-grid">
+              <div class="ui-field span-2" data-f="rs"><label class="ui-label" for="v-rs">Raison sociale *</label><div class="field-box"><span class="mi">business</span><input id="v-rs" name="rs" required minlength="3" placeholder="Ex : Bolloré Logistics CI"></div><span class="field-error" hidden></span></div>
+              <div class="ui-field" data-f="email"><label class="ui-label" for="v-em">E-mail *</label><div class="field-box"><span class="mi">alternate_email</span><input id="v-em" name="email" type="email" required placeholder="contact@societe.ci"></div><span class="field-error" hidden></span></div>
+              <div class="ui-field" data-f="tel"><label class="ui-label" for="v-tel">Téléphone *</label><div class="field-box"><span class="mi">phone</span><input id="v-tel" name="tel" required data-mask="+225 00 00 00 00 00" placeholder="+225 07 00 00 00 00"></div><span class="field-error" hidden></span><span class="field-hint">Format international</span></div>
+              <div class="ui-field" data-f="ville"><span class="ui-label">Ville *</span><div id="v-ville"></div><span class="field-error" hidden></span></div>
+              <div class="ui-field" data-f="veh"><label class="ui-label" for="v-veh">Nombre de véhicules *</label><div class="field-box"><span class="mi">directions_car</span><input id="v-veh" name="veh" type="number" min="1" max="500" required placeholder="1 – 500"></div><span class="field-error" hidden></span></div>
+              <div class="ui-field span-2" data-f="cgu"><label class="ui-check"><input type="checkbox" name="cgu" id="v-cgu">J'accepte les conditions générales de service</label><span class="field-error" hidden></span></div>
+            </div>
+            <div class="form-actions"><span class="status" id="v-status"><span class="mi">info</span>Champs requis manquants</span><span class="spacer"></span><button type="reset" class="ui-btn ui-btn--text">Réinitialiser</button><button type="submit" class="ui-btn"><span class="mi">save</span>Enregistrer</button></div>
+          </form>
+        </div>
+      </section>
+
+      <section class="doc-section" id="crud-dialog" data-title="Formulaire en modale" data-source="UIForms.crudDialog()"
+        data-desc="Formulaire générique piloté par configuration (text, number, email, select, multiselect, textarea, checkbox, date, autocomplete) — pour toutes les créations / éditions rapides.">
+        <div class="demo" data-label="Modes create / edit / view"><template class="demo-code">UIForms.crudDialog({
+  title: 'Nouveau client', mode: 'create',            // 'create' | 'edit' | 'view'
+  data: { statut: 'ACTIF' },
+  fields: [
+    { key: 'code', label: 'Code', type: 'text', required: true },
+    { key: 'ville', label: 'Ville', type: 'select', options: VILLE_OPTIONS },
+    { key: 'secteurs', label: 'Secteurs', type: 'multiselect', options: SECTEUR_OPTIONS },
+    { key: 'date_debut', label: 'Date de début', type: 'date' }
+  ]
+}).then(function (values) { if (values) save(values); });</template>
+          <div class="row"><button class="ui-btn" data-crud="create"><span class="mi">add</span>Créer</button><button class="ui-btn ui-btn--outlined" data-crud="edit"><span class="mi">edit</span>Modifier</button><button class="ui-btn ui-btn--text" data-crud="view"><span class="mi">visibility</span>Consulter</button></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/data/showcase.js"></script>
+  <script src="../js/ex-widgets.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/forms.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, D = window.DATA, F = UIForms;
+    var VILLES = D.VILLE_OPTIONS, SECTEURS = D.SECTEUR_OPTIONS, CLIENTS = D.DEMO_CLIENTS;
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+    document.addEventListener('click', function (e) {
+      var c = e.target.closest('[data-clear]'); if (c) { $(c.dataset.clear).value = ''; $(c.dataset.clear).focus(); }
+      var y = e.target.closest('[data-eye]'); if (y) { var i = $(y.dataset.eye), t = i.type === 'password'; i.type = t ? 'text' : 'password'; y.firstChild.textContent = t ? 'visibility_off' : 'visibility'; }
+      var s = e.target.closest('[data-seg]'); if (s) s.parentNode.querySelectorAll('[data-seg]').forEach(function (b) { b.classList.toggle('on', b === s); });
+      var t = e.target.closest('[data-toggle]'); if (t) t.classList.toggle('on');
+    });
+    document.querySelectorAll('[data-counter]').forEach(function (ta) { function u() { $(ta.dataset.counter).textContent = ta.value.length + '/' + ta.maxLength; } ta.addEventListener('input', u); u(); });
+    document.querySelectorAll('input[data-echo]').forEach(function (i) { i.addEventListener('input', function () { i.closest('.ui-field').querySelector('.field-hint').textContent = 'Valeur : ' + (i.value || '—'); }); });
+
+    F.select($('sel-ville'), { options: VILLES, value: 'Abidjan', icon: 'location_on' });
+    F.select($('sel-prio'), { icon: 'flag', clearable: true, value: 'NORMALE', placeholder: 'Priorité…', options: [
+      { value: 'BASSE', label: 'Basse', icon: 'arrow_downward', color: '#64748b', description: 'Traitement sous 5 jours' }, { value: 'NORMALE', label: 'Normale', icon: 'remove', color: '#3b82f6', description: 'Traitement sous 48 h' },
+      { value: 'HAUTE', label: 'Haute', icon: 'arrow_upward', color: '#f59e0b', description: 'Traitement sous 24 h' }, { value: 'CRITIQUE', label: 'Critique', icon: 'priority_high', color: '#ef4444', description: 'Intervention immédiate' }] });
+    F.select($('sel-sect'), { options: SECTEURS, icon: 'category', allowNull: true, nullLabel: '— Aucun —', placeholder: 'Sélectionner un secteur…' });
+    F.select($('sel-dis'), { options: VILLES, value: 'Abidjan', icon: 'location_on', disabled: true });
+    F.select($('sel-err'), { options: VILLES, icon: 'location_on', placeholder: 'Choisir…', invalid: true });
+    var ms = F.multiSelect($('multi'), { options: VILLES, value: ['Abidjan', 'Bouaké'], icon: 'checklist', placeholder: 'Choisir des villes' });
+    function mn() { $('multi-n').textContent = ms.get().length + ' sélectionnée(s)'; } $('multi').addEventListener('change', mn); mn();
+
+    F.autocomplete($('auto'), { placeholder: 'Rechercher un client…', icon: 'business',
+      searchFn: function (q) { q = q.toLowerCase(); return new Promise(function (r) { setTimeout(function () { r(CLIENTS.filter(function (c) { return c.raison_sociale.toLowerCase().indexOf(q) >= 0 || c.code.toLowerCase().indexOf(q) >= 0; }).slice(0, 8)); }, 300); }); },
+      displayFn: function (c) { return c.code + ' — ' + c.raison_sociale; }, subFn: function (c) { return c.ville; } });
+    $('auto').addEventListener('change', function (e) { $('auto-out').textContent = e.detail ? 'Sélection : ' + e.detail.raison_sociale + ' (' + e.detail.ville + ')' : ''; });
+
+    F.datePicker($('dp1'), { value: new Date(2026, 9, 13) });
+    F.datePicker($('dp2'), { min: new Date(2026, 0, 1), max: new Date(2026, 11, 31), start: new Date(2026, 9, 1) });
+    ExW.calendar($('cal-inline'), { selected: new Date(2026, 9, 13), onSelect: function (d) { UIKit.toast('Date choisie : ' + d.toLocaleDateString('fr-FR')); } });
+
+    var all = $('all'), ch = $('chans').querySelectorAll('input');
+    function sync() { var n = Array.prototype.filter.call(ch, function (c) { return c.checked; }).length; all.checked = n === ch.length; all.indeterminate = n > 0 && n < ch.length; }
+    ch.forEach(function (c) { c.addEventListener('change', sync); }); all.addEventListener('change', function () { ch.forEach(function (c) { c.checked = all.checked; }); sync(); }); sync();
+    $('cards').addEventListener('click', function (e) { var b = e.target.closest('.choice-card'); if (!b) return; this.querySelectorAll('.choice-card').forEach(function (x) { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); }); });
+
+    $('sl').addEventListener('input', function () { $('sl-out').textContent = 'Seuil d’alerte batterie : ' + this.value + ' %'; });
+    var r2 = $('r2').querySelectorAll('input');
+    function rr() { var a = Math.min(+r2[0].value, +r2[1].value), b = Math.max(+r2[0].value, +r2[1].value); var f = $('r2').querySelector('.fill'); f.style.left = a + '%'; f.style.width = (b - a) + '%'; $('r2-out').textContent = 'Vitesse tolérée : ' + a + ' – ' + b + ' km/h'; }
+    r2.forEach(function (i) { i.addEventListener('input', rr); }); rr();
+
+    document.querySelectorAll('[data-file]').forEach(function (i) { i.addEventListener('change', function () { var f = i.files[0]; if (!f) return; var l = i.closest('.file-field'); l.classList.add('has'); l.querySelector('.name').classList.remove('ph'); l.querySelector('.name').textContent = f.name; }); });
+    $('photo').querySelector('input').addEventListener('change', function () { var f = this.files[0]; if (f) $('photo').innerHTML = '<img src="' + URL.createObjectURL(f) + '" alt="Photo choisie">'; });
+    var dz = $('dz'); function shown(f) { var t = dz.querySelector('.code-tag'); t.hidden = false; t.textContent = f.name; }
+    dz.querySelector('input').addEventListener('change', function () { if (this.files[0]) shown(this.files[0]); });
+    dz.addEventListener('dragover', function (e) { e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', function () { dz.classList.remove('over'); });
+    dz.addEventListener('drop', function (e) { e.preventDefault(); dz.classList.remove('over'); if (e.dataTransfer.files[0]) shown(e.dataTransfer.files[0]); });
+
+    var STATUTS = [{ value: '', label: 'Tous', icon: 'list', count: 40 }, { value: 'ACTIF', label: 'Actifs', icon: 'check_circle', color: '#22c55e', count: 22 }, { value: 'SUSPENDU', label: 'Suspendus', icon: 'pause_circle', color: '#eab308', count: 5 }, { value: 'INACTIF', label: 'Inactifs', icon: 'remove_circle_outline', count: 8 }, { value: 'RESILIE', label: 'Résiliés', icon: 'cancel', color: '#ef4444', count: 5 }];
+    var fs = { q: '', statut: '', ville: '' };
+    F.filterDropdown($('f-statut'), { options: STATUTS, labelPrefix: 'Statut' });
+    F.filterDropdown($('f-ville'), { options: [{ value: '', label: 'Toutes', icon: 'public' }].concat(VILLES.map(function (v) { return Object.assign({ icon: 'location_on' }, v); })), labelPrefix: 'Ville' });
+    F.filterDropdown($('f-solo'), { options: STATUTS, labelPrefix: 'Statut', standalone: true });
+    function results() { var q = fs.q.toLowerCase().trim(), r = CLIENTS.filter(function (c) { return (!q || c.raison_sociale.toLowerCase().indexOf(q) >= 0 || c.code.toLowerCase().indexOf(q) >= 0) && (!fs.statut || c.statut === fs.statut) && (!fs.ville || c.ville === fs.ville); });
+      $('results').innerHTML = r.slice(0, 8).map(function (c) { return '<span class="code-tag">' + esc(c.code) + ' · ' + esc(c.raison_sociale) + '</span>'; }).join('') + (r.length > 8 ? '<span class="more">+' + (r.length - 8) + '</span>' : '') + (r.length ? '' : '<span class="more">Aucun résultat</span>');
+      document.querySelector('#search .demo .demo-hint') || 0; }
+    $('sq').addEventListener('input', function () { fs.q = this.value; results(); });
+    $('f-statut').addEventListener('change', function (e) { fs.statut = e.detail; results(); }); $('f-ville').addEventListener('change', function (e) { fs.ville = e.detail; results(); }); results();
+
+    // Validation
+    var vf = $('vf'), submitted = false, touched = {}, vv = F.select($('v-ville'), { options: VILLES, icon: 'location_on', placeholder: 'Choisir…' });
+    function errors() {
+      var e = {}, rs = vf.elements.rs.value.trim(), em = vf.elements.email.value.trim(), tel = vf.elements.tel.value, veh = vf.elements.veh.value;
+      if (!rs) e.rs = 'La raison sociale est requise'; else if (rs.length < 3) e.rs = '3 caractères minimum';
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) e.email = 'Adresse e-mail invalide';
+      if (!/^\+225 \d{2}( \d{2}){4}$/.test(tel)) e.tel = 'Format attendu : +225 07 00 00 00 00';
+      if (!vv.get()) e.ville = 'La ville est requise';
+      if (!veh || +veh < 1 || +veh > 500) e.veh = 'Entre 1 et 500 véhicules';
+      if (!vf.elements.cgu.checked) e.cgu = 'Vous devez accepter les conditions';
+      return e;
+    }
+    function show() {
+      var e = errors();
+      vf.querySelectorAll('[data-f]').forEach(function (box) { var k = box.dataset.f, on = !!e[k] && (submitted || touched[k]); box.classList.toggle('invalid', on); var er = box.querySelector('.field-error'); er.hidden = !on; er.textContent = e[k] || ''; var h = box.querySelector('.field-hint'); if (h) h.hidden = on; if (k === 'ville') vv.setInvalid(on); });
+      var ok = !Object.keys(e).length, st = $('v-status'); st.classList.toggle('ok', ok); st.innerHTML = '<span class="mi">' + (ok ? 'check_circle' : 'info') + '</span>' + (ok ? 'Formulaire valide' : 'Champs requis manquants');
+      return ok;
+    }
+    vf.addEventListener('focusout', function (e) { var b = e.target.closest('[data-f]'); if (b) { touched[b.dataset.f] = true; show(); } });
+    vf.addEventListener('input', show); vf.addEventListener('change', show); $('v-ville').addEventListener('change', function () { touched.ville = true; show(); });
+    vf.addEventListener('submit', function (e) { e.preventDefault(); submitted = true; if (show()) UIKit.toast('Formulaire valide — aucune donnée envoyée (démo statique)'); });
+    vf.addEventListener('reset', function () { setTimeout(function () { submitted = false; touched = {}; vv.set(null); show(); }); });
+    show();
+
+    // Dialogue CRUD
+    document.querySelectorAll('[data-crud]').forEach(function (b) { b.addEventListener('click', function () {
+      var mode = b.dataset.crud, c = CLIENTS[0];
+      F.crudDialog({ mode: mode, title: mode === 'create' ? 'Nouveau client' : mode === 'edit' ? 'Modifier le client' : 'Fiche client', subtitle: mode === 'create' ? 'Ajouter un client au référentiel' : c.code + ' — ' + c.raison_sociale,
+        data: mode === 'create' ? { statut: 'ACTIF', actif: true } : Object.assign({}, c, { actif: c.statut === 'ACTIF', date_debut: c.created_at, secteurs: ['Transport'], gestionnaire: 'u-1' }),
+        fields: [{ key: 'code', label: 'Code', type: 'text', required: true, placeholder: 'Ex : CLI-1040' }, { key: 'raison_sociale', label: 'Raison sociale', type: 'text', required: true, icon: 'business' },
+          { key: 'email', label: 'E-mail', type: 'email', placeholder: 'contact@societe.ci' }, { key: 'vehicules', label: 'Véhicules', type: 'number', placeholder: '0' },
+          { key: 'ville', label: 'Ville', type: 'select', options: VILLES }, { key: 'secteurs', label: 'Secteurs', type: 'multiselect', options: SECTEURS },
+          { key: 'date_debut', label: 'Date de début', type: 'date' }, { key: 'gestionnaire', label: 'Gestionnaire', type: 'autocomplete', options: [{ value: 'u-1', label: 'Aminata Diallo' }, { value: 'u-2', label: 'Koffi N’Guessan' }, { value: 'u-3', label: 'Serge Kouamé' }] },
+          { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Informations complémentaires…' }, { key: 'actif', label: 'Statut', type: 'checkbox', placeholder: 'Client actif' }]
+      }).then(function (r) { if (r) UIKit.toast('Enregistré localement (démo statique)'); });
+    }); });
+  })();
+  </script>
+</body>
+</html>

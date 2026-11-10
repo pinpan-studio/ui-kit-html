@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Réservation</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .layout { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+    @media (max-width: 1100px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+    .main { display: flex; flex-direction: column; gap: 16px; }
+    .when { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; }
+    @media (max-width: 767px) { .when { grid-template-columns: minmax(0, 1fr); } }
+    .slots { display: flex; flex-direction: column; gap: 10px; } .slots > strong { font-size: 16px; }
+    .period { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); } .period .mi { font-size: 16px; }
+    .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+    .slot-grid button { height: 42px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--card-bg); font: 600 14px var(--font-sans); color: var(--text-primary); cursor: pointer; font-variant-numeric: tabular-nums;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+    .slot-grid small { font-size: 10px; font-weight: 500; }
+    .slot-grid button:hover:not(:disabled) { border-color: var(--primary); }
+    .slot-grid button.on { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+    .slot-grid button:disabled { opacity: .45; text-decoration: line-through; cursor: not-allowed; }
+    .summary { position: sticky; top: 0; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .summary h2 { margin: 0; font-size: 18px; font-weight: 700; }
+    @media (max-width: 1100px) { .summary { position: static; } }
+    .sum-line { display: flex; gap: 12px; align-items: flex-start; } .sum-line .mi { color: var(--primary); }
+    .sum-line span { display: flex; flex-direction: column; } .sum-line small { font-size: 12.5px; color: var(--text-muted); }
+    .summary dl { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin: 0; padding-top: 14px; border-top: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+    .summary dt { color: var(--text-secondary); } .summary dd { margin: 0; font-weight: 600; text-align: right; }
+    .summary .tot { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+    .go { height: 48px; }
+    .cap { display: inline-block; } .cap::first-letter { text-transform: uppercase; }
+    .center { display: flex; align-items: center; justify-content: center; gap: 4px; margin: 0; }
+    .done { max-width: 640px; margin: 0 auto; }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Réservation">
+  <main id="ex-content">
+    <div class="form-head">
+      <span class="text-overline">Salle de formation · Plateau</span>
+      <h1>Réserver une session</h1>
+      <p>Choisissez une prestation, une date et un créneau. La confirmation est immédiate.</p>
+    </div>
+    <div id="app"></div>
+  </main>
+
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var SERVICES = [
+      { id: 'form', label: 'Formation utilisateurs', duration: '3 h', price: 25000, icon: 'school' },
+      { id: 'demo', label: 'Démonstration produit', duration: '1 h', price: 0, icon: 'co_present' },
+      { id: 'atelier', label: 'Atelier paramétrage', duration: '2 h', price: 40000, icon: 'build' }];
+    var PERIODS = [
+      { label: 'Matin', icon: 'wb_twilight', slots: ['08:30', '09:00', '09:30', '10:00', '10:30', '11:00'] },
+      { label: 'Après-midi', icon: 'wb_sunny', slots: ['14:00', '14:30', '15:00', '15:30', '16:00', '16:30'] }];
+    var NEEDS = ['Projecteur', 'Accès PMR', 'Pause café', 'Interprète', 'Ordinateurs fournis'];
+    var TODAY = new Date(2026, 9, 17);
+    var S = { service: 'form', date: new Date(2026, 9, 21), slot: null, confirmed: false, people: 4, contact: 'Jean Kouassi', picked: ['Pause café'] };
+    var app = document.getElementById('app'), nf = new Intl.NumberFormat('fr-FR');
+    var fmtDay = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    var fmtFull = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    function svc() { return SERVICES.find(function (s) { return s.id === S.service; }); }
+    function total() { return svc().price * S.people; }
+    // Créneaux complets pseudo-aléatoires (stables pour une date donnée)
+    function isFull(t) { return (S.date.getDate() * 7 + parseInt(t, 10) + +t.slice(3)) % 5 === 0; }
+
+    function slotsTpl() {
+      return '<strong class="cap">' + fmtDay.format(S.date) + '</strong>' + PERIODS.map(function (p) {
+        return '<span class="period"><span class="mi">' + p.icon + '</span>' + p.label + '</span><div class="slot-grid">' + p.slots.map(function (t) {
+          var full = isFull(t);
+          return '<button type="button" data-slot="' + t + '" class="' + (S.slot === t ? 'on' : '') + '"' + (full ? ' disabled' : '') + '>' + t + (full ? '<small>Complet</small>' : '') + '</button>';
+        }).join('') + '</div>';
+      }).join('');
+    }
+    function summaryTpl() {
+      var s = svc();
+      return '<h2>Votre réservation</h2>' +
+        '<div class="sum-line"><span class="mi">' + s.icon + '</span><span><strong>' + s.label + '</strong><small>' + s.duration + '</small></span></div>' +
+        '<div class="sum-line"><span class="mi">event</span><span><strong class="cap">' + fmtFull.format(S.date) + '</strong><small>' + (S.slot || 'Choisissez un créneau') + '</small></span></div>' +
+        '<div class="sum-line"><span class="mi">group</span><span><strong>' + S.people + ' participant(s)</strong><small>' + S.contact + '</small></span></div>' +
+        '<dl><dt>' + nf.format(s.price) + ' F × ' + S.people + '</dt><dd>' + nf.format(total()) + ' F</dd><dt class="tot">Total</dt><dd class="tot">' + nf.format(total()) + ' FCFA</dd></dl>' +
+        '<button class="ui-btn go" data-act="confirm"' + (S.slot ? '' : ' disabled') + '>Confirmer la réservation</button>' +
+        '<p class="help center"><span class="mi" style="font-size:15px">info</span>Annulation gratuite jusqu\'à 24 h avant.</p>';
+    }
+    function refresh() {
+      document.getElementById('slots').innerHTML = slotsTpl();
+      document.getElementById('summary').innerHTML = summaryTpl();
+      app.querySelectorAll('[data-svc]').forEach(function (b) { b.classList.toggle('on', b.dataset.svc === S.service); });
+      app.querySelectorAll('[data-need]').forEach(function (b) { b.classList.toggle('on', S.picked.indexOf(b.dataset.need) >= 0); });
+      document.getElementById('people').textContent = S.people + ' pers.';
+      app.querySelector('[data-p="-1"]').disabled = S.people <= 1; app.querySelector('[data-p="1"]').disabled = S.people >= 12;
+    }
+
+    function render() {
+      if (S.confirmed) {
+        app.innerHTML = '<section class="card done">' + ExW.result({ icon: 'event_available', title: 'Réservation confirmée',
+          text: svc().label + ' le <strong>' + fmtDay.format(S.date) + '</strong> à <strong>' + S.slot + '</strong> pour ' + S.people + ' personne(s). Une invitation calendrier a été envoyée.',
+          actions: '<button class="ui-btn ui-btn--outlined" onclick="UIKit.toast(\'Fichier .ics téléchargé (démo)\')"><span class="mi">calendar_add_on</span>Ajouter à l\'agenda</button><button class="ui-btn" data-act="again">Nouvelle réservation</button>' }) + '</section>';
+        return;
+      }
+      app.innerHTML = '<div class="layout"><div class="main">' +
+        '<section class="card section"><h2><span class="num">1</span>Prestation</h2><div class="choices">' + SERVICES.map(function (s) {
+          return '<button type="button" class="choice" data-svc="' + s.id + '"><span class="c-ic"><span class="mi">' + s.icon + '</span></span><span class="c-txt"><strong>' + s.label + '</strong><small>' + s.duration + ' · ' +
+            (s.price ? nf.format(s.price) + ' F / pers.' : 'Gratuit') + '</small></span><span class="mark"></span></button>'; }).join('') + '</div></section>' +
+        '<section class="card section"><h2><span class="num">2</span>Date et heure</h2><div class="when"><div id="cal"></div><div class="slots" id="slots"></div></div></section>' +
+        '<section class="card section"><h2><span class="num">3</span>Participants</h2><div class="row-2">' +
+          '<div class="ui-field"><span class="ui-label">Nombre de personnes</span><span class="stepper"><button type="button" data-p="-1" aria-label="Moins"><span class="mi">remove</span></button><output id="people"></output><button type="button" data-p="1" aria-label="Plus"><span class="mi">add</span></button></span><span class="help">12 places maximum par session.</span></div>' +
+          '<div class="ui-field"><label class="ui-label" for="contact">Responsable</label><div class="field-box"><span class="mi">person</span><input id="contact" value="' + S.contact + '" autocomplete="name"></div></div></div>' +
+          '<div class="ui-field"><span class="ui-label">Besoins particuliers <span class="help">(facultatif)</span></span><div class="chips-choice">' + NEEDS.map(function (n) { return '<button type="button" data-need="' + n + '">' + n + '</button>'; }).join('') + '</div></div></section>' +
+        '</div><aside class="card summary" id="summary"></aside></div>';
+      ExW.calendar(document.getElementById('cal'), { selected: S.date, min: TODAY, today: TODAY, filter: function (d) { return d.getDay() !== 0 && d.getDay() !== 6; },
+        onSelect: function (d) { S.date = d; S.slot = null; refresh(); } });
+      refresh();
+    }
+
+    app.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-svc],[data-slot],[data-need],[data-p],[data-act]');
+      if (!t) return;
+      if (t.dataset.svc) S.service = t.dataset.svc;
+      if (t.dataset.slot) S.slot = t.dataset.slot;
+      if (t.dataset.need) { var i = S.picked.indexOf(t.dataset.need); i < 0 ? S.picked.push(t.dataset.need) : S.picked.splice(i, 1); }
+      if (t.dataset.p) S.people = Math.max(1, Math.min(12, S.people + +t.dataset.p));
+      if (t.dataset.act === 'confirm') { S.confirmed = true; return render(); }
+      if (t.dataset.act === 'again') { S.confirmed = false; S.slot = null; return render(); }
+      refresh();
+    });
+    app.addEventListener('input', function (e) { if (e.target.id === 'contact') { S.contact = e.target.value; document.getElementById('summary').innerHTML = summaryTpl(); } });
+    render();
+  })();
+  </script>
+</body>
+</html>

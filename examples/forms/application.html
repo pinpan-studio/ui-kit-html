@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Candidature</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .layout { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+    @media (max-width: 1100px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+    .toc { position: sticky; top: 0; z-index: 2; padding: var(--space-3); display: flex; flex-direction: column; gap: 2px; }
+    .overall { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: var(--space-2); padding: var(--space-2) var(--space-2) var(--space-4); }
+    .overall strong { font-size: 26px; } .overall span { font-size: 12.5px; color: var(--text-muted); } .overall .ui-progress { grid-column: 1 / -1; }
+    .toc button { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2); border: 0; border-radius: var(--radius-md); background: none; text-align: left; font: inherit; color: var(--text-secondary); cursor: pointer; }
+    .toc .lbl { flex: 1; font-size: 13.5px; font-weight: 600; } .toc small { font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+    .toc button:hover { background: var(--hover-bg); color: var(--text-primary); } .toc button.full { color: var(--text-primary); }
+    .ring { --p: 0; width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center;
+      background: radial-gradient(closest-side, var(--card-bg) 79%, transparent 80%), conic-gradient(var(--primary) calc(var(--p) * 1%), var(--hover-bg) 0); }
+    .ring .mi { font-size: 16px; } .full .ring { background: var(--primary); color: var(--on-primary); }
+    @media (max-width: 1100px) { .toc { position: static; flex-direction: row; overflow-x: auto; } .overall { display: none; } .toc button { flex: none; } .toc small { display: none; } }
+    .main { display: flex; flex-direction: column; gap: var(--space-4); } .main .section { scroll-margin-top: 12px; }
+    .radios { display: flex; gap: var(--space-5); flex-wrap: wrap; }
+    .exp { position: relative; margin: 0; padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-3); }
+    .exp legend { padding: 0 var(--space-2); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+    .exp .rm { position: absolute; top: 4px; right: 4px; }
+    .years { align-items: end; } .years .ui-check { padding-bottom: 12px; }
+    .add { align-self: flex-start; }
+    .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 48px; padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-input); background: var(--card-bg); }
+    .tags:focus-within { border-color: var(--primary); box-shadow: var(--focus-ring); }
+    .tag { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 10px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-size: 13px; font-weight: 500; }
+    .tag button { border: 0; background: none; color: inherit; cursor: pointer; display: grid; padding: 0; } .tag .mi { font-size: 16px; }
+    .tags input { flex: 1; min-width: 140px; border: 0; outline: 0; background: none; font: 14px var(--font-sans); color: var(--text-primary); height: 32px; }
+    .sample { align-self: center; }
+    .file { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3); border-radius: var(--radius-lg); border: 1px solid var(--border); }
+    .file img { width: 28px; } .file > span:nth-child(2) { flex: 1; min-width: 0; display: flex; flex-direction: column; } .file small { font-size: 12px; color: var(--text-muted); }
+    .money input { text-align: right; font-variant-numeric: tabular-nums; } .money .cur { font-weight: 600; color: var(--text-secondary); }
+    .words { font-style: italic; }
+    .sticky-actions { position: sticky; bottom: 0; z-index: 3; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); flex-wrap: wrap; box-shadow: var(--shadow-2); }
+    .sticky-actions .help { display: flex; align-items: center; gap: var(--space-2); } .sticky-actions .ui-btn { height: 44px; }
+    @media (max-width: 600px) { .sticky-actions .spacer { display: none; } .sticky-actions .help { flex: 1 1 100%; } .sticky-actions .ui-btn { flex: 1 1 auto; } }
+    .done { max-width: 640px; margin: 0 auto; }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Candidature">
+  <main id="ex-content">
+    <div class="form-head">
+      <span class="text-overline">Recrutement · Réf. DEV-FE-2026-14</span>
+      <h1>Développeur·se front-end confirmé·e</h1>
+      <p>Abidjan, Plateau · CDI · hybride. Comptez une dizaine de minutes ; votre brouillon est enregistré à tout moment.</p>
+    </div>
+    <div id="done" hidden></div>
+    <div class="layout" id="layout">
+      <nav class="toc card" aria-label="Sections du formulaire" id="toc"></nav>
+      <form class="main" id="form" novalidate>
+        <section class="card section" id="sec-identity">
+          <h2><span class="num">1</span>Identité</h2>
+          <div class="ui-field"><span class="ui-label">Civilité</span>
+            <div class="radios"><label class="ui-check"><input type="radio" name="civ" value="Mme"> Mme</label><label class="ui-check"><input type="radio" name="civ" value="M." checked> M.</label><label class="ui-check"><input type="radio" name="civ" value="Autre"> Autre</label></div></div>
+          <div class="row-2">
+            <div class="ui-field" data-req="first"><label class="ui-label" for="first">Prénom<span class="req">*</span></label><div class="field-box"><input id="first" name="first" autocomplete="given-name"></div></div>
+            <div class="ui-field" data-req="last"><label class="ui-label" for="last">Nom<span class="req">*</span></label><div class="field-box"><input id="last" name="last" autocomplete="family-name"></div></div>
+          </div>
+          <div class="row-3">
+            <div class="ui-field"><label class="ui-label" for="birth">Date de naissance</label><div class="field-box"><input id="birth" name="birth" type="date"></div></div>
+            <div class="ui-field"><label class="ui-label" for="nat">Nationalité</label><div class="field-box"><select id="nat" name="nationality"><option>Ivoirienne</option><option>Sénégalaise</option><option>Malienne</option><option>Burkinabè</option><option>Ghanéenne</option><option>Autre</option></select></div></div>
+            <div class="ui-field"><label class="ui-label" for="city">Ville</label><div class="field-box"><span class="mi">place</span><input id="city" name="city" value="Abidjan"></div></div>
+          </div>
+          <div class="row-2">
+            <div class="ui-field" data-req="email"><label class="ui-label" for="email">E-mail<span class="req">*</span></label><div class="field-box"><span class="mi">mail</span><input id="email" name="email" type="email" autocomplete="email"></div>
+              <span class="err" hidden><span class="mi">error</span>Adresse e-mail requise.</span></div>
+            <div class="ui-field"><label class="ui-label" for="phone">Téléphone</label><div class="field-box"><span class="mi">call</span><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+225 07 …"></div></div>
+          </div>
+        </section>
+
+        <section class="card section" id="sec-experience">
+          <h2><span class="num">2</span>Expérience et compétences</h2>
+          <div id="exps" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
+          <button class="ui-btn ui-btn--outlined add" type="button" data-act="add-exp"><span class="mi">add</span>Ajouter un poste</button>
+          <div class="ui-field"><span class="ui-label">Compétences <span class="help">(3 minimum)</span></span><div id="skills"></div></div>
+          <div class="ui-field"><span class="ui-label">Niveau</span><div class="chips-choice" data-chips="level"></div></div>
+        </section>
+
+        <section class="card section" id="sec-documents">
+          <h2><span class="num">3</span>Documents</h2>
+          <p class="sub">CV obligatoire. Lettre, diplômes et portfolio facultatifs.</p>
+          <label class="dropzone" id="drop"><span class="mi" style="font-size:36px">cloud_upload</span><strong>Glissez vos fichiers ici</strong>
+            <span class="help">ou <u style="color:var(--primary)">parcourez votre ordinateur</u> · PDF, DOCX · 5 Mo max</span><input type="file" multiple hidden id="file-in"></label>
+          <button class="ui-btn ui-btn--text sample" type="button" data-act="sample"><span class="mi">auto_fix_high</span>Utiliser des fichiers d'exemple</button>
+          <div id="files" style="display:flex;flex-direction:column;gap:var(--space-2)"></div>
+          <div class="ui-field"><label class="ui-label" for="pf">Portfolio ou GitHub</label><div class="field-box"><span class="mi">link</span><input id="pf" name="portfolio" type="url" placeholder="https://"></div></div>
+        </section>
+
+        <section class="card section" id="sec-terms">
+          <h2><span class="num">4</span>Prétentions et disponibilité</h2>
+          <div class="row-2">
+            <div class="ui-field"><label class="ui-label" for="salary">Salaire mensuel brut souhaité</label>
+              <div class="field-box money"><input id="salary" name="salary" inputmode="numeric" value="850 000"><span class="cur">FCFA</span></div><span class="help words" id="words"></span></div>
+            <div class="ui-field"><label class="ui-label" for="start">Disponible à partir du</label><div class="field-box"><input id="start" name="start" type="date"></div></div>
+          </div>
+          <div class="ui-field"><span class="ui-label">Type de contrat</span><div class="chips-choice" data-chips="contract"></div></div>
+          <label class="ui-switch"><input type="checkbox" role="switch" checked> Ouvert·e au travail hybride (2 jours sur site)</label>
+          <label class="ui-switch"><input type="checkbox" role="switch"> Prêt·e à déménager à Abidjan</label>
+        </section>
+
+        <section class="card section" id="sec-sign">
+          <h2><span class="num">5</span>Signature</h2>
+          <div data-req="signature"><div id="sig"></div></div>
+          <label class="ui-check"><input type="checkbox" name="certify"> Je certifie l'exactitude des informations fournies.<span class="req">*</span></label>
+          <span class="err" id="sign-err" hidden><span class="mi">error</span>Signature et attestation requises.</span>
+        </section>
+
+        <div class="card sticky-actions">
+          <span class="help" id="draft"><span class="mi">cloud_off</span>Non enregistré</span>
+          <span class="spacer"></span>
+          <button class="ui-btn ui-btn--text" type="button" data-act="draft">Enregistrer le brouillon</button>
+          <button class="ui-btn" type="submit">Envoyer ma candidature</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var SECTIONS = [
+      { id: 'identity', label: 'Identité', icon: 'badge' }, { id: 'experience', label: 'Expérience', icon: 'work_history' },
+      { id: 'documents', label: 'Documents', icon: 'folder' }, { id: 'terms', label: 'Prétentions', icon: 'payments' }, { id: 'sign', label: 'Signature', icon: 'draw' }];
+    var SKILLS = ['Angular', 'TypeScript', 'Figma', 'Accessibilité', 'SQL', 'Gestion de projet', 'Flutter', 'Design system'];
+    var m = { skills: ['Angular', 'TypeScript'], level: 'Confirmé', contract: 'CDI', files: [], signature: null,
+      experiences: [{ title: 'Développeur front-end', company: 'Digital Baobab', from: '2022', to: '', current: true }] };
+    var tried = false, form = document.getElementById('form'), F = form.elements;
+    function val(n) { return (F[n] && F[n].value || '').trim(); }
+    function salary() { return +val('salary').replace(/\D/g, '') || 0; }
+
+    function completion(id) {
+      var p = {
+        identity: [!!val('first'), !!val('last'), !!val('birth'), /@/.test(val('email')), !!val('phone')],
+        experience: [m.experiences.length > 0 && !!m.experiences[0].title, m.skills.length >= 3],
+        documents: [m.files.some(function (f) { return f.kind === 'CV'; }), m.files.length > 1 || !!val('portfolio')],
+        terms: [salary() > 0, !!m.contract, !!val('start')],
+        sign: [!!m.signature, F.certify.checked]
+      }[id];
+      return Math.round(p.filter(Boolean).length / p.length * 100);
+    }
+    function total() { return Math.round(SECTIONS.reduce(function (s, x) { return s + completion(x.id); }, 0) / SECTIONS.length); }
+    function renderToc() {
+      document.getElementById('toc').innerHTML = '<div class="overall"><strong>' + total() + ' %</strong><span>complété</span><span class="ui-progress"><span style="width:' + total() + '%"></span></span></div>' +
+        SECTIONS.map(function (s) { var c = completion(s.id);
+          return '<button type="button" data-go="' + s.id + '" class="' + (c === 100 ? 'full' : '') + '"><span class="ring" style="--p:' + c + '"><span class="mi">' + (c === 100 ? 'check' : s.icon) + '</span></span><span class="lbl">' + s.label + '</span><small>' + c + ' %</small></button>'; }).join('');
+    }
+    function renderExps() {
+      document.getElementById('exps').innerHTML = m.experiences.map(function (x, i) {
+        return '<fieldset class="exp"><legend>Poste ' + (i + 1) + '</legend>' + (m.experiences.length > 1 ? '<button class="ui-btn ui-btn--icon rm" type="button" data-rm-exp="' + i + '" aria-label="Supprimer ce poste"><span class="mi">delete_outline</span></button>' : '') +
+          '<div class="row-2"><div class="ui-field"><label class="ui-label">Intitulé</label><div class="field-box"><input data-exp="' + i + '" data-k="title" value="' + x.title + '"></div></div>' +
+          '<div class="ui-field"><label class="ui-label">Entreprise</label><div class="field-box"><input data-exp="' + i + '" data-k="company" value="' + x.company + '"></div></div></div>' +
+          '<div class="row-3 years"><div class="ui-field"><label class="ui-label">De</label><div class="field-box"><input data-exp="' + i + '" data-k="from" value="' + x.from + '" inputmode="numeric" maxlength="4" placeholder="2020"></div></div>' +
+          '<div class="ui-field"><label class="ui-label">À</label><div class="field-box"><input data-exp="' + i + '" data-k="to" value="' + x.to + '"' + (x.current ? ' disabled' : '') + ' inputmode="numeric" maxlength="4" placeholder="' + (x.current ? 'Aujourd\'hui' : '2024') + '"></div></div>' +
+          '<label class="ui-check"><input type="checkbox" data-exp="' + i + '" data-k="current"' + (x.current ? ' checked' : '') + '> Poste actuel</label></div></fieldset>';
+      }).join('');
+    }
+    function renderSkills() {
+      document.getElementById('skills').innerHTML = '<div class="tags">' + m.skills.map(function (s, i) { return '<span class="tag">' + s + '<button type="button" data-rm-skill="' + i + '" aria-label="Retirer ' + s + '"><span class="mi">close</span></button></span>'; }).join('') +
+        '<input id="skill-in" list="skill-list" placeholder="Ajouter une compétence…" aria-label="Compétence"' + (m.skills.length >= 10 ? ' disabled' : '') + '></div>' +
+        '<datalist id="skill-list">' + SKILLS.filter(function (s) { return m.skills.indexOf(s) < 0; }).map(function (s) { return '<option value="' + s + '">'; }).join('') + '</datalist>';
+    }
+    function renderChips() {
+      [['level', ['Junior', 'Confirmé', 'Senior', 'Expert']], ['contract', ['CDI', 'CDD', 'Freelance', 'Stage']]].forEach(function (c) {
+        document.querySelector('[data-chips=' + c[0] + ']').innerHTML = c[1].map(function (v) { return '<button type="button" class="' + (m[c[0]] === v ? 'on' : '') + '" data-chip="' + c[0] + '" data-v="' + v + '">' + v + '</button>'; }).join('');
+      });
+    }
+    function renderFiles() {
+      document.querySelector('[data-act=sample]').hidden = m.files.length > 0;
+      document.getElementById('files').innerHTML = m.files.map(function (f, i) {
+        return '<div class="file"><img src="../../assets/icons-files/pdf.png" alt=""><span><strong>' + f.name + '</strong><small>' + f.size + '</small></span>' +
+          '<span class="ui-badge ' + (f.kind === 'CV' ? 'ui-badge--success' : 'ui-badge--neutral') + '">' + f.kind + '</span><button class="ui-btn ui-btn--icon" type="button" data-rm-file="' + i + '" aria-label="Retirer"><span class="mi">close</span></button></div>';
+      }).join('');
+    }
+    function addFiles(list) {
+      Array.prototype.forEach.call(list || [], function (f, i) {
+        m.files.push({ name: f.name, size: f.size > 1e6 ? (f.size / 1e6).toFixed(1) + ' Mo' : Math.max(1, Math.round(f.size / 1e3)) + ' Ko', kind: !m.files.some(function (x) { return x.kind === 'CV'; }) && i === 0 ? 'CV' : 'Autre' });
+      });
+      renderFiles(); renderToc();
+    }
+    function words() { document.getElementById('words').textContent = ExW.amountInWords(salary()) + ' francs CFA'; }
+    function validate() {
+      var bad = { first: !val('first'), last: !val('last'), email: !/@/.test(val('email')), signature: !m.signature };
+      Object.keys(bad).forEach(function (k) { var f = form.querySelector('[data-req=' + k + ']'); f.classList.toggle('invalid', tried && bad[k]); var e = f.querySelector('.err'); if (e) e.hidden = !(tried && bad[k]); });
+      document.getElementById('sign-err').hidden = !(tried && (!m.signature || !F.certify.checked));
+      return !bad.first && !bad.last && !bad.email && !bad.signature && F.certify.checked;
+    }
+    function scrollTo(id) { document.getElementById('sec-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+    form.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-act],[data-rm-exp],[data-rm-skill],[data-chip],[data-rm-file]'); if (!t) return;
+      if (t.dataset.act === 'add-exp') { m.experiences.push({ title: '', company: '', from: '', to: '', current: false }); renderExps(); }
+      if (t.dataset.rmExp) { m.experiences.splice(+t.dataset.rmExp, 1); renderExps(); }
+      if (t.dataset.rmSkill) { m.skills.splice(+t.dataset.rmSkill, 1); renderSkills(); }
+      if (t.dataset.chip) { m[t.dataset.chip] = t.dataset.v; renderChips(); }
+      if (t.dataset.rmFile) { m.files.splice(+t.dataset.rmFile, 1); renderFiles(); }
+      if (t.dataset.act === 'sample') { m.files = [{ name: 'CV-Jean-Kouassi.pdf', size: '248 Ko', kind: 'CV' }, { name: 'Lettre-motivation.pdf', size: '96 Ko', kind: 'Lettre' }]; renderFiles(); }
+      if (t.dataset.act === 'draft') document.getElementById('draft').innerHTML = '<span class="mi">cloud_done</span>Brouillon enregistré à ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      renderToc();
+    });
+    document.getElementById('toc').addEventListener('click', function (e) { var b = e.target.closest('[data-go]'); if (b) scrollTo(b.dataset.go); });
+    form.addEventListener('input', function (e) {
+      var t = e.target;
+      if (t.dataset.exp) { var x = m.experiences[+t.dataset.exp]; if (t.dataset.k === 'current') { x.current = t.checked; renderExps(); } else x[t.dataset.k] = t.value; }
+      if (t.id === 'salary') { var n = salary(); t.value = n ? new Intl.NumberFormat('fr-FR').format(n) : ''; words(); }
+      if (tried) validate();
+      renderToc();
+    });
+    form.addEventListener('change', function () { renderToc(); if (tried) validate(); });
+    form.addEventListener('keydown', function (e) {
+      if (e.target.id === 'skill-in' && (e.key === 'Enter' || e.key === ',')) {
+        e.preventDefault(); var v = e.target.value.trim().replace(/,$/, '');
+        if (v && m.skills.indexOf(v) < 0 && m.skills.length < 10) m.skills.push(v);
+        renderSkills(); renderToc(); document.getElementById('skill-in').focus();
+      }
+    });
+    form.addEventListener('change', function (e) { if (e.target.id === 'skill-in' && SKILLS.indexOf(e.target.value) >= 0 && m.skills.indexOf(e.target.value) < 0) { m.skills.push(e.target.value); renderSkills(); renderToc(); } });
+    var drop = document.getElementById('drop');
+    document.getElementById('file-in').addEventListener('change', function (e) { addFiles(e.target.files); e.target.value = ''; });
+    drop.addEventListener('dragover', function (e) { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', function () { drop.classList.remove('over'); });
+    drop.addEventListener('drop', function (e) { e.preventDefault(); drop.classList.remove('over'); addFiles(e.dataTransfer.files); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); tried = true;
+      if (!validate()) { var miss = SECTIONS.find(function (s) { return completion(s.id) < 100 && s.id !== 'documents'; }); if (miss) scrollTo(miss.id); return; }
+      var d = document.getElementById('done');
+      d.innerHTML = '<section class="card done">' + ExW.result({ icon: 'task_alt', title: 'Candidature envoyée',
+        text: 'Merci ' + val('first') + ' ! Vous recevrez une réponse sous 10 jours ouvrés à <strong>' + val('email') + '</strong>. Numéro de dossier : <code>CAND-2026-0871</code>.',
+        actions: '<button class="ui-btn ui-btn--outlined" id="review">Revoir ma candidature</button>' }) + '</section>';
+      d.hidden = false; document.getElementById('layout').hidden = true;
+      document.getElementById('review').onclick = function () { d.hidden = true; document.getElementById('layout').hidden = false; };
+    });
+
+    ExW.signature(document.getElementById('sig'), { height: '160px', onChange: function (v) { m.signature = v; renderToc(); if (tried) validate(); } });
+    renderExps(); renderSkills(); renderChips(); renderFiles(); words(); renderToc();
+  })();
+  </script>
+</body>
+</html>

@@ -175,5 +175,34 @@
     return { list: function () { return list; } };
   }
 
-  window.UIComp = { esc: esc, initials: initials, md: md, copyField: copyField, descList: descList, auditLog: auditLog, commentThread: commentThread };
+  /* ── Note en étoiles (lecture seule, demi-étoiles) ──────── */
+  function stars(v, size) {
+    var h = '<span class="stars-ro' + (size ? ' ' + size : '') + '" role="img" aria-label="' + String(v).replace('.', ',') + ' sur 5">';
+    for (var i = 1; i <= 5; i++) h += '<span class="mi">' + (v >= i ? 'star' : v >= i - 0.5 ? 'star_half' : 'star_outline') + '</span>';
+    return h + '</span>';
+  }
+
+  /* ── Curseur d'intervalle (deux poignées, histogramme facultatif) ── */
+  function rangeSlider(el, o) {
+    var v = o.value.slice(), max = Math.max.apply(null, o.histogram || [1]);
+    el.innerHTML = '<div class="rs">' + (o.histogram ? '<div class="rs__hist">' + o.histogram.map(function (n, i) {
+        return '<i data-i="' + i + '" style="height:' + Math.max(6, n / max * 100) + '%"></i>'; }).join('') + '</div>' : '') +
+      '<div class="rs__track"><span class="rs__fill"></span><input type="range" min="' + o.min + '" max="' + o.max + '" step="' + (o.step || 1) + '" value="' + v[0] + '" aria-label="Minimum">' +
+      '<input type="range" min="' + o.min + '" max="' + o.max + '" step="' + (o.step || 1) + '" value="' + v[1] + '" aria-label="Maximum"></div></div>';
+    var ins = el.querySelectorAll('input'), fill = el.querySelector('.rs__fill'), bars = el.querySelectorAll('.rs__hist i');
+    function paint() {
+      var a = (v[0] - o.min) / (o.max - o.min) * 100, b = (v[1] - o.min) / (o.max - o.min) * 100;
+      fill.style.left = a + '%'; fill.style.right = (100 - b) + '%';
+      bars.forEach(function (bar, i) { var c = (i + 0.5) / bars.length * 100; bar.classList.toggle('on', c >= a && c <= b); });
+    }
+    ins.forEach(function (inp, k) {
+      inp.addEventListener('input', function () {
+        var n = +inp.value; if (k === 0) v[0] = Math.min(n, v[1]); else v[1] = Math.max(n, v[0]); inp.value = v[k]; paint(); o.onChange && o.onChange(v.slice());
+      });
+    });
+    paint();
+    return { set: function (nv) { v = nv.slice(); ins[0].value = v[0]; ins[1].value = v[1]; paint(); } };
+  }
+
+  window.UIComp = { stars: stars, rangeSlider: rangeSlider, esc: esc, initials: initials, md: md, copyField: copyField, descList: descList, auditLog: auditLog, commentThread: commentThread };
 })();

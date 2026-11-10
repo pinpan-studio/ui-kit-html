@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Messagerie</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .split { flex: 1; min-height: 0; display: grid; grid-template-columns: 232px 360px minmax(0, 1fr); border-radius: var(--radius-2xl); overflow: hidden; }
+    @media (max-width: 1100px) { .split { grid-template-columns: 320px minmax(0, 1fr); } .folders { display: none !important; } }
+    @media (max-width: 767px) { .split { grid-template-columns: minmax(0, 1fr); border-radius: 0; } .reader { display: none !important; } .split.reading .list { display: none; } .split.reading .reader { display: flex !important; } }
+    .folders { display: flex; flex-direction: column; gap: 1px; padding: var(--space-4) var(--space-3); overflow-y: auto; }
+    .compose { height: 40px; margin-bottom: var(--space-3); border-radius: var(--radius-sm); }
+    .f-section { padding: var(--space-5) var(--space-3) var(--space-2); font: 600 11px/1.4 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .folder { display: flex; align-items: center; gap: var(--space-3); height: 36px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-sm); background: none; text-align: left; font: 500 14px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .folder span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .folder b { font-size: 12px; } .folder .mi { font-size: 20px; }
+    .folder .dot { width: 8px; height: 8px; margin: 0 var(--space-2); border-radius: 50%; }
+    .folder:hover { background: var(--hover-bg); color: var(--text-primary); } .folder.on { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+    .list { display: flex; flex-direction: column; min-height: 0; background: var(--card-bg); }
+    .list-head { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4) var(--space-4) var(--space-3); }
+    .list-head h1 { margin: 0; font-size: var(--text-xl); font-weight: 600; }
+    .seg { display: flex; padding: 3px; gap: 2px; border-radius: var(--radius-sm); background: var(--hover-bg); }
+    .seg button { flex: 1; height: 30px; border: 0; border-radius: 6px; background: none; font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .seg button.on { background: var(--card-bg); color: var(--text-primary); font-weight: 600; box-shadow: var(--shadow-1); }
+    .items { flex: 1; overflow-y: auto; }
+    .item { position: relative; width: 100%; display: flex; gap: var(--space-3); padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5); border: 0; background: none; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+    .item .ava { width: 32px; height: 32px; font-size: 11.5px; }
+    .item:hover { background: var(--hover-bg); }
+    .item.on { background: color-mix(in srgb, var(--primary) 7%, var(--card-bg)); box-shadow: inset 2px 0 0 var(--primary); }
+    .item.unread .i-top strong, .item.unread .i-subject { font-weight: 600; color: var(--text-primary); }
+    .item.unread::before { content: ''; position: absolute; left: 8px; top: 27px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+    .i-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .i-top { display: flex; justify-content: space-between; gap: var(--space-2); } .i-top strong { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .i-top time { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+    .i-subject { font-size: 13px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .i-preview { font-size: 13px; line-height: 1.45; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .i-tags { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-2); } .i-tags .mi { font-size: 16px; color: var(--text-muted); }
+    .star { color: var(--warning) !important; }
+    .reader { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--bg); }
+    .r-bar { display: flex; align-items: center; gap: 2px; height: 56px; padding: 0 var(--space-3); }
+    .r-bar .pos { margin-right: 4px; font-size: 12px; color: var(--text-muted); } .r-back { display: none !important; }
+    @media (max-width: 767px) { .r-back { display: inline-flex !important; } } @media (max-width: 600px) { .r-bar .pos { display: none; } }
+    .r-body { flex: 1; overflow-y: auto; padding: var(--space-8) clamp(16px, 5vw, 56px); }
+    .r-body h2 { margin: 0 0 var(--space-6); max-width: 68ch; font-size: var(--text-xl); font-weight: 600; line-height: 1.3; text-wrap: balance; }
+    .r-from { display: flex; align-items: center; gap: var(--space-3); max-width: 68ch; padding-bottom: var(--space-5); margin-bottom: var(--space-5); }
+    .r-from .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; } .r-from small, .r-from time { font-size: 12px; color: var(--text-muted); }
+    .r-text { max-width: 68ch; } .r-text p { margin: 0 0 var(--space-4); line-height: 1.7; white-space: pre-line; }
+    .files { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+    .file { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2); border-radius: var(--radius-md); background: var(--hover-bg); color: inherit; text-decoration: none; }
+    .file img { width: 28px; } .file span { display: flex; flex-direction: column; } .file strong { font-size: 13px; font-weight: 500; } .file small { font-size: 12px; color: var(--text-muted); } .file .mi { margin-left: var(--space-2); font-size: 18px; color: var(--text-muted); }
+    .r-reply { padding: var(--space-3) clamp(12px, 5vw, 56px) var(--space-4); background: var(--card-bg); }
+    .r-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-secondary); padding: 24px; }
+    .r-empty .mi { font-size: 48px; color: var(--text-muted); } .r-empty .hint { font-size: 12px; color: var(--text-muted); }
+    .ex-content.flush { padding: 0 8px 8px 0; }
+    @media (max-width: 959px) { .ex-content.flush { padding: 0; } }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Messagerie" data-flush>
+  <main id="ex-content"><div class="split" id="split">
+    <nav class="folders" aria-label="Dossiers" id="folders"></nav>
+    <section class="list" aria-label="Messages">
+      <div class="list-head"><h1 id="ftitle"></h1>
+        <label class="searchbox"><span class="mi">search</span><input type="search" id="q" placeholder="Rechercher" aria-label="Rechercher"></label>
+        <div class="seg" id="seg"></div></div>
+      <div class="items" id="items"></div>
+    </section>
+    <article class="reader" id="reader"></article>
+  </div></main>
+
+  <script src="../../js/data/examples.js"></script>
+  <script src="../../js/data/content.js"></script>
+  <script src="../../js/data/ex-utils.js"></script>
+  <script src="../../js/lib/markdown.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, $ = function (id) { return document.getElementById(id); };
+    var FOLDERS = [{ id: 'inbox', label: 'Boîte de réception', icon: 'inbox' }, { id: 'starred', label: 'Suivis', icon: 'star_border' }, { id: 'sent', label: 'Envoyés', icon: 'send' }, { id: 'drafts', label: 'Brouillons', icon: 'drafts' }, { id: 'archive', label: 'Archives', icon: 'archive' }];
+    var all = D.EX_MESSAGES.map(function (m) { return Object.assign({}, m); });
+    var LABELS = all.filter(function (m) { return m.label; }).map(function (m) { return m.label; }).filter(function (l, i, a) { return a.findIndex(function (x) { return x.text === l.text; }) === i; });
+    var MENU = [{ id: 'read', label: 'Marquer comme lu / non lu', icon: 'mark_email_unread' }, { id: 'star', label: 'Suivre', icon: 'star_border', shortcut: 's' }, { id: 'archive', label: 'Archiver', icon: 'archive', shortcut: 'e' }, { divider: true }, { id: 'delete', label: 'Supprimer', icon: 'delete', danger: true }];
+    var S = { folder: 'inbox', q: '', unread: false, cur: innerWidth >= 768 ? all[0].id : null };
+    function unreadCount() { return all.filter(function (m) { return m.unread && !m.archived; }).length; }
+    function messages() {
+      var q = S.q.trim().toLowerCase(), f = S.folder;
+      return all.filter(function (m) { return (f === 'archive' ? m.archived : !m.archived) && (f !== 'starred' || m.starred) && (f === 'inbox' || f === 'starred' || f === 'archive') &&
+        (!S.unread || m.unread) && (!q || (m.from + m.subject + m.preview).toLowerCase().indexOf(q) >= 0); });
+    }
+    function cur() { return all.find(function (m) { return m.id === S.cur; }); }
+    function idx() { return messages().findIndex(function (m) { return m.id === S.cur; }); }
+    function render() {
+      $('folders').innerHTML = '<button class="ui-btn compose" onclick="UIKit.toast(\'Nouveau message (démo)\')"><span class="mi">edit</span>Nouveau message</button>' + FOLDERS.map(function (f) {
+        var n = f.id === 'inbox' ? unreadCount() : f.id === 'drafts' ? 1 : 0;
+        return '<button class="folder' + (S.folder === f.id ? ' on' : '') + '" data-folder="' + f.id + '"><span class="mi">' + f.icon + '</span><span>' + f.label + '</span>' + (n ? '<b>' + n + '</b>' : '') + '</button>'; }).join('') +
+        '<span class="f-section">Libellés</span>' + LABELS.map(function (l) { return '<button class="folder"><i class="dot" style="background:var(--' + l.color + ')"></i><span>' + l.text + '</span></button>'; }).join('');
+      $('ftitle').textContent = FOLDERS.find(function (f) { return f.id === S.folder; }).label;
+      $('seg').innerHTML = '<button class="' + (!S.unread ? 'on' : '') + '" data-unread="0">Tous</button><button class="' + (S.unread ? 'on' : '') + '" data-unread="1">Non lus · ' + unreadCount() + '</button>';
+      var list = messages();
+      $('items').innerHTML = list.length ? list.map(function (m) {
+        return '<button type="button" class="item' + (S.cur === m.id ? ' on' : '') + (m.unread ? ' unread' : '') + '" data-open="' + m.id + '"><span class="ava" style="background:' + D.hue(m.from) + '">' + D.initials(m.from) + '</span>' +
+          '<span class="i-body"><span class="i-top"><strong>' + m.from + '</strong><time>' + m.at + '</time></span><span class="i-subject">' + m.subject + '</span><span class="i-preview">' + m.preview + '</span>' +
+          (m.label || (m.attachments && m.attachments.length) || m.starred ? '<span class="i-tags">' + (m.label ? '<span class="ui-badge" style="color:var(--' + m.label.color + ');background:color-mix(in srgb,var(--' + m.label.color + ') 14%,transparent)">' + m.label.text + '</span>' : '') +
+            (m.attachments && m.attachments.length ? '<span class="mi" title="Pièce jointe">attach_file</span>' : '') + (m.starred ? '<span class="mi star" title="Suivi">star</span>' : '') + '</span>' : '') + '</span></button>';
+      }).join('') : '<div class="ui-empty"><span class="mi" style="font-size:40px">inbox</span><p><strong>Rien ici</strong></p><p class="muted">Aucun message ne correspond.</p></div>';
+      var m = cur();
+      $('split').classList.toggle('reading', !!m);
+      if (!m) { $('reader').innerHTML = '<div class="r-empty"><span class="mi">drafts</span><p><strong>Aucun message sélectionné</strong></p><p>Choisissez une conversation dans la liste.</p><p class="hint"><span class="kbd">J</span> <span class="kbd">K</span> pour naviguer</p></div>'; return; }
+      var i = idx();
+      $('reader').innerHTML = '<header class="r-bar"><button class="ui-btn ui-btn--icon r-back" data-act="back" aria-label="Retour"><span class="mi">arrow_back</span></button>' +
+        '<button class="ui-btn ui-btn--icon" data-act="archive" title="Archiver (E)" aria-label="Archiver"><span class="mi">archive</span></button>' +
+        '<button class="ui-btn ui-btn--icon" data-act="delete" title="Supprimer" aria-label="Supprimer"><span class="mi">delete</span></button>' +
+        '<button class="ui-btn ui-btn--icon" data-act="unread" title="Marquer comme non lu" aria-label="Marquer comme non lu"><span class="mi">mark_email_unread</span></button>' +
+        '<button class="ui-btn ui-btn--icon" data-act="star" title="' + (m.starred ? 'Ne plus suivre (S)' : 'Suivre (S)') + '" aria-label="Suivre"><span class="mi' + (m.starred ? ' star' : '') + '">' + (m.starred ? 'star' : 'star_border') + '</span></button><span class="spacer"></span>' +
+        '<span class="pos">' + (i + 1) + ' sur ' + messages().length + '</span><button class="ui-btn ui-btn--icon" data-act="prev"' + (i <= 0 ? ' disabled' : '') + ' title="Précédent (K)" aria-label="Message précédent"><span class="mi">chevron_left</span></button>' +
+        '<button class="ui-btn ui-btn--icon" data-act="next"' + (i >= messages().length - 1 ? ' disabled' : '') + ' title="Suivant (J)" aria-label="Message suivant"><span class="mi">chevron_right</span></button></header>' +
+        '<div class="r-body"><h2>' + m.subject + '</h2><div class="r-from"><span class="ava" style="background:' + D.hue(m.from) + '">' + D.initials(m.from) + '</span><span class="grow"><strong>' + m.from + '</strong><small>' + m.email + ' · à moi</small></span><time>' + m.at + '</time></div>' +
+        '<div class="r-text">' + m.body.map(function (p) { return '<p>' + p + '</p>'; }).join('') + '</div>' +
+        (m.attachments && m.attachments.length ? '<div class="files">' + m.attachments.map(function (a) { return '<a class="file" href="#" onclick="return false"><img src="../../assets/icons-files/pdf.png" alt=""><span><strong>' + a + '</strong><small>PDF · 248 Ko</small></span><span class="mi">download</span></a>'; }).join('') + '</div>' : '') +
+        '</div><footer class="r-reply"><form class="cc" id="reply"><span class="ava" style="background:' + D.ME.color + ';width:30px;height:30px;font-size:11px">JK</span><div class="cc__box"><textarea rows="1" maxlength="2000" placeholder="Répondre à ' + m.from.split(' ')[0] + '…"></textarea>' +
+        '<div class="cc__bar"><span class="help">Ctrl+Entrée pour envoyer</span><span class="spacer"></span><button class="ui-btn ui-btn--sm">Envoyer</button></div></div></form></footer>';
+    }
+    function open(id) { var m = all.find(function (x) { return x.id === id; }); m.unread = false; S.cur = id; render(); }
+    function step(d) { var l = messages(), n = l[Math.min(l.length - 1, Math.max(0, idx() + d))]; if (n) open(n.id); }
+    function leave(patch, msg) { var i = idx(); Object.assign(cur(), patch); var l = messages(); S.cur = (l[Math.min(i, l.length - 1)] || {}).id || null; render(); UIKit.toast(msg); }
+    function act(a, m) {
+      m = m || cur(); if (!m) return;
+      if (a === 'archive') leave({ archived: true }, 'Conversation archivée');
+      if (a === 'delete') { all.splice(all.indexOf(m), 1); if (S.cur === m.id) S.cur = null; render(); UIKit.toast('Conversation supprimée'); }
+      if (a === 'unread' || a === 'read') { m.unread = a === 'read' ? !m.unread : true; if (a === 'unread') S.cur = null; render(); }
+      if (a === 'star') { m.starred = !m.starred; render(); }
+    }
+    document.getElementById('ex-content').addEventListener('click', function (e) {
+      var t = e.target.closest('[data-folder],[data-unread],[data-open],[data-act]'); if (!t) return;
+      if (t.dataset.folder) S.folder = t.dataset.folder;
+      if (t.dataset.unread) S.unread = t.dataset.unread === '1';
+      if (t.dataset.open) return open(t.dataset.open);
+      if (t.dataset.act) { var a = t.dataset.act; if (a === 'back') S.cur = null; else if (a === 'prev') return step(-1); else if (a === 'next') return step(1); else return act(a); }
+      render();
+    });
+    $('items').addEventListener('contextmenu', function (e) {
+      var b = e.target.closest('[data-open]'); if (!b) return;
+      var m = all.find(function (x) { return x.id === b.dataset.open; });
+      ExW.contextMenu(e, MENU, function (it) { act(it.id, m); });
+    });
+    $('q').addEventListener('input', function (e) { S.q = e.target.value; render(); });
+    document.addEventListener('submit', function (e) { if (e.target.id === 'reply') { e.preventDefault(); UIKit.toast('Réponse envoyée à ' + cur().from); e.target.reset(); } });
+    document.addEventListener('keydown', function (e) {
+      if (e.target.closest('input, textarea, select') || e.metaKey || e.ctrlKey || e.altKey) { if (e.target.closest('#reply') && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) e.target.form.requestSubmit(); return; }
+      var k = e.key.toLowerCase(); if (k === 'j') step(1); if (k === 'k') step(-1); if (k === 'e') act('archive'); if (k === 's') act('star');
+    });
+    render();
+  })();
+  </script>
+</body>
+</html>

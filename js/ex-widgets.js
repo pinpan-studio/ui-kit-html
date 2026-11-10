@@ -137,9 +137,26 @@
     });
   }
 
+  /* Menu contextuel : contextMenu(event, [{id,label,icon,shortcut,danger}|{divider:true}], onSelect(item)) */
+  var ctx;
+  function contextMenu(e, items, onSelect) {
+    e.preventDefault(); if (ctx) ctx.remove();
+    ctx = document.createElement('div'); ctx.className = 'ui-menu__panel ctx-menu'; ctx.setAttribute('role', 'menu');
+    ctx.innerHTML = items.map(function (it, i) { return it.divider ? '<hr>' : '<button class="ui-menu__item' + (it.danger ? ' danger' : '') + '" role="menuitem" data-i="' + i + '"><span class="mi">' + (it.icon || '') + '</span>' + it.label + (it.shortcut ? '<span class="kbd" style="margin-left:auto">' + it.shortcut.toUpperCase() + '</span>' : '') + '</button>'; }).join('');
+    document.body.appendChild(ctx);
+    var x = Math.min(e.clientX, innerWidth - ctx.offsetWidth - 8), y = Math.min(e.clientY, innerHeight - ctx.offsetHeight - 8);
+    ctx.style.left = x + 'px'; ctx.style.top = y + 'px';
+    ctx.addEventListener('click', function (ev) { var b = ev.target.closest('[data-i]'); if (b) onSelect(items[+b.dataset.i]); close(); });
+    var first = ctx.querySelector('button'); if (first) first.focus();
+    function close() { if (ctx) { ctx.remove(); ctx = null; } document.removeEventListener('pointerdown', out, true); document.removeEventListener('keydown', key, true); }
+    function out(ev) { if (ctx && !ctx.contains(ev.target)) close(); }
+    function key(ev) { if (ev.key === 'Escape') close(); }
+    setTimeout(function () { document.addEventListener('pointerdown', out, true); document.addEventListener('keydown', key, true); });
+  }
+
   function fcfa(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(n)) + ' FCFA'; }
 
-  window.ExW = { counters: counters, fmtNum: fmtNum, dropzone: dropzone, qr: qr, calendar: calendar, amountInWords: amountInWords, signature: signature, result: result, fmtSize: fmtSize, fileIcon: fileIcon, fcfa: fcfa,
+  window.ExW = { contextMenu: contextMenu, counters: counters, fmtNum: fmtNum, dropzone: dropzone, qr: qr, calendar: calendar, amountInWords: amountInWords, signature: signature, result: result, fmtSize: fmtSize, fileIcon: fileIcon, fcfa: fcfa,
     init: function (root) { (root || document).querySelectorAll('[data-dropzone]').forEach(dropzone); counters(root); } };
   document.addEventListener('DOMContentLoaded', function () { window.ExW.init(); });
 })();

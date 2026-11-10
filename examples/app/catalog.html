@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catalogue</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .cart-n { margin-left: var(--space-2); min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-md); display: inline-grid; place-items: center; background: var(--primary); color: var(--on-primary); font-size: 11px; font-weight: 600; }
+    .layout { position: relative; display: grid; grid-template-columns: 248px minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+    .facets { position: sticky; top: 0; display: flex; flex-direction: column; }
+    .f-head { display: flex; align-items: center; justify-content: space-between; min-height: 36px; margin-bottom: 4px; } .f-head h2 { margin: 0; font-size: var(--text-lg); font-weight: 600; }
+    .f-group { display: flex; flex-direction: column; gap: 6px; padding: var(--space-4) 0; }
+    .f-group h3 { margin: 0 0 var(--space-2); font: 600 11px/1.4 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .f-group .n { margin-left: var(--space-2); font-size: 12px; color: var(--text-muted); }
+    .range-val { display: flex; justify-content: space-between; margin-top: var(--space-2); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
+    .apply { display: none; } .scrim { display: none; }
+    .r-bar { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+    .r-bar .count { font-size: 13px; color: var(--text-secondary); } .r-bar .count strong { color: var(--text-primary); }
+    .filters-btn { display: none !important; }
+    .sort { width: 200px; } .sort select { min-height: 38px; }
+    .active { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-4); }
+    .active .ui-chip button { border: 0; background: none; padding: 0; color: inherit; cursor: pointer; display: grid; } .active .ui-chip .mi { font-size: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: var(--space-4); } .grid .empty { grid-column: 1 / -1; }
+    .product { overflow: hidden; display: flex; flex-direction: column; }
+    .product:hover { background: var(--hover-bg); } .product:hover .visual > .mi { transform: scale(1.04); }
+    .visual { position: relative; aspect-ratio: 4 / 3; display: grid; place-items: center; background: hsl(var(--h) 22% 95%); }
+    [data-mode="dark"] .visual { background: hsl(var(--h) 14% 18%); }
+    .visual > .mi { font-size: 56px; color: hsl(var(--h) 22% 42%); transition: transform .25s ease; } [data-mode="dark"] .visual > .mi { color: hsl(var(--h) 25% 70%); }
+    .visual .badge { position: absolute; top: 12px; left: 12px; padding: 2px var(--space-2); border-radius: var(--radius-sm); background: var(--card-bg); color: var(--text-primary); font: 600 11px/1.6 var(--font-sans); }
+    .visual .badge.promo { background: var(--error); color: #fff; }
+    .fav { position: absolute !important; top: 4px; right: 4px; color: var(--text-muted) !important; } .fav.on { color: var(--error) !important; }
+    .p-body { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: var(--space-4); }
+    .p-body .cat { font-size: 12px; color: var(--text-muted); } .p-body h3 { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.4; }
+    .rating { display: flex; align-items: center; gap: var(--space-2); font-size: 12px; color: var(--text-secondary); }
+    .p-foot { margin-top: auto; padding-top: var(--space-3); display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+    .price { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; } .price small { margin-left: 4px; font-size: 12px; font-weight: 500; color: var(--text-muted); }
+    .stock { font-size: 12px; font-weight: 500; } .stock.low { color: var(--warning-text); } .stock.out { color: var(--error-text); }
+    .add { margin-top: var(--space-3); width: 100%; }
+    @media (max-width: 1100px) {
+      .layout { display: block; } .filters-btn { display: inline-flex !important; }
+      .facets { position: fixed; z-index: 70; left: 0; right: 0; bottom: 0; top: auto; max-height: 82%; overflow-y: auto; padding: var(--space-4) var(--space-5) var(--space-5); border-radius: var(--radius-xl) var(--radius-xl) 0 0; background: var(--card-bg); transform: translateY(105%); transition: transform .3s var(--ease); box-shadow: var(--shadow-3); }
+      .facets.open { transform: none; } .apply { display: flex; flex-shrink: 0; margin-top: var(--space-2); height: 44px; }
+      .scrim.open { display: block; position: fixed; inset: 0; z-index: 69; background: rgba(0,0,0,.4); }
+    }
+    @media (max-width: 767px) {
+      .r-bar { flex-wrap: wrap; } .r-bar .count { display: none; } .sort { flex: 1; width: auto; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); } .visual > .mi { font-size: 40px; }
+      .p-body { padding: var(--space-3); } .p-foot { flex-direction: column; gap: 2px; } .price { font-size: 14px; } .add { margin-top: var(--space-2); }
+    }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Catalogue">
+  <main id="ex-content">
+    <div class="page-head">
+      <div class="titles"><span class="eyebrow">Matériel &amp; accessoires</span><h1>Catalogue</h1><p>Livraison sous 48 h à Abidjan · retours gratuits sous 14 jours</p></div>
+      <div class="actions"><button class="ui-btn ui-btn--outlined" id="cart" disabled><span class="mi">shopping_bag</span>Panier<span class="cart-n" hidden></span></button></div>
+    </div>
+    <div class="layout">
+      <aside class="facets" aria-label="Filtres" id="facets">
+        <div class="f-head"><h2>Filtres</h2><button class="ui-btn ui-btn--text ui-btn--sm" id="reset" hidden>Réinitialiser</button></div>
+        <section class="f-group" id="cats"><h3>Catégorie</h3></section>
+        <section class="f-group"><h3>Prix</h3><div id="range"></div><div class="range-val"><span id="pmin"></span><span id="pmax"></span></div></section>
+        <section class="f-group" id="ratings"><h3>Note minimale</h3></section>
+        <section class="f-group"><label class="ui-switch"><input type="checkbox" role="switch" id="stock"> En stock uniquement</label></section>
+        <button class="ui-btn apply" id="apply"></button>
+      </aside>
+      <div class="scrim" id="scrim"></div>
+      <section class="results">
+        <div class="r-bar">
+          <button class="ui-btn ui-btn--outlined filters-btn" id="open-filters"><span class="mi">tune</span><span id="fcount">Filtres</span></button>
+          <span class="count" id="count"></span><span class="spacer"></span>
+          <div class="sort"><select class="ui-select" id="sort" aria-label="Trier par"><option value="pop">Pertinence</option><option value="asc">Prix croissant</option><option value="desc">Prix décroissant</option><option value="rating">Mieux notés</option></select></div>
+        </div>
+        <div class="active" id="active"></div>
+        <div class="grid" id="grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../../js/data/examples.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, P = D.EX_PRODUCTS, MIN = 60000, MAX = 420000, nf = new Intl.NumberFormat('fr-FR'), $ = function (id) { return document.getElementById(id); };
+    var S = { cats: [], price: [MIN, MAX], rating: 0, stock: false, sort: 'pop', favs: ['p-3'], cart: [] };
+    var k = function (v) { return Math.round(v / 1000) + ' k'; };
+    var hist = Array.from({ length: 12 }, function (_, i) { var w = (MAX - MIN) / 12; return P.filter(function (p) { return p.price >= MIN + i * w && p.price < MIN + (i + 1) * w; }).length; });
+    function priceActive() { return S.price[0] > MIN || S.price[1] < MAX; }
+    function active() { return S.cats.length + (priceActive() ? 1 : 0) + (S.rating ? 1 : 0) + (S.stock ? 1 : 0); }
+    function products() {
+      var l = P.filter(function (p) { return (!S.cats.length || S.cats.indexOf(p.category) >= 0) && p.price >= S.price[0] && p.price <= S.price[1] && p.rating >= S.rating && (!S.stock || p.stock > 0); });
+      return S.sort === 'pop' ? l : l.slice().sort(function (a, b) { return S.sort === 'asc' ? a.price - b.price : S.sort === 'desc' ? b.price - a.price : b.rating - a.rating; });
+    }
+    $('cats').innerHTML += D.EX_CATEGORIES.map(function (c) { return '<label class="ui-check"><input type="checkbox" data-cat="' + c + '"> ' + c + '<span class="n">' + P.filter(function (p) { return p.category === c; }).length + '</span></label>'; }).join('');
+    $('ratings').innerHTML += [0, 4, 4.5].map(function (r) { return '<label class="ui-check"><input type="radio" name="rating" value="' + r + '"' + (r === 0 ? ' checked' : '') + '> ' + (r ? UIComp.stars(r, 'small') + ' ' + String(r).replace('.', ',') + ' et plus' : 'Toutes les notes') + '</label>'; }).join('');
+    var slider = UIComp.rangeSlider($('range'), { min: MIN, max: MAX, step: 10000, value: S.price, histogram: hist, onChange: function (v) { S.price = v; render(); } });
+
+    function render() {
+      var list = products(), n = active();
+      $('pmin').textContent = nf.format(S.price[0]) + ' F'; $('pmax').textContent = nf.format(S.price[1]) + ' F';
+      $('reset').hidden = !n; $('count').innerHTML = '<strong>' + list.length + '</strong> article(s)';
+      $('fcount').textContent = 'Filtres' + (n ? ' · ' + n : ''); $('apply').textContent = 'Voir ' + list.length + ' article(s)';
+      document.querySelectorAll('[data-cat]').forEach(function (c) { c.checked = S.cats.indexOf(c.dataset.cat) >= 0; });
+      document.querySelectorAll('[name=rating]').forEach(function (r) { r.checked = +r.value === S.rating; });
+      $('stock').checked = S.stock;
+      var chip = function (label, key) { return '<span class="ui-chip">' + label + '<button type="button" data-rm="' + key + '" aria-label="Retirer ' + label + '"><span class="mi">cancel</span></button></span>'; };
+      $('active').innerHTML = S.cats.map(function (c) { return chip(c, 'cat:' + c); }).join('') + (priceActive() ? chip(k(S.price[0]) + ' – ' + k(S.price[1]), 'price') : '') +
+        (S.rating ? chip(String(S.rating).replace('.', ',') + ' ★ et plus', 'rating') : '') + (S.stock ? chip('En stock', 'stock') : '');
+      $('active').hidden = !n;
+      $('grid').innerHTML = list.length ? list.map(function (p) {
+        var fav = S.favs.indexOf(p.id) >= 0;
+        return '<article class="card product"><div class="visual" style="--h:' + p.hue + '"><span class="mi">' + p.icon + '</span>' + (p.badge ? '<span class="badge' + (p.badge[0] === '-' ? ' promo' : '') + '">' + p.badge + '</span>' : '') +
+          '<button class="ui-btn ui-btn--icon fav' + (fav ? ' on' : '') + '" data-fav="' + p.id + '" aria-pressed="' + fav + '" aria-label="Favori : ' + p.name + '"><span class="mi">' + (fav ? 'favorite' : 'favorite_border') + '</span></button></div>' +
+          '<div class="p-body"><span class="cat">' + p.category + '</span><h3>' + p.name + '</h3><span class="rating">' + UIComp.stars(p.rating, 'small') + '<span>' + p.rating.toFixed(1).replace('.', ',') + '</span></span>' +
+          '<div class="p-foot"><span class="price">' + nf.format(p.price) + '<small>FCFA</small></span>' + (!p.stock ? '<span class="stock out">Rupture</span>' : p.stock < 8 ? '<span class="stock low">Plus que ' + p.stock + '</span>' : '') + '</div>' +
+          '<button class="ui-btn ui-btn--outlined add" data-add="' + p.id + '"' + (p.stock ? '' : ' disabled') + '><span class="mi">add_shopping_cart</span>Ajouter</button></div></article>';
+      }).join('') : '<div class="card empty ui-empty"><span class="mi" style="font-size:40px">filter_alt_off</span><p><strong>Aucun article</strong></p><p class="muted">Élargissez vos filtres pour voir plus de résultats.</p><button class="ui-btn ui-btn--tonal" data-reset>Réinitialiser les filtres</button></div>';
+      var cn = document.querySelector('.cart-n'); cn.hidden = !S.cart.length; cn.textContent = S.cart.length; $('cart').disabled = !S.cart.length;
+    }
+    function reset() { S.cats = []; S.price = [MIN, MAX]; S.rating = 0; S.stock = false; slider.set(S.price); render(); }
+    function toCheckout() {
+      var items = []; S.cart.forEach(function (p) { var it = items.find(function (x) { return x.name === p.name; }); if (it) it.qty++; else items.push({ name: p.name, variant: p.category, price: p.price, qty: 1, icon: p.icon, hue: p.hue }); });
+      try { sessionStorage.setItem('ex-cart', JSON.stringify(items)); } catch (e) {}
+      location.href = '../forms/checkout.html';
+    }
+    function sheet(open) { $('facets').classList.toggle('open', open); $('scrim').classList.toggle('open', open); }
+    document.getElementById('ex-content').addEventListener('change', function (e) {
+      var t = e.target;
+      if (t.dataset.cat) { var i = S.cats.indexOf(t.dataset.cat); i < 0 ? S.cats.push(t.dataset.cat) : S.cats.splice(i, 1); }
+      if (t.name === 'rating') S.rating = +t.value;
+      if (t.id === 'stock') S.stock = t.checked;
+      if (t.id === 'sort') S.sort = t.value;
+      render();
+    });
+    document.getElementById('ex-content').addEventListener('click', function (e) {
+      var t = e.target.closest('[data-rm],[data-fav],[data-add],[data-reset],#reset,#open-filters,#apply,#scrim,#cart'); if (!t) return;
+      if (t.dataset.rm) { var r = t.dataset.rm; if (r.indexOf('cat:') === 0) S.cats.splice(S.cats.indexOf(r.slice(4)), 1); if (r === 'price') { S.price = [MIN, MAX]; slider.set(S.price); } if (r === 'rating') S.rating = 0; if (r === 'stock') S.stock = false; }
+      if (t.dataset.fav) { var f = S.favs.indexOf(t.dataset.fav); f < 0 ? S.favs.push(t.dataset.fav) : S.favs.splice(f, 1); }
+      if (t.dataset.add) { var p = P.find(function (x) { return x.id === t.dataset.add; }); S.cart.push(p); UIKit.toast('« ' + p.name + ' » ajouté au panier'); }
+      if (t.hasAttribute('data-reset') || t.id === 'reset') return reset();
+      if (t.id === 'open-filters') return sheet(true);
+      if (t.id === 'apply' || t.id === 'scrim') return sheet(false);
+      if (t.id === 'cart') return toCheckout();
+      render();
+    });
+    render();
+  })();
+  </script>
+</body>
+</html>

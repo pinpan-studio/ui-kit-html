@@ -97,6 +97,13 @@ img { max-width: 100%; display: block; }
 .ui-input:focus, .ui-select:focus, .ui-textarea:focus { outline: none; border-color: var(--primary); box-shadow: var(--focus-ring); }
 .ui-field--error .ui-input, .ui-input[aria-invalid="true"] { border-color: var(--error); }
 .ui-field--error .ui-hint { color: var(--error-text); }
+/* Champ avec icône (boîte englobante) */
+.field-box { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-input); background: var(--card-bg); color: var(--text-muted); }
+.field-box:focus-within { border-color: var(--primary); box-shadow: var(--focus-ring); }
+.field-box input, .field-box textarea, .field-box select { flex: 1; min-width: 0; height: 42px; border: 0; outline: 0; background: none; font: 14px var(--font-sans); color: var(--text-primary); }
+.field-box .mi { font-size: 20px; }
+.field-box.textarea-box { align-items: stretch; padding: var(--space-2) var(--space-3); } .field-box textarea { height: auto; resize: vertical; min-height: 120px; }
+.field-box select { appearance: none; background: none; cursor: pointer; }
 
 .ui-check { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; }
 .ui-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); }

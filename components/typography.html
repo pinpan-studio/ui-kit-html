@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Typographie</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/fonts-extra.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .card-box { padding: 20px; border-radius: var(--radius-lg); background: var(--card-bg); }
+    .badge { display: inline-flex; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: var(--hover-bg); color: var(--text-secondary); }
+    .badge.ok { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success-text); } .badge.warn { background: color-mix(in srgb, var(--warning) 18%, transparent); color: var(--warning-text); } .badge.bad { background: color-mix(in srgb, var(--error) 14%, transparent); color: var(--error-text); }
+    .sample-input { max-width: 560px; }
+    .families { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 16px; }
+    .family { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: var(--radius-lg); background: var(--card-bg); }
+    .family header { display: flex; align-items: center; gap: 14px; } .fam-big { font-size: 44px; line-height: 1; width: 64px; }
+    .fam-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; } .fam-meta span { font-size: 12px; color: var(--text-secondary); }
+    .fam-meta code { font-size: 11px; color: var(--text-muted); cursor: copy; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fam-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--warning-text); } .fam-status.ok { color: var(--success-text); } .fam-status .mi { font-size: 15px; }
+    .fam-sample { margin: 0; font-size: 20px; line-height: 1.35; } .fam-glyphs { margin: 0; font-size: 13px; color: var(--text-secondary); word-break: break-word; }
+    .family footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; } .fam-weights { display: flex; flex-wrap: wrap; gap: 6px; } .fam-weights span { padding: 1px 6px; border-radius: 4px; background: var(--hover-bg); }
+    .family footer .spacer { flex: 1; }
+    .pairing { display: flex; flex-direction: column; gap: 6px; max-width: 520px; } .pairing h3 { margin: 0; } .pairing p { margin: 0; } .pairing-foot { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; padding-top: 10px; border-top: 1px dashed var(--border); }
+    .scale { border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; }
+    .scale-head, .scale-row { display: grid; grid-template-columns: 170px minmax(0, 1fr) 130px 130px 100px; gap: 16px; align-items: center; padding: 10px 16px; }
+    .scale-head { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); background: var(--hover-bg); }
+    .scale-row { width: 100%; border: 0; border-top: 1px solid var(--border); background: none; text-align: left; color: inherit; font: inherit; cursor: copy; } .scale-row:hover { background: var(--hover-bg); }
+    .sc-name { display: flex; flex-direction: column; } .sc-name strong { font-size: 13px; } .sc-name code { font-size: 11px; color: var(--primary); }
+    .sc-sample { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .sc-num { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; } .sc-num em { color: var(--text-muted); margin-left: 4px; }
+    .sc-usage { grid-column: 2 / -1; margin-top: -8px; font-size: 11px; color: var(--text-muted); }
+    @media (max-width: 900px) { .scale-head { display: none; } .scale-row { grid-template-columns: 1fr; gap: 4px; } .sc-usage { grid-column: 1; margin: 0; } }
+    .vars { display: flex; flex-wrap: wrap; gap: 6px; } .var-chip { padding: 4px 10px; border: 1px solid var(--border); border-radius: 14px; background: none; cursor: copy; } .var-chip code { font-size: 12px; }
+    .hier { display: flex; flex-direction: column; } .hier.good h1, .hier.good h2 { margin: 2px 0 4px; } .hier.good p { margin: 0; } .hier.good .h-gap { margin-top: 20px; }
+    .hier.bad { gap: 8px; font-size: 14px; } .hier.bad .b-title { font-size: 15px; }
+    .weight-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; } .weight-tabs button { padding: 6px 14px; border: 1px solid var(--border); border-radius: 16px; background: var(--card-bg); font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; } .weight-tabs button.on { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+    .weights { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .weight { display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: var(--radius-md); background: var(--card-bg); } .weight.synth { opacity: .55; }
+    .w-num { font-size: 11px; color: var(--text-muted); } .w-sample { font-size: 22px; } .w-name { font-size: 12px; color: var(--text-secondary); }
+    .lh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 12px; }
+    .lh-card { padding: 16px; border-radius: var(--radius-md); background: var(--card-bg); border: 2px solid transparent; } .lh-card.rec { border-color: var(--primary); }
+    .lh-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; } .lh-card p { margin: 0; font-size: 14px; }
+    .tr-row { display: flex; align-items: center; gap: 16px; padding: 6px 0; } .tr-row code { width: 70px; font-size: 12px; color: var(--text-muted); }
+    .tr-title { font: 600 28px var(--font-heading); } .tr-caps { font: 700 11px var(--font-body); text-transform: uppercase; } .ok-ic { color: var(--success); font-size: 18px; }
+    .measure-ctrl, .trunc-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 14px; } .measure-ctrl input, .trunc-ctrl input { flex: 1 1 200px; accent-color: var(--primary); }
+    .measure-text { margin: 0; }
+    .contrast-table { border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; }
+    .ct-row { display: grid; grid-template-columns: 24px 200px minmax(0, 1fr) 70px 90px; gap: 12px; align-items: center; padding: 10px 16px; } .ct-row + .ct-row { border-top: 1px solid var(--border); }
+    .ct-swatch { width: 20px; height: 20px; border-radius: 6px; } .ct-row code { font-size: 12px; } .ct-ratio { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+    @media (max-width: 700px) { .ct-row { grid-template-columns: 24px 1fr auto; } .ct-sample, .ct-row .badge { display: none; } }
+    .al-p { margin: 0; font-size: 14px; } .al-title { margin: 0; max-width: 340px; } .al-center { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; } .al-center .mi { font-size: 32px; color: var(--text-muted); }
+    .nums { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } .nums > div { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; } .nums .text-overline { align-self: flex-start; } .num-cell { font: 500 15px var(--font-body); } .num-cell.prop { font-variant-numeric: proportional-nums; }
+    .fmt-table { width: 100%; border-collapse: collapse; font-size: 13px; } .fmt-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); } .fmt-table td:first-child { color: var(--text-muted); } .fmt-val { font-weight: 600; } .fmt-table code { font-size: 11px; color: var(--text-muted); }
+    .trunc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 12px; } .trunc-box { max-width: 100%; overflow: hidden; padding: 12px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: var(--card-bg); box-sizing: border-box; }
+    .trunc-box p { margin: 6px 0 0; font-size: 14px; } .overflowing { white-space: nowrap; color: var(--error-text); }
+    .inline-list p { margin: 0 0 8px; font-size: 14px; } mark { background: color-mix(in srgb, var(--warning) 35%, transparent); color: inherit; padding: 0 2px; border-radius: 2px; }
+    kbd { padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; font: 12px var(--font-mono); }
+    .links a { color: var(--primary); text-underline-offset: 3px; } .links a.visited { color: var(--purple); } .links a.focus { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; } .links a .mi { font-size: 14px; vertical-align: -2px; margin-left: 2px; }
+    .defs { margin: 0 0 16px; } .defs dt { font-weight: 700; } .defs dd { margin: 2px 0 10px; color: var(--text-secondary); font-size: 14px; }
+    .pullquote { margin: 0; padding: 16px 20px; border-left: 4px solid var(--primary); background: var(--primary-soft); border-radius: 0 var(--radius-md) var(--radius-md) 0; } .pullquote blockquote { margin: 0; font: 500 18px/1.5 var(--font-heading); } .pullquote figcaption { margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
+    .task { list-style: none; margin-left: -18px; display: flex; align-items: center; gap: 8px; } .box { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; } .box.on { background: var(--primary); border-color: var(--primary); }
+    .fr-rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 8px; margin-bottom: 20px; }
+    .fr-rule { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--card-bg); } .fr-label { font-size: 12px; font-weight: 700; }
+    .fr-bad, .fr-good { display: flex; align-items: center; gap: 6px; font-size: 14px; } .fr-bad { color: var(--error-text); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--error) 50%, transparent); } .fr-good { color: var(--success-text); } .fr-bad .mi, .fr-good .mi { font-size: 16px; }
+    .fr-tool { display: grid; gap: 14px; } .fr-out { min-height: 80px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-input); background: var(--bg); font-size: 14px; line-height: 1.7; white-space: pre-wrap; }
+    .sp { display: inline-block; min-width: .32em; height: 1em; vertical-align: -2px; background: color-mix(in srgb, var(--primary) 35%, transparent); border-radius: 2px; } .sp.fine { min-width: .18em; background: color-mix(in srgb, var(--purple) 45%, transparent); }
+    .legend { font-size: 12px; color: var(--text-muted); }
+    .fluid-frame { max-width: 100%; container-type: inline-size; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card-bg); transition: width .1s; }
+    .fluid-in { padding: clamp(16px, 4cqi, 40px); display: flex; flex-direction: column; gap: 8px; } .fl-over { font: 700 clamp(10px, .6cqi + 8px, 12px) var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
+    .fl-title { margin: 0; font: 700 clamp(24px, 3.2cqi + 12px, 44px)/1.15 var(--font-heading); } .fl-body { margin: 0; font-size: clamp(14px, .6cqi + 12px, 18px); color: var(--text-secondary); max-width: 60ch; } .fl-meta { font-size: 11px; color: var(--text-muted); }
+    .a11y-card { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--radius-md); background: var(--card-bg); } .a11y-card .mi { color: var(--primary); font-size: 24px; } .a11y-card span { font-size: 13px; color: var(--text-secondary); }
+    .pg { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 20px; } @media (max-width: 900px) { .pg { grid-template-columns: 1fr; } }
+    .pg-ctrls { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: var(--radius-lg); background: var(--card-bg); } .pg-ctrls input[type=range] { width: 100%; accent-color: var(--primary); }
+    .pg-out { display: flex; flex-direction: column; gap: 12px; min-width: 0; } .pg-preview { min-height: 140px; padding: 24px; border-radius: var(--radius-lg); background: var(--card-bg); outline: none; overflow-wrap: anywhere; }
+    .pg-css { position: relative; border-radius: var(--radius-md); background: #0f172a; } .pg-css pre { margin: 0; padding: 14px 48px 14px 14px; color: #e2e8f0; font: 12px/1.6 var(--font-mono); overflow-x: auto; } .pg-css button { position: absolute; top: 6px; right: 6px; color: #94a3b8; }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/typography.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Typographie" data-icon="text_fields" data-eyebrow="Fondations"
+      data-subtitle="Tous les concepts typographiques du kit : familles de polices, échelle et hiérarchie, graisses, interlignage, interlettrage, longueur de ligne, couleur et contraste, chiffres, troncature, styles en ligne, règles de la typographie française, tailles fluides et testeur.">
+
+      <section class="doc-section" id="families" data-title="Familles de polices" data-toc="Familles" data-source="css/fonts-extra.css · --font-heading / --font-body / --font-code"
+        data-desc="Toutes les polices sont servies localement (assets/fonts) : aucune requête vers Google Fonts. Modifiez le texte d'aperçu pour tester vos propres contenus.">
+        <div class="ui-field sample-input"><label class="ui-label" for="fam-in">Texte d'aperçu</label><div class="field-box"><span class="mi">edit</span><input id="fam-in" value="Le véhicule CI-4521-AB a parcouru 1 248 km en octobre."></div></div>
+        <div class="families" id="fam-grid"></div>
+        <div class="demo" data-label="Pairing recommandé" data-hint="Outfit pour l'accroche, Inter pour la lecture, Space Mono pour les identifiants">
+          <div class="pairing">
+            <span class="text-overline">Facture</span>
+            <h3 class="text-h3">Abonnement Premium — octobre</h3>
+            <p class="text-body">Prestations de géolocalisation pour 48 véhicules, maintenance des balises incluse.</p>
+            <div class="pairing-foot"><span class="text-mono">FAC-2026-0981</span><strong class="text-h4 text-tabular">1 250 000 FCFA</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="scale" data-title="Échelle typographique" data-toc="Échelle" data-source="classes .text-*"
+        data-desc="Treize styles nommés couvrent toute l'interface ; ils remplacent les tailles en dur. Les classes gagnent sur les règles globales h1–h4 : on peut donner l'apparence d'un h3 à un h2 sans casser la sémantique. Cliquez une ligne pour copier la classe.">
+        <div class="scale" id="scale-table"></div>
+        <div class="demo" data-label="Variables et classes" data-nocode><div class="vars" id="vars"></div></div>
+      </section>
+
+      <section class="doc-section" id="hierarchy" data-title="Hiérarchie & rythme vertical" data-toc="Hiérarchie" data-cols="2" data-source="taille · graisse · couleur · espacement"
+        data-desc="La hiérarchie ne repose pas que sur la taille : graisse, couleur et espace au-dessus d'un titre (plus grand qu'en dessous) indiquent ce qui va ensemble. Un seul h1 par page, des niveaux sans saut (h2 → h3, jamais h2 → h4).">
+        <div class="demo" data-label="À faire" data-hint="contraste de tailles net, espace proximal">
+          <div class="hier good">
+            <span class="text-overline">Client · CLI-1040</span>
+            <h1 class="text-page-title">Transports Yao &amp; Fils</h1>
+            <p class="text-body-sm">Client depuis mars 2019 · 48 véhicules · Abidjan</p>
+            <h2 class="text-h4 h-gap">Contrat en cours</h2>
+            <p class="text-body">Offre Premium Flotte, renouvelée par tacite reconduction au 28 février 2027.</p>
+            <h2 class="text-h4 h-gap">Dernière intervention</h2>
+            <p class="text-body">Remplacement d'une balise sur CI-4521-AB le 14 octobre.</p>
+          </div>
+        </div>
+        <div class="demo" data-label="À éviter" data-hint="tout se ressemble, espacements égaux">
+          <div class="hier bad">
+            <span>Client · CLI-1040</span><span class="b-title">Transports Yao &amp; Fils</span><span>Client depuis mars 2019 · 48 véhicules · Abidjan</span>
+            <span class="b-title">Contrat en cours</span><span>Offre Premium Flotte, renouvelée par tacite reconduction au 28 février 2027.</span>
+            <span class="b-title">Dernière intervention</span><span>Remplacement d'une balise sur CI-4521-AB le 14 octobre.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="weights" data-title="Graisses" data-source="font-weight 100–900"
+        data-desc="Seules les graisses réellement embarquées s'affichent correctement ; les autres sont simulées par le navigateur (« faux gras »). Usage : 400 texte, 500 valeurs, 600 libellés et titres secondaires, 700 titres.">
+        <div><div class="weight-tabs" id="weight-tabs"></div><div class="weights" id="w-grid"></div></div>
+      </section>
+
+      <section class="doc-section" id="line-height" data-title="Interlignage" data-source="line-height"
+        data-desc="Plus le texte est petit et long, plus l'interligne doit être généreux : 1,15–1,3 pour les titres, 1,5–1,6 pour le texte d'interface, 1,7 pour la lecture longue. Sans unité, il s'adapte à la taille de police.">
+        <div class="lh-grid" id="lh"></div>
+      </section>
+
+      <section class="doc-section" id="tracking" data-title="Interlettrage" data-cols="2" data-source="letter-spacing (em)"
+        data-desc="Les grands titres gagnent à être légèrement resserrés (−0,01 à −0,03 em) ; les petites capitales et surtitres doivent être espacés (+0,04 à +0,1 em). Le texte courant reste à 0.">
+        <div class="demo" data-label="Titre (Outfit 28)" data-nocode><div id="tr-title"></div></div>
+        <div class="demo" data-label="Majuscules (Inter 11)" data-nocode><div id="tr-caps"></div></div>
+      </section>
+
+      <section class="doc-section" id="measure" data-title="Longueur de ligne (mesure)" data-toc="Longueur de ligne" data-source="max-width en ch · .text-measure (68ch)"
+        data-desc="Entre 45 et 75 caractères par ligne pour un texte confortable. Au-delà, l'œil peine à retrouver le début de la ligne suivante ; en deçà, le rythme est haché. Faites varier la largeur.">
+        <div class="demo" data-label="Ajustez la mesure" data-nocode>
+          <div class="measure-ctrl"><input type="range" min="25" max="120" value="68" id="measure-r" aria-label="Mesure en caractères"><span class="badge ok" id="measure-badge"></span></div>
+          <p class="measure-text text-body-lg" id="measure-text"></p>
+        </div>
+      </section>
+
+      <section class="doc-section" id="color" data-title="Couleur du texte & contraste" data-toc="Couleur & contraste" data-source="--text-primary / --text-secondary / --text-muted · WCAG 2.1"
+        data-desc="Ratios calculés en direct sur le fond des cartes, pour le thème actif (basculez clair / sombre pour comparer). AA exige 4,5 : 1 pour le texte courant et 3 : 1 pour le texte de 18 px et plus (ou 14 px gras).">
+        <div class="contrast-table" id="contrast"></div>
+        <p class="muted small">Pour du texte coloré, utilisez les variantes <b>-text</b> (<code>--success-text</code>, <code>--warning-text</code>…) : les couleurs vives de base sont faites pour les fonds, pastilles et icônes, pas pour le texte courant.</p>
+        <p class="muted small">Règle : <b>--text-muted</b> est réservé aux informations accessoires (horodatages, aides) — jamais à un contenu indispensable. Une couleur ne doit pas être le seul porteur d'information.</p>
+      </section>
+
+      <section class="doc-section" id="alignment" data-title="Alignement, césure & retour à la ligne" data-toc="Alignement" data-cols="3" data-source="text-align · hyphens · text-wrap"
+        data-desc="Alignez à gauche le texte courant ; le justifié crée des « rivières » d'espaces sans césure. Centrez seulement les textes très courts. text-wrap: balance équilibre les titres, pretty évite les veuves.">
+        <div class="demo" data-label="Gauche (par défaut)" data-nocode><p class="al-p" data-para></p></div>
+        <div class="demo" data-label="Justifié sans césure" data-hint="rivières" data-nocode><p class="al-p" style="text-align:justify" data-para></p></div>
+        <div class="demo" data-label="Justifié + césure" data-hint=".text-hyphens" data-nocode><p class="al-p text-hyphens" lang="fr" style="text-align:justify" data-para></p></div>
+        <div class="demo" data-label="Titre sans équilibrage"><h3 class="text-h3 al-title">Suivi de flotte en temps réel pour les entreprises ivoiriennes</h3></div>
+        <div class="demo" data-label="Titre équilibré" data-hint=".text-balance"><h3 class="text-h3 al-title text-balance">Suivi de flotte en temps réel pour les entreprises ivoiriennes</h3></div>
+        <div class="demo" data-label="Centré (court uniquement)"><div class="al-center"><span class="mi">inbox</span><strong class="text-h4">Aucun résultat</strong><span class="text-body-sm">Modifiez vos filtres pour élargir la recherche.</span></div></div>
+      </section>
+
+      <section class="doc-section" id="numbers" data-title="Chiffres & formats" data-toc="Chiffres" data-cols="2" data-source="font-variant-numeric · Intl (fr-FR)"
+        data-desc="Dans les tableaux et compteurs, utilisez les chiffres tabulaires (.text-tabular) : chaque chiffre a la même largeur, les colonnes s'alignent et les valeurs ne « sautent » pas. Formatez toujours avec Intl en fr-FR.">
+        <div class="demo" data-label="Proportionnels vs tabulaires" data-nocode><div class="nums" id="nums"></div></div>
+        <div class="demo" data-label="Formats français (Intl)" data-nocode><table class="fmt-table" id="formats"></table></div>
+      </section>
+
+      <section class="doc-section" id="overflow" data-title="Troncature & mots longs" data-toc="Troncature" data-source=".text-truncate · .text-clamp-2/3 · .text-break"
+        data-desc="Tronquez sur une ligne dans les tableaux et listes (avec infobulle du texte complet), sur 2–3 lignes dans les cartes. Les URL, IMEI et identifiants sans espace doivent pouvoir se couper (.text-break).">
+        <div>
+          <div class="trunc-ctrl"><span class="text-label">Largeur du conteneur</span><input type="range" min="160" max="560" step="10" value="320" id="trunc" aria-label="Largeur du conteneur"><code id="trunc-out">320 px</code></div>
+          <div class="trunc-grid" id="trunc-grid"></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="inline" data-title="Styles en ligne" data-cols="2" data-source="strong · em · mark · code · kbd · abbr · sup · sub · small · del · a"
+        data-desc="Utilisez les balises sémantiques (lues par les lecteurs d'écran) plutôt que des styles visuels seuls.">
+        <div class="demo" data-label="Balises sémantiques">
+          <div class="inline-list">
+            <p><strong>Gras</strong> — importance (<code>&lt;strong&gt;</code>)</p>
+            <p><em>Italique</em> — emphase, termes étrangers (<code>&lt;em&gt;</code>)</p>
+            <p><mark>Surligné</mark> — résultat de recherche (<code>&lt;mark&gt;</code>)</p>
+            <p><code>CI-4521-AB</code> — code, identifiant (<code>&lt;code&gt;</code>)</p>
+            <p>Appuyez sur <kbd>Ctrl</kbd> + <kbd>K</kbd> — touches (<code>&lt;kbd&gt;</code>)</p>
+            <p><abbr title="Global Positioning System">GPS</abbr> — abréviation expliquée (<code>&lt;abbr&gt;</code>)</p>
+            <p>1<sup>er</sup> trimestre, CO<sub>2</sub> — exposant / indice</p>
+            <p><del>45 000 F</del> 39 000 F — prix barré (<code>&lt;del&gt;</code>)</p>
+            <p><small>Mentions légales et conditions</small> (<code>&lt;small&gt;</code>)</p>
+          </div>
+        </div>
+        <div class="demo" data-label="Liens">
+          <div class="inline-list links">
+            <p>Lien <a href="#inline">dans le texte</a> : souligné, couleur primaire.</p>
+            <p>Lien <a class="visited" href="#inline">déjà visité</a>.</p>
+            <p>Lien <a class="focus" href="#inline">au focus clavier</a> : anneau visible.</p>
+            <p>Lien <a href="https://example.com" target="_blank" rel="noopener">externe<span class="mi">open_in_new</span></a> : icône + nouvel onglet.</p>
+            <p class="muted">Ne jamais utiliser « cliquez ici » : le libellé doit décrire la destination.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="prose" data-title="Listes, citations & contenu éditorial" data-toc="Listes & citations" data-cols="2" data-source=".prose"
+        data-desc="La classe .prose met en forme un contenu long (aide, CGU, notes, rendu Markdown) : titres, paragraphes, listes, tâches, citations, code, séparateurs.">
+        <div class="demo" data-label="Article (.prose)">
+          <article class="prose">
+            <h2>Installer une balise GPS</h2>
+            <p>Avant toute intervention, vérifiez que le véhicule est <strong>à l’arrêt, contact coupé</strong>. L’installation prend environ <em>45 minutes</em>.</p>
+            <h3>Étapes</h3>
+            <ol><li>Débrancher la batterie</li><li>Raccorder la balise au <code>+APC</code> et à la masse</li><li>Tester la remontée GPS</li></ol>
+            <ul><li class="task"><span class="box on"></span>Photos avant / après</li><li class="task"><span class="box"></span>PV signé par le client</li></ul>
+            <blockquote>Ne jamais quitter le site sans avoir vérifié la première position sur la plateforme.</blockquote>
+            <hr>
+            <p>Besoin d’aide ? Consultez <a href="#prose">le guide technique</a>.</p>
+          </article>
+        </div>
+        <div class="demo" data-label="Liste de définitions & citation mise en avant">
+          <dl class="defs">
+            <dt>Géofence</dt><dd>Zone géographique virtuelle déclenchant une alerte à l’entrée ou à la sortie d’un véhicule.</dd>
+            <dt>APC</dt><dd>Alimentation après contact : présente uniquement moteur allumé.</dd>
+            <dt>Coupe-moteur</dt><dd>Relais permettant d’immobiliser un véhicule à distance.</dd>
+          </dl>
+          <figure class="pullquote"><blockquote>« Depuis l’installation, nos coûts de carburant ont baissé de 18 %. »</blockquote><figcaption>— Jean Kouassi, Transports Yao &amp; Fils</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="doc-section" id="french" data-title="Règles de la typographie française" data-toc="Typographie française" data-source="js/lib/french-typography.js"
+        data-desc="Espaces insécables avant les ponctuations hautes, guillemets en chevrons, apostrophe courbe, points de suspension, tirets, séparateurs de milliers, majuscules accentuées. Le correcteur ci-dessous applique ces règles à n'importe quel texte saisi.">
+        <div class="fr-rules" id="fr-rules"></div>
+        <div class="demo" data-label="Correcteur typographique">
+          <template class="demo-code">UIKitUtils.frenchTypography('Prix : 1250000 FCFA...');
+// → 'Prix : 1 250 000 FCFA…' (espaces insécables et fines insécables)</template>
+          <div class="fr-tool">
+            <div class="ui-field"><label class="ui-label" for="fr-in">Texte saisi</label><div class="field-box textarea-box"><textarea id="fr-in" rows="3">Attention : le vehicule "CI-4521-AB" a depasse la vitesse autorisee ! Prix : 1250000 FCFA... L'equipe d'intervention - 3 techniciens - arrive a 14h05 ; merci de patienter ?</textarea></div></div>
+            <div class="ui-field"><span class="ui-label">Résultat corrigé</span><div class="fr-out" id="fr-out"></div></div>
+            <div class="row"><button class="ui-btn ui-btn--outlined" id="fr-copy"><span class="mi">content_copy</span>Copier le texte corrigé</button><span class="legend"><span class="sp"> </span> insécable · <span class="sp fine"> </span> fine insécable</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="fluid" data-title="Typographie responsive (fluide)" data-toc="Responsive" data-source="clamp() · unités cqi"
+        data-desc="Plutôt que des paliers fixes, clamp(min, préférée, max) fait varier la taille en continu avec la largeur, sans jamais descendre sous un minimum lisible. Ici la taille suit la largeur du conteneur (container queries) : déplacez le curseur.">
+        <div class="demo" data-label="Simulateur de largeur">
+          <template class="demo-code">.fluid { container-type: inline-size; }
+.fl-title { font-size: clamp(24px, 3.2cqi + 12px, 44px); }
+.fl-body  { font-size: clamp(14px, .6cqi + 12px, 18px); }</template>
+          <div class="trunc-ctrl"><span class="text-label">Largeur</span><input type="range" min="320" max="1100" step="10" value="720" id="fluid-r" aria-label="Largeur"><code id="fluid-out"></code></div>
+          <div class="fluid-frame" id="fluid-frame"><div class="fluid-in"><span class="fl-over">Nouveau</span><h2 class="fl-title">Votre flotte, en temps réel</h2><p class="fl-body">Localisez chaque véhicule, recevez les alertes et analysez vos coûts depuis un seul tableau de bord.</p><code class="fl-meta">titre : clamp(24px, 3.2cqi + 12px, 44px)</code></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="a11y" data-title="Accessibilité typographique" data-toc="Accessibilité" data-cols="3" data-source="WCAG 2.1 — 1.4.3, 1.4.4, 1.4.8, 1.4.12"></section>
+
+      <section class="doc-section" id="playground" data-title="Testeur typographique" data-toc="Testeur" data-source="génère la déclaration CSS" data-desc="Composez un style et copiez la déclaration CSS correspondante.">
+        <div class="pg">
+          <div class="pg-ctrls">
+            <div class="ui-field"><label class="ui-label" for="pg-family">Police</label><div class="field-box"><select id="pg-family"></select></div></div>
+            <div class="ui-field"><label class="ui-label" for="pg-size">Taille · <b id="pg-size-o">28</b> px</label><input type="range" id="pg-size" min="10" max="64" value="28"></div>
+            <div class="ui-field"><label class="ui-label" for="pg-weight">Graisse · <b id="pg-weight-o">600</b></label><input type="range" id="pg-weight" min="100" max="900" step="100" value="600"></div>
+            <div class="ui-field"><label class="ui-label" for="pg-lh">Interligne · <b id="pg-lh-o">1.25</b></label><input type="range" id="pg-lh" min="0.9" max="2.2" step="0.05" value="1.25"></div>
+            <div class="ui-field"><label class="ui-label" for="pg-tr">Interlettrage · <b id="pg-tr-o">-0.01</b> em</label><input type="range" id="pg-tr" min="-0.05" max="0.2" step="0.01" value="-0.01"></div>
+            <div class="ui-field"><span class="ui-label">Casse</span><div class="ui-toggle-group" id="pg-tt"><button class="on" data-v="none">Aa</button><button data-v="uppercase">AA</button><button data-v="capitalize">Ab Cd</button></div>
+              <label class="ui-switch" style="margin-top:8px"><input type="checkbox" id="pg-it">Italique</label></div>
+          </div>
+          <div class="pg-out">
+            <div class="pg-preview" id="pg-preview" contenteditable="true" spellcheck="false">Suivez chaque véhicule, en temps réel.</div>
+            <div class="pg-css"><pre id="pg-css"></pre><button class="ui-btn ui-btn--icon" id="pg-copy" aria-label="Copier le CSS"><span class="mi">content_copy</span></button></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/lib/french-typography.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    function copy(t, what) { try { navigator.clipboard.writeText(t); } catch (e) {} UIKit.toast((what || 'Texte') + ' copié dans le presse-papiers'); }
+    var FAMILIES = [
+      { name: 'Outfit', css: "'Outfit', sans-serif", role: 'Titres, chiffres clés, titres de carte', source: 'assets/fonts/outfit-*.woff2', weights: [400, 500, 600, 700, 800] },
+      { name: 'Inter', css: "'Inter', sans-serif", role: 'Texte courant, formulaires, tables, interface', source: 'assets/fonts/inter-*.woff2', weights: [300, 400, 500, 600, 700, 800] },
+      { name: 'Space Mono', css: "'Space Mono', monospace", role: 'Codes, références, IMEI, extraits de code', source: 'assets/fonts/spacemono-regular.ttf', weights: [400] },
+      { name: 'TT Wellingtons', css: "'ttwellingtons', sans-serif", role: 'Marque, police par défaut de ce kit', source: 'assets/fonts/ttwellingtons-*.woff2', weights: [200, 300, 400, 500, 600, 700, 800, 900], italic: true },
+      { name: 'Système', css: 'system-ui, sans-serif', role: 'Repli du système d’exploitation', source: 'police locale', weights: [400, 700] }];
+    var NAMES = { 100: 'Thin', 200: 'ExtraLight', 300: 'Light', 400: 'Regular', 500: 'Medium', 600: 'SemiBold', 700: 'Bold', 800: 'ExtraBold', 900: 'Black' };
+    var GLYPHS = 'AaBbCcDdEeFfGg 0123456789 éèêàçù ÉÈÀÇ « » ’ – — … € % & @';
+    var PARA = 'La plateforme enregistre chaque position GPS toutes les trente secondes. Les trajets sont reconstitués automatiquement, les arrêts détectés et les excès de vitesse signalés au gestionnaire de flotte, qui peut ensuite exporter un rapport détaillé pour chaque véhicule.';
+
+    function families() {
+      var sample = UIComp_esc($('fam-in').value);
+      $('fam-grid').innerHTML = FAMILIES.map(function (f) {
+        var ok = f.name === 'Système' ? true : document.fonts.check('16px ' + f.css.split(',')[0]);
+        return '<article class="family"><header><div class="fam-big" style="font-family:' + f.css.replace(/"/g, '&quot;') + '">Aa</div><div class="fam-meta"><strong>' + f.name + '</strong><span>' + f.role + '</span><code data-copy-decl="font-family: ' + f.css.replace(/"/g, '&quot;') + ';" title="Copier">font-family: ' + f.css + '</code></div>' +
+          '<span class="fam-status' + (ok ? ' ok' : '') + '"><span class="mi">' + (ok ? 'check_circle' : 'error') + '</span>' + (ok ? 'Chargée' : 'Repli système') + '</span></header>' +
+          '<p class="fam-sample" style="font-family:' + f.css.replace(/"/g, '&quot;') + '">' + sample + '</p><p class="fam-glyphs" style="font-family:' + f.css.replace(/"/g, '&quot;') + '">' + GLYPHS + '</p>' +
+          '<footer><span class="fam-weights">' + f.weights.map(function (w) { return '<span style="font-family:' + f.css.replace(/"/g, '&quot;') + ';font-weight:' + w + '" title="' + NAMES[w] + '">' + w + '</span>'; }).join('') + '</span>' + (f.italic ? '<span class="fam-weights"><span style="font-family:' + f.css.replace(/"/g, '&quot;') + '"><i>Italique</i></span></span>' : '') + '<span class="spacer"></span><span class="muted">' + f.source + '</span></footer></article>';
+      }).join('');
+    }
+    function UIComp_esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    $('fam-in').addEventListener('input', families);
+    document.fonts.ready.then(families); families();
+
+    var SCALE = [['text-display', 'Display', 40, '1,15', 700, '−0,03 em', 'Outfit', 'Écrans d’accueil, chiffre héros', '1 248 véhicules'], ['text-h1', 'Titre 1', 32, '1,2', 700, '−0,02 em', 'Outfit', 'Titre principal (h1)', 'Référentiel unique'],
+      ['text-h2', 'Titre 2', 24, '1,25', 600, '−0,01 em', 'Outfit', 'Sections de page (h2)', 'Tableau de bord Finance'], ['text-page-title', 'Titre de page', 22, '1,3', 700, '0', 'Outfit', 'En-tête des pages liste / fiche', 'Registre des clients'],
+      ['text-h3', 'Titre 3', 20, '1,3', 600, '0', 'Outfit', 'Sous-sections, dialogues (h3)', 'Informations générales'], ['text-h4', 'Titre 4', 16, '1,4', 600, '0', 'Outfit', 'Groupes de champs (h4)', 'Coordonnées'],
+      ['text-card-title', 'Titre de carte', 16, '1,35', 700, '0', 'Outfit', 'Cartes, panneaux', 'Abonnement Standard'], ['text-body-lg', 'Corps large', 16, '1,7', 400, '0', 'Inter', 'Textes longs, onboarding', 'Suivez votre flotte en temps réel et recevez une alerte à chaque événement.'],
+      ['text-body', 'Corps', 14, '1,55', 400, '0', 'Inter', 'Texte par défaut de l’interface', 'Le client signale une perte de signal entre 18 h et 20 h.'], ['text-body-sm', 'Corps petit', 13, '1,55', 400, '0', 'Inter', 'Descriptions, textes secondaires', 'Catalogue des offres et tarifs d’installation.'],
+      ['text-label', 'Libellé', 12, '1,4', 600, '0', 'Inter', 'Libellés de champs', 'Raison sociale'], ['text-caption', 'Légende', 12, '1,4', 400, '0', 'Inter', 'Aides, horodatages, mentions', 'Mis à jour il y a 3 min'],
+      ['text-overline', 'Surtitre', 11, '1,4', 700, '+0,06 em', 'Inter', 'En-têtes de table, catégories', 'Code client']];
+    $('scale-table').innerHTML = '<div class="scale-head"><span>Style</span><span>Aperçu</span><span>Taille / interligne</span><span>Graisse</span><span>Interlettrage</span></div>' + SCALE.map(function (s, i) {
+      var n = SCALE[i + 1], ratio = n ? (s[2] / n[2]).toLocaleString('fr-FR', { maximumFractionDigits: 2 }) : '';
+      return '<button type="button" class="scale-row" data-copy-cls="' + s[0] + '"><span class="sc-name"><strong>' + s[1] + '</strong><code>.' + s[0] + '</code></span><span class="sc-sample ' + s[0] + '">' + s[8] + '</span><span class="sc-num">' + s[2] + ' px / ' + s[3] + (ratio && ratio !== '1' ? '<em>× ' + ratio + '</em>' : '') + '</span><span class="sc-num">' + s[4] + ' · ' + s[6] + '</span><span class="sc-num">' + s[5] + '</span><span class="sc-usage">' + s[7] + '</span></button>';
+    }).join('');
+    $('vars').innerHTML = ['--font-heading', '--font-body', '--font-code', '--font-sans', '--font-mono', '--text-primary', '--text-secondary', '--text-muted'].map(function (v) { return '<button type="button" class="var-chip" data-copy-var="' + v + '"><code>' + v + '</code></button>'; }).join('');
+
+    var wf = FAMILIES[1];
+    function weights() {
+      $('weight-tabs').innerHTML = FAMILIES.map(function (f) { return '<button type="button" class="' + (f === wf ? 'on' : '') + '" data-wf="' + f.name + '">' + f.name + '</button>'; }).join('');
+      $('w-grid').innerHTML = [100, 200, 300, 400, 500, 600, 700, 800, 900].map(function (w) { var real = wf.weights.indexOf(w) >= 0; return '<div class="weight' + (real ? '' : ' synth') + '"><span class="w-num">' + w + '</span><span class="w-sample" style="font-family:' + wf.css.replace(/"/g, '&quot;') + ';font-weight:' + w + '">Flotte 2026</span><span class="w-name">' + NAMES[w] + (real ? '' : ' · simulée') + '</span></div>'; }).join('');
+    }
+    $('weight-tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-wf]'); if (b) { wf = FAMILIES.find(function (f) { return f.name === b.dataset.wf; }); weights(); } });
+    weights();
+
+    $('lh').innerHTML = [1, 1.25, 1.55, 2].map(function (lh) { return '<div class="lh-card' + (lh === 1.55 ? ' rec' : '') + '"><div class="lh-head"><code>line-height: ' + lh + '</code>' + (lh === 1.55 ? '<span class="badge ok">Recommandé</span>' : lh === 1 ? '<span class="badge bad">Trop serré</span>' : lh === 2 ? '<span class="badge warn">Trop aéré</span>' : '') + '</div><p style="line-height:' + lh + '">' + PARA + '</p></div>'; }).join('');
+    var TR = [-0.03, -0.01, 0, 0.04, 0.1];
+    function trl(t) { return (t > 0 ? '+' : '') + String(t).replace('.', ',') + ' em'; }
+    $('tr-title').innerHTML = TR.map(function (t) { return '<div class="tr-row"><code>' + trl(t) + '</code><span class="tr-title" style="letter-spacing:' + t + 'em">Rapport mensuel</span></div>'; }).join('');
+    $('tr-caps').innerHTML = TR.map(function (t) { return '<div class="tr-row"><code>' + trl(t) + '</code><span class="tr-caps" style="letter-spacing:' + t + 'em">Véhicules en ligne</span>' + (t === 0.04 || t === 0.1 ? '<span class="mi ok-ic">check</span>' : '') + '</div>'; }).join('');
+
+    $('measure-text').textContent = PARA + ' ' + PARA;
+    function measure() { var v = +$('measure-r').value, st = v < 45 ? 'trop court' : v > 80 ? 'trop long' : 'confortable'; $('measure-text').style.maxWidth = v + 'ch'; var b = $('measure-badge'); b.textContent = v + ' ch · ' + st; b.className = 'badge ' + (st === 'confortable' ? 'ok' : 'warn'); }
+    $('measure-r').addEventListener('input', measure); measure();
+
+    function lum(c) { var m = c.match(/\d+(\.\d+)?/g).map(Number); return [0, 1, 2].map(function (i) { var v = m[i] / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce(function (s, v, i) { return s + v * [0.2126, 0.7152, 0.0722][i]; }, 0); }
+    function resolve(v) { var d = document.createElement('span'); d.style.color = 'var(' + v + ')'; document.body.appendChild(d); var c = getComputedStyle(d).color; d.remove(); return c; }
+    function contrast() {
+      var probe = document.createElement('div'); probe.style.background = 'var(--card-bg)'; document.body.appendChild(probe); var bg = getComputedStyle(probe).backgroundColor; probe.remove();
+      $('contrast').innerHTML = ['--text-primary', '--text-secondary', '--text-muted', '--primary', '--error', '--error-text', '--success', '--success-text', '--warning', '--warning-text'].map(function (t) {
+        var c = resolve(t), a = lum(c), b = lum(bg), r = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), lv = r >= 7 ? ['AAA', 'ok'] : r >= 4.5 ? ['AA', 'ok'] : r >= 3 ? ['AA grand texte', 'warn'] : ['Insuffisant', 'bad'];
+        return '<div class="ct-row"><span class="ct-swatch" style="background:' + c + '"></span><code>' + t + '</code><span class="ct-sample" style="color:' + c + '">Texte d’exemple — 14 px</span><span class="ct-ratio">' + r.toLocaleString('fr-FR', { maximumFractionDigits: 2 }) + ' : 1</span><span class="badge ' + lv[1] + '">' + lv[0] + '</span></div>';
+      }).join('');
+    }
+    contrast(); new MutationObserver(function () { setTimeout(contrast, 50); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-mode', 'class'] });
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', contrast);
+
+    document.querySelectorAll('[data-para]').forEach(function (p) { p.textContent = PARA; });
+    var amounts = [1111111, 888888, 4840000, 11110, 1171100], fcfa = function (n) { return new Intl.NumberFormat('fr-FR').format(n) + ' FCFA'; };
+    $('nums').innerHTML = '<div><span class="text-overline">Proportionnels</span>' + amounts.map(function (a) { return '<span class="num-cell prop">' + fcfa(a) + '</span>'; }).join('') + '</div><div><span class="text-overline">Tabulaires</span>' + amounts.map(function (a) { return '<span class="num-cell text-tabular">' + fcfa(a) + '</span>'; }).join('') + '</div>';
+    var now = new Date(2026, 9, 15, 14, 5);
+    $('formats').innerHTML = [['Nombre', new Intl.NumberFormat('fr-FR').format(1248503.75), "Intl.NumberFormat('fr-FR')"], ['Monnaie (XOF)', new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF' }).format(1250000), "{ style: 'currency', currency: 'XOF' }"],
+      ['Monnaie (EUR)', new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(1990.5), "{ style: 'currency', currency: 'EUR' }"], ['Pourcentage', new Intl.NumberFormat('fr-FR', { style: 'percent', maximumFractionDigits: 1 }).format(0.974), "{ style: 'percent' }"],
+      ['Compact', new Intl.NumberFormat('fr-FR', { notation: 'compact', maximumFractionDigits: 1 }).format(55800000), "{ notation: 'compact' }"], ['Unité', new Intl.NumberFormat('fr-FR', { style: 'unit', unit: 'kilometer-per-hour' }).format(94), "{ style: 'unit', unit: 'kilometer-per-hour' }"],
+      ['Date longue', now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), "{ dateStyle: 'full' }"], ['Date courte', now.toLocaleDateString('fr-FR'), "toLocaleDateString('fr-FR')"],
+      ['Heure', '14 h 05', 'usage français'], ['Relatif', new Intl.RelativeTimeFormat('fr', { numeric: 'auto' }).format(-1, 'day'), "Intl.RelativeTimeFormat('fr')"], ['Ordinal', '1er · 2e · 3e · XXIe siècle', '1<sup>er</sup>, 2<sup>e</sup>'],
+      ['Liste', new Intl.ListFormat('fr', { type: 'conjunction' }).format(['Abidjan', 'Bouaké', 'San-Pédro']), "Intl.ListFormat('fr')"]].map(function (f) { return '<tr><td>' + f[0] + '</td><td class="fmt-val">' + f[1] + '</td><td><code>' + UIComp_esc(f[2]) + '</code></td></tr>'; }).join('');
+
+    var LONG = 'Transports Yao & Fils — Société de transport de marchandises et de logistique, zone industrielle de Yopougon, lot 412, Abidjan, Côte d’Ivoire, avec une flotte de 48 véhicules suivis.', TOKEN = 'https://suivi.example.com/partage/7f3a9c2e4b1d8f6a0c5e3b9d7f1a2c4e6b8d0f3a5c7e9b1d';
+    $('trunc-grid').innerHTML = [['.text-truncate', 'text-truncate', LONG], ['.text-clamp-2', 'text-clamp-2', LONG], ['Sans .text-break', 'overflowing', TOKEN], ['.text-break', 'text-break text-mono', TOKEN]].map(function (t) { return '<div class="trunc-box"><span class="text-overline">' + t[0] + '</span><p class="' + t[1] + '" title="' + UIComp_esc(t[2]) + '">' + UIComp_esc(t[2]) + '</p></div>'; }).join('');
+    function trunc() { var v = $('trunc').value; $('trunc-out').textContent = v + ' px'; document.querySelectorAll('.trunc-box').forEach(function (b) { b.style.width = v + 'px'; }); }
+    $('trunc').addEventListener('input', trunc); trunc();
+
+    $('fr-rules').innerHTML = [['Espace insécable avant « : »', 'Note: urgent', 'Note : urgent'], ['Espace fine insécable avant « ; ! ? »', 'Vraiment?', 'Vraiment ?'], ['Guillemets français avec espaces', '"Actif"', '« Actif »'],
+      ['Apostrophe typographique', "L'équipe", 'L’équipe'], ['Points de suspension (un seul caractère)', 'Chargement...', 'Chargement…'], ['Tiret demi-cadratin pour les intervalles', '9h - 18h', '9 h – 18 h'],
+      ['Séparateur de milliers : espace fine', '1250000 FCFA', '1 250 000 FCFA'], ['Majuscules accentuées', 'ETAT DES LIEUX', 'ÉTAT DES LIEUX'], ['Unités séparées par une insécable', '94km/h', '94 km/h']]
+      .map(function (r) { return '<div class="fr-rule"><span class="fr-label">' + r[0] + '</span><span class="fr-bad"><span class="mi">close</span>' + UIComp_esc(r[1]) + '</span><span class="fr-good"><span class="mi">check</span>' + UIComp_esc(r[2]) + '</span></div>'; }).join('');
+    var frOut = '';
+    function fr() {
+      frOut = UIKitUtils.frenchTypography($('fr-in').value);
+      $('fr-out').innerHTML = UIKitUtils.revealSpaces(frOut).map(function (p) { return p.kind === 'text' ? '<span>' + UIComp_esc(p.t) + '</span>' : '<span class="sp' + (p.kind === 'nnbsp' ? ' fine' : '') + '" title="' + (p.kind === 'nbsp' ? 'Espace insécable U+00A0' : 'Espace fine insécable U+202F') + '"> </span>'; }).join('');
+    }
+    $('fr-in').addEventListener('input', fr); $('fr-copy').addEventListener('click', function () { copy(frOut, 'Texte corrigé'); }); fr();
+
+    function fluid() { var v = +$('fluid-r').value; $('fluid-frame').style.width = v + 'px'; $('fluid-out').textContent = v + ' px · ' + (v < 600 ? 'mobile' : v < 960 ? 'tablette' : 'bureau'); }
+    $('fluid-r').addEventListener('input', fluid); fluid();
+
+    document.querySelector('#a11y .section-body').innerHTML = [['format_size', 'Taille minimale', '14 px pour le texte d’interface, 12 px uniquement pour les mentions secondaires ; jamais en dessous de 11 px.'], ['zoom_in', 'Zoom à 200 %', 'Le contenu doit rester lisible sans défilement horizontal : préférez des largeurs fluides et laissez les lignes se replier.'],
+      ['contrast', 'Contraste', '4,5 : 1 minimum pour le texte courant, 3 : 1 pour le grand texte et les icônes porteuses de sens.'], ['format_line_spacing', 'Espacement ajustable', 'Supporter un interligne de 1,5, un espacement de paragraphes de 2× et un interlettrage de 0,12 em sans perte de contenu.'],
+      ['text_rotation_none', 'Pas de texte en image', 'Le texte doit rester du texte : traduisible, copiable, agrandissable et lisible par les lecteurs d’écran.'], ['title', 'Titres sémantiques', 'Une hiérarchie h1 → h2 → h3 sans saut permet aux lecteurs d’écran de naviguer par titres.'],
+      ['text_decrease', 'Majuscules avec parcimonie', 'Les longs passages en capitales sont plus lents à lire ; réservez-les aux surtitres courts.'], ['language', 'Langue déclarée', 'lang="fr" sur la page (et sur les passages en d’autres langues) : prononciation et césure correctes.'],
+      ['motion_photos_off', 'Animations de texte', 'Respecter prefers-reduced-motion pour les compteurs et textes animés.']].map(function (r) { return '<div class="a11y-card"><span class="mi">' + r[0] + '</span><strong>' + r[1] + '</strong><span>' + UIComp_esc(r[2]) + '</span></div>'; }).join('');
+
+    $('pg-family').innerHTML = FAMILIES.map(function (f, i) { return '<option value="' + UIComp_esc(f.css) + '"' + (i === 0 ? ' selected' : '') + '>' + f.name + '</option>'; }).join('');
+    var tt = 'none', css = '';
+    function pg() {
+      var fam = $('pg-family').value, s = $('pg-size').value, w = $('pg-weight').value, lh = $('pg-lh').value, tr = $('pg-tr').value, it = $('pg-it').checked, p = $('pg-preview');
+      $('pg-size-o').textContent = s; $('pg-weight-o').textContent = w; $('pg-lh-o').textContent = lh; $('pg-tr-o').textContent = tr;
+      Object.assign(p.style, { fontFamily: fam, fontSize: s + 'px', fontWeight: w, lineHeight: lh, letterSpacing: tr + 'em', textTransform: tt, fontStyle: it ? 'italic' : 'normal' });
+      css = ['font-family: ' + fam + ';', 'font-size: ' + s + 'px;', 'font-weight: ' + w + ';', 'line-height: ' + lh + ';', 'letter-spacing: ' + tr + 'em;'].concat(tt !== 'none' ? ['text-transform: ' + tt + ';'] : []).concat(it ? ['font-style: italic;'] : []).join('\n');
+      $('pg-css').textContent = css;
+    }
+    ['pg-family', 'pg-size', 'pg-weight', 'pg-lh', 'pg-tr', 'pg-it'].forEach(function (id) { $(id).addEventListener('input', pg); });
+    $('pg-tt').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; tt = b.dataset.v; this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); pg(); });
+    $('pg-copy').addEventListener('click', function () { copy(css, 'CSS'); }); pg();
+
+    document.addEventListener('click', function (e) {
+      var c = e.target.closest('[data-copy-cls],[data-copy-var],[data-copy-decl]'); if (!c) return;
+      if (c.dataset.copyCls) copy(c.dataset.copyCls, 'Classe « ' + c.dataset.copyCls + ' »'); else if (c.dataset.copyVar) copy('var(' + c.dataset.copyVar + ')', 'Variable'); else copy(c.dataset.copyDecl, 'Déclaration');
+    });
+  })();
+  </script>
+</body>
+</html>

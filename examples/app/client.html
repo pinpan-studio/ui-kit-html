@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fiche client</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .back { display: inline-flex; align-items: center; gap: 4px; margin-bottom: var(--space-4); font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; }
+    .back .mi { font-size: 18px; } .back:hover { color: var(--text-primary); }
+    .entity { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+    .entity .ava.lg { border-radius: var(--radius-lg); font-size: 18px; }
+    .e-text { flex: 1 1 320px; min-width: 0; }
+    .e-title { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; } .e-title h1 { margin: 0; font-size: var(--text-2xl); font-weight: 700; letter-spacing: -.02em; }
+    .entity p { display: flex; flex-wrap: wrap; margin: 4px 0 0; color: var(--text-secondary); }
+    .entity p span + span::before { content: '·'; margin: 0 var(--space-2); color: var(--text-muted); }
+    .e-actions { display: flex; gap: var(--space-2); align-items: center; }
+    @media (max-width: 767px) { .e-title h1 { font-size: var(--text-xl); } .e-actions { width: 100%; } .e-actions > .ui-btn:not(.ui-btn--icon) { flex: 1; } }
+    .trend { display: inline-flex; align-items: center; gap: 2px; font-weight: 600; } .trend .mi { font-size: 16px; } .trend.up { color: var(--success-text); } .trend.down { color: var(--error-text); }
+    .cols { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--space-4); align-items: start; }
+    @media (max-width: 1100px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+    .side-col { display: flex; flex-direction: column; gap: var(--space-4); }
+    .main-col { overflow: hidden; } .main-col .ui-tabs__list { padding: 0 var(--space-3); }
+    .tab-n { margin-left: var(--space-2); padding: 0 var(--space-2); border-radius: 9px; background: var(--hover-bg); font-size: 11px; font-weight: 600; line-height: 18px; color: var(--text-secondary); }
+    .pane { padding: var(--space-5) var(--space-6) var(--space-6); } .pane.flush { padding: 0; } .pane.flush .dt { border: 0; border-radius: 0; }
+    .pane h3 { margin: var(--space-8) 0 var(--space-3); font-size: var(--text-lg); font-weight: 600; }
+    @media (max-width: 767px) { .pane { padding: var(--space-4); } }
+    .lead { margin: 0; max-width: 68ch; line-height: 1.7; color: var(--text-secondary); }
+    .goals { display: flex; flex-direction: column; gap: var(--space-4); }
+    .g-top { display: flex; justify-content: space-between; margin-bottom: var(--space-2); font-size: 13px; color: var(--text-secondary); } .g-top strong { color: var(--text-primary); }
+    .contact { display: flex; flex-direction: column; gap: var(--space-3); }
+    .person { display: flex; align-items: center; gap: var(--space-3); margin-bottom: 4px; } .person span:last-child { display: flex; flex-direction: column; } .person small { font-size: 12px; color: var(--text-muted); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Fiche client" data-crumb="Clients">
+  <main id="ex-content"><div id="app"></div></main>
+
+  <script src="../../js/data/examples.js"></script>
+  <script src="../../js/data/content.js"></script>
+  <script src="../../js/data/ex-utils.js"></script>
+  <script src="../../js/lib/markdown.js"></script>
+  <script src="../../js/data-table.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, ST = D.CLIENT_STATUS, nf = new Intl.NumberFormat('fr-FR');
+    var id = new URLSearchParams(location.search).get('id');
+    var c = D.EX_CLIENTS.find(function (x) { return x.id === id; }) || D.EX_CLIENTS[3];
+    document.title = c.name + ' — SC Storage';
+    document.querySelector('.ex-bar__title .cur').textContent = c.name;
+    function trend(v, unit, inverse) { var good = (v >= 0) !== !!inverse; return '<span class="trend ' + (good ? 'up' : 'down') + '"><span class="mi">' + (v >= 0 ? 'trending_up' : 'trending_down') + '</span>' + (v > 0 ? '+' : '') + String(v).replace('.', ',') + (unit || '') + '</span>'; }
+    var kpis = [
+      { label: 'Chiffre d\'affaires', value: (c.revenue / 1e6).toLocaleString('fr-FR', { maximumFractionDigits: 1 }), unit: 'M FCFA', trend: 9.2, tu: ' %', hint: 'sur 12 mois' },
+      { label: 'Factures émises', value: c.invoices, unit: '', trend: 3, tu: '', hint: 'ce trimestre' },
+      { label: 'Délai de paiement', value: '27', unit: 'jours', trend: 4, tu: ' j', inverse: true, hint: 'vs moyenne' },
+      { label: 'Satisfaction', value: '4,6', unit: '/ 5', trend: 0.2, tu: '', hint: 'NPS 48' }];
+    var u = function (n) { return { name: n, initials: D.initials(n), color: D.hue(n) }; }, dd = function (days, h) { return new Date(2026, 9, 17 - days, h, 12); };
+    var history = [
+      { id: 'h1', at: dd(0, 10), user: u('Jean Kouassi'), action: 'update', target: c.name, changes: [{ field: 'conditions', label: 'Conditions', before: '45 jours', after: '30 jours fin de mois' }] },
+      { id: 'h2', at: dd(0, 9), user: u('Fatou Diabaté'), action: 'comment', target: c.name, comment: 'Relance téléphonique faite, règlement annoncé pour vendredi.' },
+      { id: 'h3', at: dd(2, 15), user: u('Marc Yao'), action: 'create', target: 'Facture FAC-2026-0981' },
+      { id: 'h4', at: dd(6, 11), user: u('Jean Kouassi'), action: 'status', target: c.name, changes: [{ field: 'status', label: 'Statut', before: 'Prospect', after: 'Actif' }] },
+      { id: 'h5', at: dd(9, 8), user: u('Aïcha Diallo'), action: 'export', target: 'Relevé de compte (PDF)', meta: 'Chrome · Abidjan' }];
+    var notes = D.FEED_COMMENTS[0];
+
+    document.getElementById('app').innerHTML =
+      '<a href="clients.html" class="back"><span class="mi">arrow_back</span>Clients</a>' +
+      '<header class="entity"><span class="ava lg" style="background:' + D.hue(c.name) + '">' + D.initials(c.name) + '</span><div class="e-text"><div class="e-title"><h1>' + c.name + '</h1>' +
+        '<span class="ui-badge" style="color:var(--' + ST[c.status].color + ');background:color-mix(in srgb,var(--' + ST[c.status].color + ') 14%,transparent)">' + ST[c.status].label + '</span></div>' +
+        '<p><span>' + c.sector + '</span><span>' + c.city + ', Côte d\'Ivoire</span><span>Client depuis ' + new Date(c.since).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) + '</span></p></div>' +
+        '<div class="e-actions"><button class="ui-btn ui-btn--outlined"><span class="mi">edit</span>Modifier</button><button class="ui-btn"><span class="mi">receipt_long</span>Facturer</button>' +
+        '<details class="ui-menu"><summary class="ui-btn ui-btn--icon" aria-label="Plus d\'actions"><span class="mi">more_vert</span></summary><div class="ui-menu__panel">' +
+        '<button class="ui-menu__item"><span class="mi">mail</span>Envoyer un relevé</button><button class="ui-menu__item"><span class="mi">archive</span>Archiver</button><hr>' +
+        '<button class="ui-menu__item danger"><span class="mi">block</span>Suspendre le compte</button></div></details></div></header>' +
+      '<div class="kpis">' + kpis.map(function (k) { return '<div class="card kpi"><span class="k-label">' + k.label + '</span><span class="k-val">' + k.value + (k.unit ? '<small>' + k.unit + '</small>' : '') + '</span><span class="k-foot">' + trend(k.trend, k.tu, k.inverse) + k.hint + '</span></div>'; }).join('') + '</div>' +
+      '<div class="cols"><section class="card main-col" data-tabs>' +
+        '<div class="ui-tabs__list" role="tablist"><button class="ui-tabs__tab" role="tab" aria-controls="t1" aria-selected="true">Aperçu</button>' +
+        '<button class="ui-tabs__tab" role="tab" aria-controls="t2">Factures<span class="tab-n">' + D.EX_INVOICES.length + '</span></button>' +
+        '<button class="ui-tabs__tab" role="tab" aria-controls="t3">Historique</button><button class="ui-tabs__tab" role="tab" aria-controls="t4">Notes<span class="tab-n">' + notes.length + '</span></button></div>' +
+        '<div class="ui-tabs__panel pane" id="t1" role="tabpanel"><p class="lead">Compte stratégique du secteur ' + c.sector.toLowerCase() + ', suivi par ' + c.owner + '. Le contrat cadre couvre l\'ensemble des sites de ' + c.city + ' et arrive à échéance en mars 2027.</p>' +
+          '<h3>Contrat</h3>' + UIComp.descList([{ label: 'Offre', value: 'Premium Flotte' }, { label: 'Échéance', value: '28 février 2027', hint: 'Tacite reconduction' }, { label: 'Conditions', value: '30 jours fin de mois' },
+            { label: 'Sites couverts', value: 6 }, { label: 'Remise', value: '8 %' }, { label: 'Devise', value: 'FCFA (XOF)' }], 3) +
+          '<h3>Objectifs 2026</h3><div class="goals">' + [['Objectif annuel de chiffre d\'affaires', 72], ['Taux d\'encaissement', 88], ['Déploiement des sites', 45]].map(function (g) {
+            return '<div><div class="g-top"><span>' + g[0] + '</span><strong class="tabular">' + g[1] + ' %</strong></div><div class="ui-progress"><span style="width:' + g[1] + '%"></span></div></div>'; }).join('') + '</div></div>' +
+        '<div class="ui-tabs__panel pane flush" id="t2" role="tabpanel"><div id="inv"></div></div>' +
+        '<div class="ui-tabs__panel pane" id="t3" role="tabpanel"><div id="audit"></div></div>' +
+        '<div class="ui-tabs__panel pane" id="t4" role="tabpanel"><div id="notes"></div></div></section>' +
+      '<aside class="side-col"><section class="card"><div class="card-head"><h2>Contact principal</h2></div><div class="card-body contact">' +
+          '<div class="person"><span class="ava" style="background:' + D.hue(c.contact) + '">' + D.initials(c.contact) + '</span><span><strong>' + c.contact + '</strong><small>Responsable achats</small></span></div>' +
+          UIComp.copyField(c.email, 'mail', 'l\'e-mail') + UIComp.copyField(c.phone, 'call', 'le téléphone') + '</div></section>' +
+        '<section class="card"><div class="card-head"><h2>Informations</h2></div><div class="card-body">' + UIComp.descList([
+          { label: 'Identifiant', value: c.id.toUpperCase(), type: 'mono', copy: true }, { label: 'Responsable', value: c.owner }, { label: 'Secteur', value: c.sector },
+          { label: 'N° contribuable', value: 'CI-2019-B-04512', type: 'mono' }, { label: 'Statut', value: ST[c.status].label, type: 'badge', tone: ST[c.status].color }], 1, 'horizontal') + '</div></section>' +
+        '<section class="card"><div class="card-head"><h2>Étiquettes</h2></div><div class="card-body chips">' + ['Grand compte', 'Contrat cadre', 'Multi-sites'].map(function (t) { return '<span class="ui-chip">' + t + '</span>'; }).join('') + '</div></section></aside></div>';
+
+    UIKit.initTabs(document.getElementById('app'));
+    DataTable.mount(document.getElementById('inv'), { rows: D.EX_INVOICES, rowKey: 'ref', searchable: false, pageSize: 8, maxHeight: 'none', columns: [
+      { key: 'ref', label: 'Référence', width: 170, type: 'mono', required: true },
+      { key: 'date', label: 'Date', width: 130, format: function (r) { return new Date(r.date).toLocaleDateString('fr-FR'); } },
+      { key: 'status', label: 'Statut', width: 130, type: 'badge', format: function (r) { return r.status.charAt(0).toUpperCase() + r.status.slice(1); }, tone: function (r) { return r.status === 'payée' ? 'success' : r.status === 'en retard' ? 'error' : 'warning'; } },
+      { key: 'amount', label: 'Montant', width: 160, type: 'currency', total: true, format: function (r) { return nf.format(r.amount) + ' F'; }, totalFormat: function (t) { return nf.format(t) + ' F'; } }] });
+    UIComp.auditLog(document.getElementById('audit'), history);
+    UIComp.commentThread(document.getElementById('notes'), { title: 'Notes internes', comments: notes, me: D.ME, mentionables: D.PEOPLE, compact: true });
+  })();
+  </script>
+</body>
+</html>

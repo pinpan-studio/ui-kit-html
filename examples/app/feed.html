@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fil d'équipe</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/media.css">
+  <link rel="stylesheet" href="../../css/files.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <style>
+    .layout { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 600px) 280px; justify-content: center; gap: var(--space-5); align-items: start; }
+    @media (max-width: 1280px) { .layout { grid-template-columns: 220px minmax(0, 1fr); } .right { display: none !important; } }
+    @media (max-width: 767px) { .layout { grid-template-columns: minmax(0, 1fr); } .left { display: none !important; } }
+    .left, .right { position: sticky; top: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+    .profile { overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: var(--space-4); }
+    .profile .cover { align-self: stretch; height: 56px; background: var(--primary-soft); }
+    .profile .ava { width: 56px; height: 56px; font-size: 16px; margin-top: -32px; box-shadow: 0 0 0 4px var(--card-bg); }
+    .profile strong { margin-top: 8px; font-size: var(--text-lg); font-weight: 600; } .profile small { font-size: 12px; color: var(--text-muted); }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; margin-top: var(--space-4); padding-top: var(--space-3); }
+    .stats div { display: flex; flex-direction: column; } .stats b { font-size: var(--text-lg); font-weight: 600; } .stats span { font-size: 11px; color: var(--text-muted); }
+    .menu { padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+    .menu button { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border: 0; border-radius: var(--radius-sm); background: none; font: 500 14px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .menu button:hover { background: var(--hover-bg); } .menu button.on { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+    .feed { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+    .new-post { padding: var(--space-4) var(--space-4) 8px; }
+    .attach { display: flex; flex-wrap: wrap; gap: 2px; margin: 8px 0 0 50px; } .attach .ui-btn { color: var(--text-secondary); }
+    .pending { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0 50px; }
+    @media (max-width: 600px) { .attach, .pending { margin-left: 0; } }
+    .pj { display: inline-flex; align-items: center; gap: 8px; max-width: 240px; padding: 4px; border-radius: var(--radius-sm); background: var(--hover-bg); }
+    .pj img { width: 32px; height: 32px; flex: none; border-radius: 4px; object-fit: cover; } .pj img.ic { object-fit: contain; } .pj .pin { width: 32px; text-align: center; color: var(--primary); }
+    .pj-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; } .pj-txt strong { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .pj-txt small { font-size: 11px; color: var(--text-muted); }
+    .pj button { border: 0; background: none; padding: 2px; display: flex; cursor: pointer; color: var(--text-muted); border-radius: 50%; } .pj button .mi { font-size: 16px; }
+    .filters { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .post { padding: var(--space-4) 18px 8px; }
+    .post header { display: flex; align-items: center; gap: 12px; } .post header .ava { width: 42px; height: 42px; }
+    .who { flex: 1; min-width: 0; display: flex; flex-direction: column; } .who small { display: flex; align-items: center; gap: 3px; font-size: 12px; color: var(--text-muted); } .who small .mi { font-size: 13px; }
+    .post .text { margin: 12px 0; line-height: 1.7; text-wrap: pretty; }
+    .mosaic, .m-album, .m-video, .place { margin: 0 -18px 8px; }
+    .mosaic { display: grid; gap: 2px; grid-template-columns: 1fr 1fr; grid-auto-rows: 180px; }
+    .mosaic[data-n='1'] { grid-template-columns: 1fr; grid-auto-rows: 320px; } .mosaic[data-n='3'] { grid-template-rows: 180px 180px; } .mosaic[data-n='3'] .tile:first-child { grid-row: span 2; }
+    .mosaic .tile { position: relative; padding: 0; border: 0; overflow: hidden; cursor: zoom-in; background: var(--hover-bg); }
+    .mosaic .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; } .mosaic .tile:hover img { transform: scale(1.03); }
+    .mosaic .more { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(15,23,42,.55); color: #fff; font-size: 28px; font-weight: 600; }
+    @media (max-width: 600px) { .mosaic { grid-auto-rows: 130px; } .mosaic[data-n='3'] { grid-template-rows: 130px 130px; } .mosaic[data-n='1'] { grid-auto-rows: 240px; } }
+    .m-album { overflow: hidden; } .m-album .crs-view, .m-video .vp, .m-video .yt { border-radius: 0; }
+    .m-video { background: #000; } .video-wait { aspect-ratio: 16 / 9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #cbd5e1; font-size: 13px; }
+    .voice { margin-bottom: 8px; max-width: 360px; } .podcast { margin-bottom: 8px; }
+    .doc { width: 100%; display: flex; align-items: center; gap: 16px; margin-bottom: 8px; padding: 12px; border: 0; border-radius: var(--radius-md); background: var(--hover-bg); font: inherit; color: inherit; text-align: left; cursor: pointer; }
+    .doc-cover { width: 56px; height: 72px; flex: none; border-radius: 4px; background: #fff; display: flex; flex-direction: column; align-items: center; padding-top: 8px; overflow: hidden; box-shadow: 0 0 0 1px var(--border); }
+    .doc-cover .mi { font-size: 22px; color: #dc2626; } .lines { display: flex; flex-direction: column; gap: 4px; width: 70%; margin-top: 8px; } .lines i { height: 3px; border-radius: 2px; background: #e2e8f0; } .lines i:nth-child(2n) { width: 70%; }
+    .doc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; } .doc-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .doc-info small { font-size: 12px; color: var(--text-muted); }
+    .doc-open { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--primary); } @media (max-width: 600px) { .doc-open span:last-child { display: none; } }
+    .files { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; } @media (max-width: 600px) { .files { grid-template-columns: 1fr; } }
+    .file { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 8px 12px; border: 0; border-radius: var(--radius-sm); background: var(--hover-bg); font: inherit; color: inherit; text-align: left; cursor: pointer; }
+    .file img { width: 30px; height: 30px; flex: none; object-fit: contain; } .file > span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .file strong { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .file small { font-size: 12px; color: var(--text-muted); } .file > .mi { font-size: 18px; color: var(--text-muted); }
+    .file:disabled { cursor: default; }
+    .link { display: flex; margin-bottom: 8px; border-radius: var(--radius-md); overflow: hidden; color: inherit; text-decoration: none; background: var(--hover-bg); }
+    .link:hover strong { text-decoration: underline; }
+    .l-art { width: 128px; flex: none; display: grid; place-items: center; background: hsl(var(--h) 24% 92%); } .l-art .mi { font-size: 40px; color: hsl(var(--h) 25% 40%); }
+    [data-mode="dark"] .l-art { background: hsl(var(--h) 14% 18%); } [data-mode="dark"] .l-art .mi { color: hsl(var(--h) 25% 70%); }
+    .l-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; padding: 12px 16px; } .l-body small { font-size: 12px; color: var(--text-muted); } .l-body strong { line-height: 1.35; }
+    .l-body span { font-size: 13px; line-height: 1.45; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    @media (max-width: 600px) { .l-art { width: 88px; } }
+    .pl-foot { display: flex; align-items: center; gap: 12px; padding: 12px 20px; } .pl-foot > .mi { color: var(--primary); } .pl-foot span { flex: 1; min-width: 0; display: flex; flex-direction: column; } .pl-foot small { font-size: 12px; color: var(--text-muted); }
+    .poll { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; } .poll > strong { font-size: var(--text-lg); font-weight: 600; margin-bottom: 2px; } .poll > small { font-size: 12px; color: var(--text-muted); }
+    .opt { display: flex; align-items: center; gap: 12px; height: 42px; padding: 0 16px; border-radius: var(--radius-sm); border: 0; background: var(--hover-bg); font: 500 14px var(--font-sans); color: var(--text-primary); cursor: pointer; text-align: left; }
+    .opt:hover { background: var(--primary-soft); } .opt .radio { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--text-muted); }
+    .res { position: relative; display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; border-radius: var(--radius-sm); overflow: hidden; background: var(--hover-bg); }
+    .res .bar { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--text-muted) 22%, transparent); transition: width .6s var(--ease); }
+    .res .lbl { position: relative; flex: 1; display: flex; align-items: center; gap: 8px; } .res .lbl .mi { font-size: 17px; color: var(--primary); } .res b { position: relative; font-size: 13.5px; }
+    .res.mine .bar { background: color-mix(in srgb, var(--primary) 22%, transparent); } .res.mine .lbl { font-weight: 600; }
+    .counts { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; font-size: 12.5px; color: var(--text-muted); } .counts > span { display: flex; align-items: center; gap: 8px; }
+    .heart { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--error); } .heart .mi { font-size: 11px; color: #fff; }
+    .counts button { border: 0; background: none; font: inherit; color: inherit; cursor: pointer; } .counts button:hover { text-decoration: underline; }
+    .post > footer { display: grid; grid-template-columns: repeat(3, 1fr); padding: 4px 0; }
+    .post > footer button { display: flex; align-items: center; justify-content: center; gap: 8px; height: 38px; border: 0; border-radius: var(--radius-md); background: none; font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .post > footer .mi { font-size: 19px; } .post > footer button:hover { background: var(--hover-bg); } .post > footer button.on { color: var(--error-text); } .post > footer button.saved { color: var(--primary); }
+    .post-comments { padding: 12px 0; }
+    .right .card { padding: var(--space-4) var(--space-5); } .right h3 { margin: 0 0 12px; font-size: var(--text-lg); font-weight: 600; }
+    .event, .mate { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+    .event > span:last-child, .mate > span:nth-child(2) { flex: 1; min-width: 0; display: flex; flex-direction: column; } .event strong, .mate strong { font-size: 13px; } .event small, .mate small { font-size: 12px; color: var(--text-muted); }
+    .date { width: 44px; flex: none; padding: 4px 0; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; color: var(--text-secondary); font-size: 11px; font-weight: 600; background: var(--hover-bg); }
+    .date b { font-size: 16px; font-weight: 600; line-height: 1.1; color: var(--text-primary); }
+    .empty { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: var(--space-10) var(--space-4); text-align: center; color: var(--text-muted); } .empty .mi { font-size: 36px; } .empty strong { color: var(--text-primary); }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Fil d'équipe" data-crumb="Communication">
+  <main id="ex-content"><div class="layout">
+    <aside class="left" id="left"></aside>
+    <main class="feed">
+      <section class="card new-post"><div id="composer"></div><div class="pending" id="pending" hidden></div>
+        <div class="attach"><button class="ui-btn ui-btn--text ui-btn--sm" data-a="local"><span class="mi">add_photo_alternate</span>Photo / vidéo</button><input type="file" id="local" hidden multiple accept="image/*,video/*,audio/*,application/pdf">
+          <button class="ui-btn ui-btn--text ui-btn--sm" data-a="drive"><span class="mi">folder_open</span>Mes fichiers</button><button class="ui-btn ui-btn--text ui-btn--sm" data-a="place"><span class="mi">add_location_alt</span>Lieu</button></div></section>
+      <div class="filters" role="tablist" aria-label="Filtrer par type de média" id="filters"></div>
+      <div id="posts" style="display:flex;flex-direction:column;gap:var(--space-4)"></div>
+    </main>
+    <aside class="right" id="right"></aside>
+  </div></main>
+
+  <script src="../../js/data/content.js"></script>
+  <script src="../../js/data/media.js"></script>
+  <script src="../../js/data/ex-utils.js"></script>
+  <script src="../../js/lib/markdown.js"></script>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/media.js"></script>
+  <script src="../../js/map.js"></script>
+  <script src="../../js/files.js"></script>
+  <script src="../../js/ex-widgets.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var D = window.DATA, $ = function (id) { return document.getElementById(id); }, esc = UIComp.esc;
+    Files.ensure();
+    var all = Files.items, by = function (n) { return all.find(function (i) { return i.name === n; }); };
+    var photos = all.filter(function (i) { return i.kind === 'image'; }), wav = all.filter(function (i) { return i.kind === 'audio'; });
+    var P = D.PEOPLE, AYA = P[1], MARC = P[2], GRACE = P[3], IBRAHIM = P[4], NADIA = P[5], ME = D.ME, art = D.ARTICLES[0];
+    var S = { tab: 'all', filter: 'all', pending: [], place: false };
+    var FILTERS = [['all', 'Tout', 'dynamic_feed'], ['photos', 'Photos', 'photo_library'], ['video', 'Vidéos', 'smart_display'], ['audio', 'Audio', 'graphic_eq'], ['docs', 'Documents', 'description'], ['links', 'Liens', 'link'], ['places', 'Lieux', 'place']];
+    var MATCH = { all: function () { return true; }, photos: function (m) { return m.kind === 'photos' || m.kind === 'album'; }, video: function (m) { return m.kind === 'video' || m.kind === 'youtube'; },
+      audio: function (m) { return m.kind === 'voice' || m.kind === 'podcast'; }, docs: function (m) { return m.kind === 'document' || m.kind === 'files'; }, links: function (m) { return m.kind === 'link'; }, places: function (m) { return m.kind === 'place'; } };
+    var posts = [
+      { id: 'p1', author: AYA, at: 'il y a 2 h', likes: 18, open: true, comments: D.FEED_COMMENTS[0], text: 'Le nouvel entrepôt de **Vridi** est opérationnel ! Merci à toute l’équipe logistique pour ces trois semaines intenses. Les premières livraisons partent lundi.',
+        media: [{ kind: 'photos', items: photos.filter(function (p) { return p.parent === 'sotra'; }).concat(photos.slice(0, 2)) }] },
+      { id: 'p2', author: MARC, at: 'il y a 3 h', likes: 24, comments: [], text: 'Démo du **suivi en temps réel** sur l’axe Abidjan – Yamoussoukro : la trace se met à jour toutes les 5 secondes.', media: [{ kind: 'video', title: 'Trajet CI-4521-AB', ref: 'sample' }] },
+      { id: 'p3', author: IBRAHIM, at: 'il y a 5 h', likes: 9, comments: D.FEED_COMMENTS[1], text: 'Petit sondage pour l’atelier produit de vendredi :',
+        media: [{ kind: 'poll', question: 'Quel module voulez-vous améliorer en priorité ?', options: [{ label: 'Facturation', votes: 14 }, { label: 'Planning terrain', votes: 22 }, { label: 'Application mobile', votes: 9 }, { label: 'Rapports', votes: 5 }] }] },
+      { id: 'p4', author: { name: 'Koffi N’Guessan', color: '#0891b2', role: 'Technicien' }, at: 'il y a 6 h', likes: 4, comments: [], text: 'Note vocale depuis le chantier de San-Pédro 👇',
+        media: [{ kind: 'voice', tracks: [{ title: 'Note vocale', src: wav[0] && wav[0].url, blob: wav[0] && wav[0].blob }] }] },
+      { id: 'p5', author: { name: 'Fatou Diabaté', color: '#7c3aed', role: 'Juridique' }, at: 'hier', likes: 11, comments: [], text: 'Le **contrat cadre 2026** est signé. Version finale ci-dessous, merci de vous y référer pour les nouvelles commandes.',
+        media: [{ kind: 'document', item: by('Contrat cadre 2026.pdf'), pages: 4 }] },
+      { id: 'p6', author: GRACE, at: 'hier', likes: 31, comments: D.FEED_COMMENTS[2], text: 'Nouvel article sur le blog. Vos commentaires sont les bienvenus 🙌',
+        media: [{ kind: 'link', url: 'article.html?slug=' + art.slug, domain: 'scstorage.ci/blog', title: art.title, description: art.dek, icon: art.icon, hue: art.hue }] },
+      { id: 'p7', author: NADIA, at: 'hier', likes: 15, comments: [], text: 'Pour la pause café : un court-métrage libre qui sert de référence pour nos tests vidéo.', media: [{ kind: 'youtube', id: 'aqz-KE-bpKQ', title: 'Big Buck Bunny', duration: '10:34' }] },
+      { id: 'p8', author: AYA, at: 'il y a 2 j', likes: 7, comments: [], text: 'Nous sommes sur place pour l’inventaire annuel. Passez nous voir !',
+        media: [{ kind: 'place', name: 'Port autonome de San-Pédro', address: 'Zone portuaire, San-Pédro', center: [4.7485, -6.6363], markers: [{ lat: 4.7485, lng: -6.6363, title: 'Port de San-Pédro', icon: 'warehouse', tone: 'primary' }] }] },
+      { id: 'p9', author: IBRAHIM, at: 'il y a 2 j', likes: 6, comments: [], text: 'Documents de préparation de la revue trimestrielle (budget, support et archives 2025).',
+        media: [{ kind: 'files', items: [by('Budget Sotra.xlsx'), by('Présentation T4.pptx'), by('Clients actifs.csv'), by('Archives 2025.zip')] }] },
+      { id: 'p10', author: GRACE, at: 'il y a 3 j', likes: 42, comments: [], text: 'Album de la **journée d’intégration** — balayez pour tout voir.',
+        media: [{ kind: 'album', slides: photos.slice(0, 7).map(function (p, i) { return { url: p.url, title: p.name.replace('.jpg', ''), caption: 'Photo ' + (i + 1) + ' sur 7' }; }) }] },
+      { id: 'p11', author: NADIA, at: 'il y a 4 j', likes: 13, comments: [], text: 'Épisode 12 du podcast interne : comment le support a divisé par deux le temps de réponse.',
+        media: [{ kind: 'podcast', tracks: wav.map(function (w, i) { return { title: i ? 'Bonus — questions de l’équipe' : 'Épisode 12 — Le support en première ligne', artist: 'Podcast SC Storage', icon: 'podcasts', src: w.url, blob: w.blob }; }) }] }
+    ];
+    function sampleVideo() { return Files.items.find(function (i) { return i.kind === 'video' && i.name.indexOf('Trajet') === 0; }); }
+    function total(m) { return m.options.reduce(function (n, o) { return n + o.votes; }, 0); }
+    var mounts = [];
+
+    function mediaHtml(p, m, k) {
+      var key = p.id + '-' + k;
+      switch (m.kind) {
+        case 'photos': var it = m.items, n = Math.min(4, it.length);
+          return '<div class="mosaic" data-n="' + n + '">' + it.slice(0, 4).map(function (img, i) { return '<button type="button" class="tile" data-view="' + key + '" data-i="' + i + '" aria-label="Agrandir ' + esc(img.name) + '"><img src="' + img.url + '" alt="' + esc(img.name) + '" loading="lazy">' + (i === 3 && it.length > 4 ? '<span class="more">+' + (it.length - 4) + '</span>' : '') + '</button>'; }).join('') + '</div>';
+        case 'album': mounts.push(function () { Media.carousel(document.getElementById(key), { items: m.slides, indicators: 'thumbs', aspectRatio: '16 / 10' }); }); return '<div class="m-album" id="' + key + '"></div>';
+        case 'video': var v = m.item || (m.ref && sampleVideo());
+          if (!v) return '<div class="m-video"><div class="video-wait"><span class="vp-spin"></span><span>Préparation de la vidéo…</span></div></div>';
+          mounts.push(function () { Media.video(document.getElementById(key), { src: v.url }); }); return '<div class="m-video" id="' + key + '"></div>';
+        case 'youtube': mounts.push(function () { Media.youtube(document.getElementById(key), m); }); return '<div class="m-video" id="' + key + '"></div>';
+        case 'voice': case 'podcast': mounts.push(function () { Media.audio(document.getElementById(key), { tracks: m.tracks, variant: m.kind === 'voice' ? 'compact' : m.tracks.length > 1 ? 'playlist' : 'default' }); }); return '<div class="' + m.kind + '" id="' + key + '"></div>';
+        case 'document': var d = m.item;
+          return '<button type="button" class="doc" data-view="' + key + '" data-i="0"><span class="doc-cover"><span class="mi">picture_as_pdf</span><span class="lines"><i></i><i></i><i></i><i></i></span></span><span class="doc-info"><strong>' + esc(d.name) + '</strong><small>PDF · ' + (m.pages || 1) + ' page(s) · ' + Files.size(d.size) + '</small></span><span class="doc-open"><span class="mi">open_in_full</span><span>Ouvrir</span></span></button>';
+        case 'files': return '<div class="files">' + m.items.map(function (f, i) { return '<button type="button" class="file" data-view="' + key + '" data-i="' + i + '"' + (f.url ? ' title="Aperçu"' : ' disabled title="Aperçu indisponible"') + '><img src="../../assets/icons-files/' + Files.KINDS[f.kind].img + '" alt=""><span><strong>' + esc(f.name) + '</strong><small>' + Files.KINDS[f.kind].label + ' · ' + Files.size(f.size) + '</small></span><span class="mi">' + (f.url ? 'visibility' : 'download') + '</span></button>'; }).join('') + '</div>';
+        case 'link': return '<a class="link" href="' + m.url + '" style="--h:' + m.hue + '"><span class="l-art"><span class="mi">' + m.icon + '</span></span><span class="l-body"><small>' + m.domain + '</small><strong>' + esc(m.title) + '</strong><span>' + esc(m.description) + '</span></span></a>';
+        case 'place': mounts.push(function () { UIMap.create(document.getElementById(key), { center: m.center, zoom: 13, height: '200px', markers: m.markers, scrollWheelZoom: false }); });
+          return '<div class="place"><div id="' + key + '"></div><div class="pl-foot"><span class="mi">place</span><span><strong>' + esc(m.name) + '</strong><small>' + esc(m.address) + '</small></span><button class="ui-btn ui-btn--outlined ui-btn--sm">Itinéraire</button></div></div>';
+        case 'poll': var t = total(m);
+          return '<div class="poll" role="group" aria-label="' + esc(m.question) + '"><strong>' + esc(m.question) + '</strong>' + m.options.map(function (o, i) {
+            return m.voted === undefined ? '<button type="button" class="opt" data-vote="' + p.id + '" data-i="' + i + '"><span class="radio"></span>' + esc(o.label) + '</button>'
+              : '<div class="res' + (m.voted === i ? ' mine' : '') + '"><span class="bar" style="width:' + (o.votes / t * 100) + '%"></span><span class="lbl">' + esc(o.label) + (m.voted === i ? '<span class="mi">check_circle</span>' : '') + '</span><b>' + Math.round(o.votes / t * 100) + ' %</b></div>';
+          }).join('') + '<small>' + t + ' votes · se termine dans 2 jours</small></div>';
+      }
+      return '';
+    }
+    function mediaItems(key) {
+      var p = posts.find(function (x) { return key.indexOf(x.id + '-') === 0; }), m = p.media[+key.split('-')[1]];
+      return m.kind === 'photos' || m.kind === 'files' ? m.items : [m.item];
+    }
+    function render() {
+      $('filters').innerHTML = FILTERS.map(function (f) { return '<button type="button" role="tab" class="chip-filter' + (S.filter === f[0] ? ' on' : '') + '" aria-selected="' + (S.filter === f[0]) + '" data-filter="' + f[0] + '"><span class="mi">' + f[2] + '</span>' + f[1] + '</button>'; }).join('');
+      $('left').querySelectorAll('[data-tab]').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === S.tab); });
+      var vis = posts.filter(function (p) { return (S.tab !== 'saved' || p.saved) && (S.filter === 'all' || p.media.some(MATCH[S.filter])); });
+      mounts = [];
+      $('posts').innerHTML = vis.length ? vis.map(function (p) {
+        return '<article class="card post" data-post="' + p.id + '"><header><span class="ava" style="background:' + p.author.color + '">' + D.initials(p.author.name) + '</span><div class="who"><strong>' + esc(p.author.name) + '</strong><small>' + esc(p.author.role) + ' · ' + p.at + ' · <span class="mi">public</span></small></div>' +
+          '<details class="ui-menu"><summary class="ui-btn ui-btn--icon" aria-label="Options"><span class="mi">more_horiz</span></summary><div class="ui-menu__panel"><button class="ui-menu__item" data-save="' + p.id + '"><span class="mi">' + (p.saved ? 'bookmark_remove' : 'bookmark_add') + '</span>' + (p.saved ? 'Retirer des enregistrés' : 'Enregistrer') + '</button>' +
+          '<button class="ui-menu__item" data-copy="' + location.href.split('#')[0] + '#' + p.id + '"><span class="mi">link</span>Copier le lien</button><button class="ui-menu__item"><span class="mi">notifications_off</span>Ne plus suivre</button></div></details></header>' +
+          '<p class="text">' + UIKitUtils.markdownInline(p.text) + '</p>' + p.media.map(function (m, k) { return mediaHtml(p, m, k); }).join('') +
+          '<div class="counts"><span><i class="heart"><span class="mi">favorite</span></i>' + p.likes + '</span><button type="button" data-cm="' + p.id + '">' + p.comments.length + ' commentaire(s)</button></div>' +
+          '<footer><button type="button" class="' + (p.liked ? 'on' : '') + '" data-like="' + p.id + '"><span class="mi">' + (p.liked ? 'favorite' : 'favorite_border') + '</span>J’aime</button><button type="button" data-cm="' + p.id + '"><span class="mi">chat_bubble_outline</span>Commenter</button>' +
+          '<button type="button" class="' + (p.saved ? 'saved' : '') + '" data-save="' + p.id + '"><span class="mi">' + (p.saved ? 'bookmark' : 'bookmark_border') + '</span>Enregistrer</button></footer>' +
+          (p.open ? '<div class="post-comments" id="c-' + p.id + '"></div>' : '') + '</article>';
+      }).join('') : '<div class="card empty"><span class="mi">' + (S.tab === 'saved' ? 'bookmark_border' : 'filter_alt_off') + '</span><strong>' + (S.tab === 'saved' ? 'Aucune publication enregistrée' : 'Aucune publication de ce type') + '</strong><span>' + (S.tab === 'saved' ? 'Enregistrez une publication pour la retrouver ici.' : 'Essayez un autre filtre.') + '</span></div>';
+      mounts.forEach(function (fn) { fn(); });
+      vis.forEach(function (p) { if (p.open) UIComp.commentThread(document.getElementById('c-' + p.id), { comments: p.comments, me: ME, mentionables: D.PEOPLE, compact: true, onChange: function (l) { p.comments = l; } }); });
+    }
+    function renderPending() {
+      var el = $('pending'); el.hidden = !S.pending.length && !S.place;
+      el.innerHTML = S.pending.map(function (f) { return '<span class="pj">' + Files.thumb(f) + '<span class="pj-txt"><strong>' + esc(f.name) + '</strong><small>' + Files.size(f.size) + '</small></span><button type="button" data-unattach="' + f.id + '" aria-label="Retirer ' + esc(f.name) + '"><span class="mi">close</span></button></span>'; }).join('') +
+        (S.place ? '<span class="pj"><span class="mi pin">place</span><span class="pj-txt"><strong>Siège SC Storage</strong><small>Plateau, Abidjan</small></span><button type="button" data-unplace aria-label="Retirer le lieu"><span class="mi">close</span></button></span>' : '');
+      document.querySelector('[data-a=place]').disabled = S.place;
+    }
+    function publish(text) {
+      var files = S.pending, media = [], imgs = files.filter(function (f) { return f.kind === 'image'; }), audio = files.filter(function (f) { return f.kind === 'audio'; });
+      if (imgs.length) media.push({ kind: 'photos', items: imgs });
+      files.filter(function (f) { return f.kind === 'video'; }).forEach(function (v) { media.push({ kind: 'video', title: v.name, item: v }); });
+      if (audio.length) media.push({ kind: 'podcast', tracks: audio.map(function (a) { return { title: a.name, artist: ME.name, src: a.url, blob: a.blob }; }) });
+      files.filter(function (f) { return f.kind === 'pdf'; }).forEach(function (d) { media.push({ kind: 'document', item: d }); });
+      var others = files.filter(function (f) { return ['image', 'video', 'audio', 'pdf'].indexOf(f.kind) < 0; }); if (others.length) media.push({ kind: 'files', items: others });
+      if (S.place) media.push({ kind: 'place', name: 'Siège SC Storage', address: 'Immeuble Alpha 2000, Plateau, Abidjan', center: [5.3223, -4.0187], markers: [{ lat: 5.3223, lng: -4.0187, title: 'Siège SC Storage', icon: 'business', tone: 'primary' }] });
+      posts.unshift({ id: 'p' + Date.now(), author: ME, at: 'À l’instant', text: text, likes: 0, comments: [], media: media });
+      S.pending = []; S.place = false; S.filter = 'all'; renderPending(); render();
+    }
+
+    $('left').innerHTML = '<section class="card profile"><div class="cover"></div><span class="ava" style="background:' + ME.color + '">' + D.initials(ME.name) + '</span><strong>' + ME.name + '</strong><small>' + ME.role + ' · SC Storage</small>' +
+      '<div class="stats"><div><b>42</b><span>publications</span></div><div><b>318</b><span>abonnés</span></div><div><b>27</b><span>équipes</span></div></div></section>' +
+      '<nav class="card menu"><button data-tab="all"><span class="mi">dynamic_feed</span>Tout le fil</button><button data-tab="team"><span class="mi">groups</span>Mon équipe</button><button data-tab="saved"><span class="mi">bookmark</span>Enregistrés</button></nav>';
+    $('right').innerHTML = '<section class="card"><h3>Événements à venir</h3>' + [['21', 'oct.', 'Atelier produit', 'Salle Lagune · 10 h'], ['24', 'oct.', 'Inauguration Vridi', 'Entrepôt · 16 h 30'], ['03', 'nov.', 'Revue trimestrielle', 'En ligne · 9 h']].map(function (e) {
+      return '<div class="event"><span class="date"><b>' + e[0] + '</b>' + e[1] + '</span><span><strong>' + e[2] + '</strong><small>' + e[3] + '</small></span></div>'; }).join('') + '</section>' +
+      '<section class="card"><h3>Collègues</h3>' + D.PEOPLE.slice(1, 5).map(function (u) { return '<div class="mate"><span class="ava" style="background:' + u.color + '">' + D.initials(u.name) + '</span><span><strong>' + u.name + '</strong><small>' + u.role + '</small></span><button class="ui-btn ui-btn--icon" aria-label="Message" onclick="EX.openChat()"><span class="mi">chat</span></button></div>'; }).join('') + '</section>';
+    // Zone de saisie (même rendu que le compositeur de commentaires)
+    $('composer').innerHTML = '<form class="cc" id="new"><span class="ava" style="background:' + ME.color + ';width:38px;height:38px">' + D.initials(ME.name) + '</span><div class="cc__box"><textarea rows="2" maxlength="600" placeholder="Partagez une info avec l’équipe…" aria-label="Nouvelle publication"></textarea><div class="cc__bar"><span class="help">**gras**, _italique_ · Ctrl+Entrée</span><span class="spacer"></span><button class="ui-btn ui-btn--sm">Publier</button></div></div></form>';
+    $('new').addEventListener('submit', function (e) { e.preventDefault(); var t = e.target.querySelector('textarea'); if (!t.value.trim() && !S.pending.length && !S.place) return; publish(t.value.trim()); t.value = ''; });
+    $('new').addEventListener('keydown', function (e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $('new').requestSubmit(); } });
+
+    document.getElementById('ex-content').addEventListener('click', function (e) {
+      var t = e.target.closest('[data-a],[data-tab],[data-filter],[data-view],[data-vote],[data-like],[data-save],[data-cm],[data-unattach],[data-unplace]'); if (!t) return;
+      var d = t.closest('details'); if (d) d.removeAttribute('open');
+      if (t.dataset.a === 'local') return $('local').click();
+      if (t.dataset.a === 'drive') return Files.pick({ title: 'Joindre depuis mes fichiers', confirmLabel: 'Joindre' }).then(function (files) { if (files) { files.forEach(function (f) { if (!S.pending.some(function (x) { return x.id === f.id; })) S.pending.push(f); }); renderPending(); } });
+      if (t.dataset.a === 'place') { S.place = true; return renderPending(); }
+      if (t.dataset.unattach) { S.pending = S.pending.filter(function (f) { return f.id !== t.dataset.unattach; }); return renderPending(); }
+      if (t.hasAttribute('data-unplace')) { S.place = false; return renderPending(); }
+      if (t.dataset.tab) { S.tab = t.dataset.tab; return render(); }
+      if (t.dataset.filter) { S.filter = t.dataset.filter; return render(); }
+      if (t.dataset.view) { var items = mediaItems(t.dataset.view).filter(function (i) { return i && i.url; }), target = mediaItems(t.dataset.view)[+t.dataset.i]; if (target && target.url) Media.viewer(Files.toViewer(items), items.indexOf(target)); return; }
+      var p = posts.find(function (x) { return x.id === (t.dataset.vote || t.dataset.like || t.dataset.save || t.dataset.cm); }); if (!p) return;
+      if (t.dataset.vote) { var m = p.media.find(function (x) { return x.kind === 'poll'; }); if (m.voted === undefined) { m.voted = +t.dataset.i; m.options[m.voted].votes++; } }
+      if (t.dataset.like) { p.liked = !p.liked; p.likes += p.liked ? 1 : -1; }
+      if (t.dataset.save) p.saved = !p.saved;
+      if (t.dataset.cm) p.open = !p.open;
+      var y = document.querySelector('.ex-content').scrollTop; render(); document.querySelector('.ex-content').scrollTop = y;
+    });
+    $('local').addEventListener('change', function (e) { S.pending = S.pending.concat(Files.addFiles(e.target.files, null)); e.target.value = ''; renderPending(); });
+    // La vidéo d'exemple arrive en tâche de fond : on rafraîchit la publication qui l'attend.
+    Files.on(function () { if (document.querySelector('.video-wait') && sampleVideo()) { var y = document.querySelector('.ex-content').scrollTop; render(); document.querySelector('.ex-content').scrollTop = y; } });
+    render(); renderPending();
+  })();
+  </script>
+</body>
+</html>

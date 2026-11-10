@@ -1,0 +1,59 @@
+/* Navigateur de fichiers et sélecteur (js/files.js) */
+.fb { position: relative; display: flex; flex-direction: column; gap: var(--space-4); min-height: 240px; }
+.fb-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fb .crumbs { display: flex; align-items: center; flex-wrap: wrap; min-width: 0; }
+.fb .crumbs button { border: 0; background: none; padding: 4px 8px; border-radius: var(--radius-sm); cursor: pointer; font: 500 14px var(--font-sans); color: var(--text-secondary); }
+.fb .crumbs button:hover { background: var(--hover-bg); color: var(--text-primary); } .fb .crumbs .cur { color: var(--text-primary); font-weight: 600; } .fb .crumbs .mi { font-size: 18px; color: var(--text-muted); }
+.fb .spacer { flex: 1; }
+.fb .searchbox { width: 240px; height: 36px; } @media (max-width: 767px) { .fb .searchbox { order: 5; width: 100%; } }
+.vmode { display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--radius-sm); background: var(--hover-bg); }
+.vmode button { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 0; border-radius: 6px; background: none; color: var(--text-secondary); cursor: pointer; }
+.vmode button.on { background: var(--card-bg); color: var(--primary); box-shadow: var(--shadow-1); } .vmode .mi { font-size: 18px; }
+.group-label { margin-bottom: -6px; font: 600 11px/1.4 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.fb .folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.fb .folder { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; border: 0; border-radius: var(--radius-md); background: var(--hover-bg); font: inherit; color: var(--text-primary); cursor: pointer; text-align: left; user-select: none; }
+.fb .folder .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; } .fb .folder .badge-ic { font-size: 16px; color: var(--text-muted); }
+.fb .folder:hover { filter: brightness(.97); }
+.fb .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+@media (max-width: 600px) { .fb .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } }
+.fb .tile { position: relative; display: flex; flex-direction: column; padding: 0; border: 0; border-radius: var(--radius-md); overflow: hidden; background: var(--card-bg); font: inherit; color: inherit; cursor: pointer; text-align: left; user-select: none; box-shadow: 0 0 0 1px var(--border); }
+.fb .tile:hover { background: var(--hover-bg); }
+.fb .thumb { position: relative; aspect-ratio: 4 / 3; display: grid; place-items: center; background: var(--hover-bg); }
+.fb .thumb img { width: 100%; height: 100%; object-fit: cover; } .fb .thumb img.ic { width: 48px; height: 48px; object-fit: contain; }
+.fb .thumb .play { position: absolute; font-size: 36px; color: var(--text-secondary); opacity: .85; }
+.fb .meta { display: flex; flex-direction: column; gap: 1px; padding: 12px; min-width: 0; }
+.fb .meta .nm { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .fb .meta small { font-size: 12px; color: var(--text-muted); }
+.fb .tile .star { position: absolute; right: 8px; bottom: 12px; font-size: 16px; color: var(--warning); }
+.fb .check { position: absolute; top: 8px; left: 8px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; border: 2px solid #fff; background: rgba(15,23,42,.25); box-shadow: var(--shadow-1); }
+.fb .check .mi { font-size: 14px; color: #fff; opacity: 0; } .fb .check.on { background: var(--primary); border-color: var(--primary); } .fb .check.on .mi { opacity: 1; }
+.fb .folder.sel, .fb .tile.sel { box-shadow: inset 0 0 0 2px var(--primary); background: color-mix(in srgb, var(--primary) 6%, var(--card-bg)); }
+.fb .tile.off { cursor: not-allowed; opacity: .4; }
+.fb .table-wrap { overflow-x: auto; border-radius: var(--radius-md); background: var(--card-bg); box-shadow: 0 0 0 1px var(--border); }
+.fb-list { width: 100%; border-collapse: collapse; font-size: 13px; }
+.fb-list th { padding: 12px 16px; text-align: left; white-space: nowrap; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border); background: var(--table-header-bg); font: 600 11px/1.4 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.fb-list th .mi { font-size: 14px; vertical-align: -2px; margin-left: 2px; } .fb-list th.hide-sm { cursor: default; }
+.fb-list td { padding: 8px 16px; border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent); white-space: nowrap; }
+.fb-list tr:last-child td { border-bottom: 0; } .fb-list tbody tr { cursor: pointer; user-select: none; } .fb-list tbody tr:hover td { background: var(--hover-bg); }
+.fb-list tbody tr.sel td { background: color-mix(in srgb, var(--primary) 8%, var(--card-bg)); } .fb-list tbody tr.off { opacity: .4; cursor: not-allowed; }
+.fb-list .c-name { width: 55%; } .fb-list .nm-cell { display: flex; align-items: center; gap: 12px; min-width: 0; } .fb-list .nm { overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+.fb-list .fi { font-size: 22px; } .fb-list .th { width: 28px; height: 28px; flex: none; border-radius: 4px; object-fit: cover; } .fb-list .th.ic { object-fit: contain; border-radius: 0; }
+.fb-list .star { font-size: 15px; color: var(--warning); } .fb-list .shared { font-size: 15px; color: var(--text-muted); } .fb-list .muted { color: var(--text-muted); } .fb-list .r { text-align: right; }
+@media (max-width: 767px) { .fb-list .hide-sm { display: none; } }
+.fb .drop { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border-radius: var(--radius-md); border: 2px dashed var(--primary); background: color-mix(in srgb, var(--primary) 8%, var(--bg)); color: var(--primary); font-weight: 600; pointer-events: none; }
+.fb .drop .mi { font-size: 40px; }
+dialog.fp-dialog { width: 1040px; max-width: calc(100vw - 32px); height: 720px; max-height: calc(100vh - 32px); padding: 0; border: 0; border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-3); }
+dialog.fp-dialog::backdrop { background: rgb(0 0 0 / .45); }
+.fp { height: 100%; display: flex; flex-direction: column; background: var(--bg); color: var(--text-primary); }
+.fp-head { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 24px; } .fp-head h2 { margin: 0; font-size: var(--text-lg); font-weight: 600; } .fp-head .hint { font-size: 12px; color: var(--text-muted); }
+.fp .spacer { flex: 1; }
+.fp-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+@media (max-width: 767px) { .fp-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; } }
+.places { display: flex; flex-direction: column; gap: 2px; padding: 16px 12px; overflow-y: auto; }
+.places button { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: none; cursor: pointer; text-align: left; font: 500 13px var(--font-sans); color: var(--text-secondary); }
+.places button .mi { font-size: 19px; } .places button:hover { background: var(--hover-bg); color: var(--text-primary); } .places button.on { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+.places hr { width: 100%; border: 0; margin: 8px 0; }
+@media (max-width: 767px) { .places { flex-direction: row; overflow-x: auto; padding: 8px 12px; } .places button { flex: none; } .places hr { display: none; } }
+.fp .browser { min-height: 0; overflow-y: auto; padding: 16px 24px 24px; } @media (max-width: 767px) { .fp .browser { padding: 12px 16px; } }
+.fp-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 16px 12px 24px; background: var(--card-bg); }
+.picked { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); } .picked img { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; } .picked img.ic { object-fit: contain; }
+.picked span { margin-left: 6px; } .picked strong { color: var(--text-primary); } .fp-foot .none { font-size: 12px; color: var(--text-muted); }

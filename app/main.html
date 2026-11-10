@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Référentiel unique</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <script src="../js/ui-kit.js"></script>
+  <script src="../js/themes.js"></script>
+  <style>
+    body { margin: 0; height: 100vh; overflow: hidden; background: var(--bg); }
+    .shell { display: flex; height: 100vh; }
+    .rail { width: 72px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0; background: var(--card-bg); border-right: 1px solid var(--border); transition: margin .2s; z-index: 20; }
+    .rail.closed { margin-left: -72px; }
+    .rail img { width: 40px; height: 40px; object-fit: contain; }
+    .rail nav { flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+    .rail nav a { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--radius-md); color: var(--text-secondary); } .rail nav a:hover, .rail nav a.active { background: var(--hover-bg); color: var(--primary); }
+    .ava { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--primary); color: var(--on-primary, #fff); font: 600 14px var(--font-sans); cursor: pointer; }
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .bar { display: flex; align-items: center; gap: 4px; height: 64px; padding: 0 12px; flex: none; border-bottom: 1px solid var(--border); background: var(--card-bg); }
+    .bar .title { margin-left: 8px; font-size: 18px; font-weight: 600; } .bar .spacer { flex: 1; }
+    .badge-wrap { position: relative; } .badge-wrap b { position: absolute; top: 4px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--error); color: #fff; font-size: 10px; line-height: 16px; text-align: center; }
+    .content { flex: 1; overflow: auto; display: grid; place-items: center; padding: 24px; }
+    .drawer { width: 360px; flex: none; display: flex; flex-direction: column; background: var(--card-bg); border-left: 1px solid var(--border); transition: margin .2s; }
+    .drawer.closed { margin-right: -361px; }
+    @media (max-width: 900px) { .rail, .drawer { position: fixed; top: 0; bottom: 0; } .rail { left: 0; } .drawer { right: 0; z-index: 30; box-shadow: var(--shadow-3); } .drawer.closed { margin-right: -380px; }
+      .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.32); z-index: 15; } }
+    .d-head { display: flex; align-items: center; gap: 12px; padding: 16px; border-bottom: 1px solid var(--border); }
+    .d-head .ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-md); background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); }
+    .d-head .ic.orange { background: color-mix(in srgb, var(--warning) 15%, transparent); color: var(--warning-text); }
+    .d-head .t { flex: 1; display: flex; flex-direction: column; } .d-head .t strong { font-size: 15px; } .d-head .t small { font-size: 12px; color: var(--text-muted); }
+    .d-body { flex: 1; overflow-y: auto; padding: 12px; }
+    .sec { margin-bottom: 16px; } .sec h4 { display: flex; align-items: center; gap: 8px; margin: 8px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); } .sec h4 .mi { font-size: 18px; }
+    .item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px; border: 0; border-radius: var(--radius-md); background: none; text-align: left; cursor: pointer; color: var(--text-primary); font: inherit; }
+    .item:hover { background: var(--hover-bg); } .item .ic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--hover-bg); color: var(--text-secondary); flex: none; }
+    .item .ic.danger { background: color-mix(in srgb, var(--error) 12%, transparent); color: var(--error-text); }
+    .item .c { flex: 1; display: flex; flex-direction: column; min-width: 0; } .item .c b { font-size: 14px; font-weight: 600; } .item .c small { font-size: 12px; color: var(--text-muted); }
+    .item.unread .ic { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); }
+    .n-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); } .n-top span:first-child { font-weight: 600; color: var(--primary); }
+    .item .c p { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); white-space: normal; }
+    .empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 48px 16px; color: var(--text-muted); text-align: center; } .empty .mi { font-size: 40px; }
+    .welcome { max-width: 420px; text-align: center; color: var(--text-secondary); } .welcome .mi { font-size: 56px; color: var(--primary); } .welcome h2 { color: var(--text-primary); }
+    .ui-dialog .fields { display: flex; flex-direction: column; gap: 12px; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail" id="rail">
+      <img src="../assets/logo.png" alt="SC Storage" title="SC Storage">
+      <nav aria-label="Modules" id="rail-nav"></nav>
+      <button class="ava" id="rail-ava" data-open="settings" title="Mon compte"></button>
+    </aside>
+    <div class="main">
+      <header class="bar">
+        <button class="ui-btn ui-btn--icon" id="menu" aria-label="Menu"><span class="mi">menu_open</span></button>
+        <span class="title">Référentiel unique</span><span class="spacer"></span>
+        <a class="ui-btn ui-btn--icon" href="../index.html" title="Retour au catalogue UI Kit" aria-label="Retour au catalogue UI Kit"><span class="mi">widgets</span></a>
+        <button class="ui-btn ui-btn--icon" id="mode" title="Changer de thème" aria-label="Changer de thème"><span class="mi">dark_mode</span></button>
+        <span id="auth"></span>
+      </header>
+      <main class="content">
+        <div class="welcome"><span class="mi">space_dashboard</span><h2>Shell applicatif</h2><p>Rail de modules, barre d'outils et tiroir droit (compte, notifications). Aucun module n'est encore branché : cette zone accueille le contenu routé.</p></div>
+      </main>
+    </div>
+    <aside class="drawer closed" id="drawer" aria-label="Panneau latéral"></aside>
+  </div>
+  <script src="../js/data/session.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, D = window.DATA, user = D.CURRENT_USER;
+    var messages = D.NOTIFICATIONS.filter(function (m) { return !m.lu; }), side = 'settings';
+    var MENU = []; // Identique à MAIN_MENU : vide pour l'instant
+    $('rail-nav').innerHTML = MENU.map(function (i) { return '<a href="#' + i.type + '" title="' + i.libelle + '"><span class="mi">' + i.icon + '</span></a>'; }).join('');
+    function ini() { return user ? user.fullname.split(' ').map(function (n) { return n[0]; }).join('').slice(0, 2).toUpperCase() : ''; }
+    function mobile() { return matchMedia('(max-width: 900px)').matches; }
+    function bar() {
+      $('rail-ava').hidden = !user; $('rail-ava').textContent = ini();
+      $('auth').innerHTML = user ? '<span class="badge-wrap"><button class="ui-btn ui-btn--icon" data-open="notifications" aria-label="Notifications" title="Notifications"><span class="mi">notifications</span></button>' + (messages.length ? '<b>' + messages.length + '</b>' : '') + '</span> <button class="ava" data-open="settings" title="Mon compte" style="display:inline-grid;vertical-align:middle">' + ini() + '</button>'
+        : '<button class="ui-btn" id="signin"><span class="mi">login</span>Connexion</button>';
+      $('mode').firstChild.textContent = document.documentElement.getAttribute('data-mode') === 'dark' ? 'light_mode' : 'dark_mode';
+    }
+    function drawer() {
+      var d = $('drawer');
+      if (side === 'settings') d.innerHTML = '<div class="d-head"><span class="ic"><span class="mi">manage_accounts</span></span><div class="t"><strong>Paramètres du compte</strong><small>Profil &amp; sécurité</small></div><button class="ui-btn ui-btn--icon" data-close aria-label="Fermer"><span class="mi">close</span></button></div>' +
+        '<div class="d-body"><div class="sec"><h4><span class="mi">person</span>Gestion de profil</h4>' +
+        '<button class="item" data-act="profil"><span class="ic"><span class="mi">badge</span></span><span class="c"><b>Paramètres personnels</b><small>Modifiez vos données personnelles</small></span><span class="mi">chevron_right</span></button>' +
+        '<button class="item" data-act="password"><span class="ic"><span class="mi">lock_reset</span></span><span class="c"><b>Mot de passe</b><small>Changez votre mot de passe</small></span><span class="mi">chevron_right</span></button></div>' +
+        '<div class="sec"><h4><span class="mi">power_settings_new</span>Connexion</h4><button class="item" data-act="logout"><span class="ic danger"><span class="mi">logout</span></span><span class="c"><b>Déconnexion</b><small>Fermer la session en cours</small></span><span class="mi">chevron_right</span></button></div></div>';
+      else d.innerHTML = '<div class="d-head"><button class="ui-btn ui-btn--icon" data-back aria-label="Retour"><span class="mi">arrow_back</span></button><span class="ic orange"><span class="mi">notifications</span></span><div class="t"><strong>Notifications</strong><small>' + messages.length + ' message' + (messages.length > 1 ? 's' : '') + '</small></div>' +
+        (messages.length ? '<button class="ui-btn ui-btn--icon" data-clear title="Tout supprimer" aria-label="Tout supprimer"><span class="mi">delete_sweep</span></button>' : '') + '<button class="ui-btn ui-btn--icon" data-close aria-label="Fermer"><span class="mi">close</span></button></div><div class="d-body">' +
+        (messages.length ? messages.map(function (m) { var t = new Date(m.envoyeLe); return '<button class="item unread" data-msg="' + m._id + '"><span class="ic"><span class="mi">mark_unread_chat_alt</span></span><span class="c"><span class="n-top"><span>' + m.type + '</span><span>' + t.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) + ' ' + t.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</span></span><p>' + m.contenu + '</p></span></button>'; }).join('')
+          : '<div class="empty"><span class="mi">notifications_off</span><strong>Aucune notification</strong><small>Vous êtes à jour !</small></div>') + '</div>';
+    }
+    function open(s) { side = s; drawer(); $('drawer').classList.remove('closed'); scrim(); }
+    function close() { $('drawer').classList.add('closed'); scrim(); }
+    function scrim() { var s = document.querySelector('.scrim'), need = mobile() && (!$('drawer').classList.contains('closed') || !$('rail').classList.contains('closed'));
+      if (need && !s) { s = document.createElement('div'); s.className = 'scrim'; s.onclick = function () { close(); $('rail').classList.add('closed'); scrim(); }; document.body.appendChild(s); } else if (!need && s) s.remove(); }
+    function dialog(html, ok) { var dlg = document.createElement('dialog'); dlg.className = 'ui-dialog'; dlg.innerHTML = '<form method="dialog">' + html + '</form>'; document.body.appendChild(dlg); dlg.showModal();
+      dlg.addEventListener('close', function () { if (dlg.returnValue === 'ok') ok(dlg); dlg.remove(); }); }
+    function field(lbl, ic, val, type) { return '<div class="ui-field"><label class="ui-label">' + lbl + '</label><input class="ui-input" type="' + (type || 'text') + '" value="' + (val || '') + '" aria-label="' + lbl + '"></div>'; }
+    if (mobile()) $('rail').classList.add('closed');
+    bar(); drawer();
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-open],[data-close],[data-back],[data-clear],[data-msg],[data-act],#menu,#mode,#signin'); if (!t) return;
+      if (t.dataset.open) open(t.dataset.open);
+      else if (t.hasAttribute('data-close')) close();
+      else if (t.hasAttribute('data-back')) { side = 'settings'; drawer(); }
+      else if (t.hasAttribute('data-clear')) { messages = []; drawer(); bar(); }
+      else if (t.dataset.msg) { var m = messages.find(function (x) { return x._id === t.dataset.msg; });
+        UIKit.confirm({ title: m.objet, message: m.contenu, confirmLabel: 'Marquer comme lu', cancelLabel: 'Fermer' }).then(function (ok) { if (ok) { messages = messages.filter(function (x) { return x !== m; }); drawer(); bar(); } }); }
+      else if (t.dataset.act === 'profil') dialog('<div class="ui-dialog__body"><h3 style="margin-top:0">Paramètres personnels</h3><div class="fields">' + field('Nom complet', 'person', user.fullname) + field('E-mail', 'alternate_email', user.mail) + field('Téléphone', 'phone', user.phone) + '</div></div><div class="ui-dialog__actions"><button class="ui-btn ui-btn--text" value="cancel">Annuler</button><button class="ui-btn" value="ok">Valider</button></div>',
+          function (d) { user = Object.assign({}, user, { fullname: d.querySelector('input').value }); bar(); UIKit.toast('Profil mis à jour'); });
+      else if (t.dataset.act === 'password') dialog('<div class="ui-dialog__body"><h3 style="margin-top:0">Modifiez votre mot de passe</h3><div class="fields">' + field('Mot de passe actuel', '', '', 'password') + field('Nouveau mot de passe', '', '', 'password') + field('Confirmez le mot de passe', '', '', 'password') + '</div></div><div class="ui-dialog__actions"><button class="ui-btn ui-btn--text" value="cancel">Annuler</button><button class="ui-btn" value="ok">Valider</button></div>',
+          function (d) { var i = d.querySelectorAll('input'); UIKit.toast(i[1].value && i[1].value === i[2].value ? 'Mot de passe modifié' : 'La confirmation du nouveau mot de passe est incorrecte'); });
+      else if (t.dataset.act === 'logout') UIKit.confirm({ title: 'Confirmation', message: 'Voulez-vous vous déconnecter ?', confirmLabel: 'Se déconnecter' }).then(function (ok) { if (ok) { user = null; close(); bar(); } });
+      else if (t.id === 'menu') { $('rail').classList.toggle('closed'); t.firstChild.textContent = $('rail').classList.contains('closed') ? 'menu' : 'menu_open'; scrim(); }
+      else if (t.id === 'mode') { UIKit.setMode(document.documentElement.getAttribute('data-mode') === 'dark' ? 'light' : 'dark'); bar(); }
+      else if (t.id === 'signin') dialog('<div class="ui-dialog__body" style="text-align:center"><img src="../assets/logo.png" alt="" style="height:56px"><h3>Connexion requise</h3><p class="ui-muted">Connectez-vous avec votre compte Google pour accéder au référentiel unique.</p></div><div class="ui-dialog__actions" style="justify-content:center"><button class="ui-btn" value="ok"><span class="mi">login</span>Se connecter avec Google</button></div>',
+          function () { user = D.CURRENT_USER; bar(); });
+    });
+  })();
+  </script>
+</body>
+</html>

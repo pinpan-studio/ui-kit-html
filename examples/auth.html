@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/auth.css">
+  <script src="../js/ui-kit.js"></script>
+</head>
+<body>
+  <!--
+    Écrans d'authentification d'exemple (aucune authentification réelle).
+    ?v= centered | split-right | split-left | image | minimal | social | accounts | register | forgot | otp | lock
+  -->
+  <div id="app"></div>
+
+  <script>
+  (function () {
+    'use strict';
+    var ICONS = {
+      google: '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h6a5.1 5.1 0 0 1-2.2 3.4v2.8h3.6c2.1-2 3.2-4.8 3.2-8.2Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.4-2.7l-3.6-2.8c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2v2.9A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.3-.4-2s.2-1.4.4-2V7.1H2A11 11 0 0 0 1 12c0 1.8.4 3.4 1.2 4.9l3.5-2.9Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2 7.1L5.7 10c.9-2.6 3.4-4.6 6.3-4.6Z"/></svg>',
+      apple: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9-.8 0-2-.9-3.2-.8A4.8 4.8 0 0 0 4 9.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.2-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7 4.2 4.2 0 0 1-2.4-3.9ZM14 5.2A4.3 4.3 0 0 0 15 2a4.4 4.4 0 0 0-2.9 1.5 4 4 0 0 0-1 3.1c1.1 0 2.2-.6 2.9-1.4Z"/></svg>',
+      microsoft: '<svg viewBox="0 0 24 24"><path fill="#F25022" d="M2 2h9.5v9.5H2z"/><path fill="#7FBA00" d="M12.5 2H22v9.5h-9.5z"/><path fill="#00A4EF" d="M2 12.5h9.5V22H2z"/><path fill="#FFB900" d="M12.5 12.5H22V22h-9.5z"/></svg>',
+      facebook: '<svg viewBox="0 0 24 24"><path fill="FILL:#1877F2" d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.6-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12Z"/></svg>',
+      github: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5Z"/></svg>',
+      linkedin: '<svg viewBox="0 0 24 24"><path fill="FILL:#0A66C2" d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.4V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2ZM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2ZM7.1 20.5H3.5V9h3.6v11.5ZM22.2 0H1.8C.8 0 0 .8 0 1.7v20.6c0 .9.8 1.7 1.8 1.7h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0Z"/></svg>'
+    };
+    var LABELS = { google: 'Google', apple: 'Apple', microsoft: 'Microsoft', facebook: 'Facebook', github: 'GitHub', linkedin: 'LinkedIn' };
+    function icon(p, mono) {
+      return '<span class="pi">' + ICONS[p].replace(/FILL:(#\w+)/, mono ? 'currentColor' : '$1') + '</span>';
+    }
+
+    var VARIANTS = {
+      centered: { layout: 'centered', screen: 'login', sso: { style: 'icons', providers: ['google', 'apple', 'microsoft', 'facebook', 'github', 'linkedin'] } },
+      'split-right': { layout: 'split-right', screen: 'login', sso: { style: 'grid', providers: ['google', 'microsoft'] } },
+      'split-left': { layout: 'split-left', screen: 'login', sso: { style: 'stack', providers: ['google', 'apple', 'microsoft'], top: true, verb: 'Continuer avec' } },
+      image: { layout: 'image', screen: 'login', sso: { style: 'brand', providers: ['google', 'apple'], verb: 'Continuer avec' } },
+      minimal: { layout: 'minimal', screen: 'login', sso: { style: 'stack', providers: ['google', 'microsoft', 'github'], top: true, verb: 'Se connecter avec' } },
+      register: { layout: 'split-right', screen: 'register', sso: { style: 'grid', providers: ['google', 'linkedin'], top: true } },
+      social: { layout: 'centered', screen: 'social', sso: { style: 'brand', providers: ['google', 'apple', 'microsoft', 'facebook', 'github', 'linkedin'], verb: 'Continuer avec' } },
+      accounts: { layout: 'minimal', screen: 'accounts' },
+      forgot: { layout: 'centered', screen: 'forgot' },
+      otp: { layout: 'centered', screen: 'otp' },
+      lock: { layout: 'image', screen: 'lock' }
+    };
+    var TITLES = { login: 'Connexion', register: 'Inscription', forgot: 'Mot de passe oublié', otp: 'Vérification', lock: 'Session verrouillée', social: 'Connexion sociale', accounts: 'Choisir un compte' };
+    var USER = { fullname: 'Jean Kouassi', mail: 'jean.kouassi@example.com' };
+    var ACCOUNTS = [
+      { name: 'Jean Kouassi', mail: 'jean.kouassi@gmail.com', color: '#0ea5e9' },
+      { name: 'Jean Kouassi', mail: 'j.kouassi@scstorage.ci', color: '#8b5cf6', work: true }
+    ];
+    var STEPS = ['Compte', 'Sécurité', 'Organisation'];
+
+    var variant = new URLSearchParams(location.search).get('v') || 'centered';
+    var cfg = VARIANTS[variant] || VARIANTS.centered;
+    var sso = cfg.sso;
+    var S = { email: USER.mail, password: '', showPw: false, busy: false, error: '', done: false, ssoBusy: null, ssoUsed: null,
+      step: 0, reg: { firstName: '', lastName: '', email: '', password: '', company: '', size: '11-50', terms: false },
+      code: '', otp: 'idle', resendIn: 30 };
+    document.title = TITLES[cfg.screen] + ' — UI Kit HTML';
+
+    var app = document.getElementById('app');
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function spin() { return '<span class="spin" aria-label="Chargement"></span>'; }
+    function href(v) { return 'auth.html?v=' + v; }
+
+    function brand(light, compact) {
+      return '<div class="brand' + (light ? ' light' : '') + (compact ? ' compact' : '') + '"><img src="../assets/' + (light ? 'logo-white' : 'logo') + '.png" alt=""><span>SC Storage</span></div>';
+    }
+    function legal() { return '<footer class="legal">© ' + new Date().getFullYear() + ' SC Storage · <a href="#">Confidentialité</a> · <a href="#">Conditions</a></footer>'; }
+    function errorTpl() { return S.error ? '<p class="error" role="alert"><span class="mi">error</span>' + esc(S.error) + '</p>' : ''; }
+
+    function ssoTpl(verbOverride) {
+      if (!sso) return '';
+      var verb = verbOverride || sso.verb;
+      return '<div class="sso sso--' + sso.style + '">' + sso.providers.map(function (p) {
+        var busy = S.ssoBusy === p;
+        if (sso.style === 'icons') return '<button type="button" class="sso-ic p-' + p + '" data-sso="' + p + '" aria-label="Continuer avec ' + LABELS[p] + '" title="' + LABELS[p] + '">' + (busy ? spin() : icon(p)) + '</button>';
+        if (sso.style === 'brand') return '<button type="button" class="sso-brand p-' + p + '" data-sso="' + p + '">' + (busy ? spin() : icon(p, p !== 'google' && p !== 'microsoft')) + '<span>' + (verb ? verb + ' ' : '') + LABELS[p] + '</span></button>';
+        return '<button type="button" class="sso-btn p-' + p + '" data-sso="' + p + '">' + (busy ? spin() : icon(p)) + '<span>' + (verb ? verb + ' ' : '') + LABELS[p] + '</span></button>';
+      }).join('') + '</div>';
+    }
+
+    function pwField(name, value, placeholder, autocomplete) {
+      return '<div class="field-box"><span class="mi">lock</span><input id="' + name + '" name="' + name + '" type="' + (S.showPw ? 'text' : 'password') + '" value="' + esc(value) + '" placeholder="' + placeholder + '" autocomplete="' + autocomplete + '">' +
+        '<button type="button" class="ui-btn ui-btn--icon" data-act="toggle-pw" aria-label="' + (S.showPw ? 'Masquer' : 'Afficher') + '"><span class="mi">' + (S.showPw ? 'visibility_off' : 'visibility') + '</span></button></div>';
+    }
+    function submitBtn(label, extra) { return '<button class="ui-btn submit' + (extra || '') + '" type="submit"' + (S.busy ? ' disabled' : '') + '>' + (S.busy ? spin() : label) + '</button>'; }
+
+    function pwStrength(pw) {
+      var rules = [
+        { ok: pw.length >= 8, label: '8 caractères minimum' },
+        { ok: /[A-Z]/.test(pw) && /[a-z]/.test(pw), label: 'Majuscules et minuscules' },
+        { ok: /\d/.test(pw), label: 'Au moins un chiffre' },
+        { ok: /[^A-Za-z0-9]/.test(pw), label: 'Un caractère spécial' }
+      ];
+      var n = rules.filter(function (r) { return r.ok; }).length;
+      var color = ['var(--border)', 'var(--error)', 'var(--warning)', 'var(--info)', 'var(--success)'][n];
+      return '<div class="pw-meter">' + [0, 1, 2, 3].map(function (i) { return '<i style="background:' + (i < n ? color : 'var(--border)') + '"></i>'; }).join('') + '</div>' +
+        '<ul class="pw-rules">' + rules.map(function (r) { return '<li class="' + (r.ok ? 'ok' : '') + '"><span class="mi">' + (r.ok ? 'check_circle' : 'radio_button_unchecked') + '</span>' + r.label + '</li>'; }).join('') + '</ul>';
+    }
+
+    function screenTpl() {
+      if (S.done) {
+        var body;
+        if (cfg.screen === 'forgot') body = '<h1>Vérifiez votre boîte mail</h1><p>Un lien de réinitialisation a été envoyé à <strong>' + esc(S.email) + '</strong>. Il expire dans 30 minutes.</p>';
+        else if (cfg.screen === 'register') body = '<h1>Compte créé</h1><p>Bienvenue ' + esc(S.reg.firstName) + ' ! Un e-mail de confirmation a été envoyé à <strong>' + esc(S.reg.email) + '</strong>.</p>';
+        else body = '<h1>Connexion réussie</h1>' + (S.ssoUsed ? '<p class="via">' + icon(S.ssoUsed) + ' Connecté avec ' + LABELS[S.ssoUsed] + (cfg.screen === 'accounts' ? ' · ' + esc(S.email) : '') + '</p>' : '') +
+          '<p>Redirection vers votre espace… (démonstration statique, aucune session n\'est ouverte).</p>';
+        return '<div class="success"><span class="ok"><span class="mi">' + (cfg.screen === 'forgot' ? 'mark_email_read' : 'check') + '</span></span>' + body +
+          '<button class="ui-btn submit" data-act="reset"><span class="mi">replay</span>Recommencer la démo</button></div>';
+      }
+      switch (cfg.screen) {
+        case 'login':
+          return '<div class="head"><h1>' + (cfg.layout === 'minimal' ? 'Connexion' : 'Bon retour !') + '</h1><p>Connectez-vous pour accéder à votre espace.</p></div>' +
+            (sso && sso.top ? ssoTpl() + '<div class="divider"><span>ou avec votre e-mail</span></div>' : '') +
+            '<form class="fields" data-form="login" novalidate>' +
+              '<div class="ui-field"><label class="ui-label" for="email">Adresse e-mail</label><div class="field-box"><span class="mi">mail</span><input id="email" name="email" type="email" autocomplete="username" value="' + esc(S.email) + '" placeholder="nom@entreprise.ci"></div></div>' +
+              '<div class="ui-field"><div class="label-row"><label class="ui-label" for="pwd">Mot de passe</label><a href="' + href('forgot') + '" class="link small">Mot de passe oublié ?</a></div>' + pwField('pwd', S.password, 'Essayez « demo »', 'current-password') + '</div>' +
+              '<label class="ui-check"><input type="checkbox" checked> Rester connecté</label>' + errorTpl() + submitBtn('Se connecter') +
+            '</form>' +
+            (sso && !sso.top ? '<div class="divider"><span>' + (sso.style === 'icons' ? 'ou continuer avec' : 'ou') + '</span></div>' + ssoTpl() : '') +
+            '<p class="alt">Pas encore de compte ? <a href="' + href('register') + '" class="link">Créer un compte</a></p>';
+
+        case 'register':
+          var r = S.reg, stepBody;
+          if (S.step === 0) stepBody = '<div class="row-2"><div class="ui-field"><label class="ui-label" for="fn">Prénom</label><div class="field-box"><input id="fn" name="firstName" value="' + esc(r.firstName) + '" placeholder="Jean"></div></div>' +
+            '<div class="ui-field"><label class="ui-label" for="ln">Nom</label><div class="field-box"><input id="ln" name="lastName" value="' + esc(r.lastName) + '" placeholder="Kouassi"></div></div></div>' +
+            '<div class="ui-field"><label class="ui-label" for="em">E-mail professionnel</label><div class="field-box"><span class="mi">mail</span><input id="em" name="email" type="email" value="' + esc(r.email) + '" placeholder="nom@entreprise.ci"></div></div>';
+          else if (S.step === 1) stepBody = '<div class="ui-field"><label class="ui-label" for="rpw">Mot de passe</label>' + pwField('rpw', r.password, '8 caractères minimum', 'new-password') +
+            '<div id="pw-strength">' + pwStrength(r.password) + '</div><button type="button" class="ui-btn ui-btn--text ui-btn--sm" data-act="gen-pw" style="align-self:flex-start"><span class="mi">auto_fix_high</span>Générer un mot de passe</button></div>';
+          else stepBody = '<div class="ui-field"><label class="ui-label" for="co">Organisation</label><div class="field-box"><span class="mi">business</span><input id="co" name="company" value="' + esc(r.company) + '" placeholder="Ex : Sotra Logistique"></div></div>' +
+            '<div class="ui-field"><span class="ui-label">Taille de l\'équipe</span><div class="sizes">' + ['1-10', '11-50', '51-200', '200+'].map(function (s) {
+              return '<button type="button" data-size="' + s + '" class="' + (r.size === s ? 'on' : '') + '">' + s + '</button>'; }).join('') + '</div></div>' +
+            '<label class="ui-check"><input type="checkbox" name="terms"' + (r.terms ? ' checked' : '') + '> J\'accepte les <a href="#" class="link">conditions d\'utilisation</a></label>';
+          return '<div class="head"><h1>Créer votre compte</h1><p>Essai gratuit de 30 jours, sans carte bancaire.</p></div>' +
+            (S.step === 0 && sso ? ssoTpl('S\'inscrire avec') + '<div class="divider"><span>ou avec votre e-mail</span></div>' : '') +
+            '<ol class="stepper">' + STEPS.map(function (s, i) {
+              return '<li class="' + (i === S.step ? 'on' : i < S.step ? 'done' : '') + '"><span class="dot">' + (i < S.step ? '<span class="mi">check</span>' : i + 1) + '</span><span class="lbl">' + s + '</span></li>'; }).join('') + '</ol>' +
+            '<form class="fields" data-form="register" novalidate>' + stepBody + errorTpl() +
+            '<div class="actions">' + (S.step > 0 ? '<button type="button" class="ui-btn ui-btn--outlined" data-act="prev-step">Retour</button>' : '') +
+            submitBtn(S.step < STEPS.length - 1 ? 'Continuer' : 'Créer mon compte', ' grow') + '</div></form>' +
+            '<p class="alt">Déjà inscrit ? <a href="' + href('split-right') + '" class="link">Se connecter</a></p>';
+
+        case 'forgot':
+          return '<span class="hero-icon"><span class="mi">key</span></span><div class="head center"><h1>Mot de passe oublié ?</h1><p>Saisissez votre adresse e-mail, nous vous enverrons un lien pour en choisir un nouveau.</p></div>' +
+            '<form class="fields" data-form="forgot" novalidate><div class="ui-field"><label class="ui-label" for="femail">Adresse e-mail</label><div class="field-box"><span class="mi">mail</span><input id="femail" name="email" type="email" value="' + esc(S.email) + '"></div></div>' +
+            errorTpl() + submitBtn('Envoyer le lien') + '</form>' +
+            '<a href="' + href('centered') + '" class="back-link"><span class="mi">arrow_back</span>Retour à la connexion</a>';
+
+        case 'otp':
+          return '<span class="hero-icon"><span class="mi">sms</span></span><div class="head center"><h1>Vérification en deux étapes</h1><p>Saisissez le code à 6 chiffres envoyé au <strong>+225 07 •• •• 56</strong>. (Code de démo : 123456)</p></div>' +
+            '<div class="otp' + (S.otp === 'error' ? ' invalid' : S.otp === 'success' ? ' success' : '') + '" role="group" aria-label="Code à 6 chiffres">' +
+              [0, 1, 2, 3, 4, 5].map(function (i) { return '<input inputmode="numeric" maxlength="1" autocomplete="' + (i ? 'off' : 'one-time-code') + '" aria-label="Chiffre ' + (i + 1) + '" value="' + (S.code[i] || '') + '">'; }).join('') + '</div>' +
+            (S.otp === 'error' ? '<p class="error center"><span class="mi">error</span>Code incorrect, réessayez.</p>' : '') +
+            '<button class="ui-btn submit" data-act="verify"' + (S.busy || S.code.length < 6 ? ' disabled' : '') + '>' + (S.busy ? spin() : 'Vérifier') + '</button>' +
+            '<p class="alt center" id="resend">' + resendTpl() + '</p>';
+
+        case 'social':
+          return '<div class="head center"><h1>Bienvenue</h1><p>Connectez-vous en un clic avec un compte que vous utilisez déjà.</p></div>' + ssoTpl() +
+            '<p class="fineprint">En continuant, vous acceptez les <a href="#" class="link">conditions d\'utilisation</a> et la <a href="#" class="link">politique de confidentialité</a>.</p>' +
+            '<div class="divider"><span>ou</span></div><a href="' + href('centered') + '" class="email-link"><span class="mi">mail</span>Continuer avec une adresse e-mail</a>';
+
+        case 'accounts':
+          return '<div class="chooser"><div class="ch-head">' + icon('google') + '<h1>Choisissez un compte</h1><p>pour continuer vers <strong>SC Storage</strong></p></div><ul class="acc-list">' +
+            ACCOUNTS.map(function (a) {
+              return '<li><button type="button" data-account="' + a.mail + '"' + (S.ssoBusy ? ' disabled' : '') + '><span class="ava" style="background:' + a.color + ';color:#fff">JK</span>' +
+                '<span class="grow"><strong>' + a.name + '</strong><small>' + a.mail + '</small></span>' + (a.work ? '<span class="ui-badge ui-badge--info">Pro</span>' : '') +
+                (S.ssoBusy && S.email === a.mail ? spin() : '') + '</button></li>';
+            }).join('') +
+            '<li><button type="button"><span class="ava ghost"><span class="mi">person_add</span></span><span class="grow"><strong>Utiliser un autre compte</strong></span></button></li></ul>' +
+            '<p class="fineprint">Pour continuer, Google partagera votre nom, votre adresse e-mail et votre photo de profil avec SC Storage.</p></div>';
+
+        case 'lock':
+          return '<div class="lock-user"><span class="ava big">JK</span><h1>' + USER.fullname + '</h1><p>' + USER.mail + '</p><span class="ui-badge ui-badge--warning"><span class="mi" style="font-size:16px">lock_clock</span>Session verrouillée</span></div>' +
+            '<form class="fields" data-form="lock" novalidate>' + pwField('lpwd', S.password, 'Mot de passe', 'current-password') + errorTpl() + submitBtn('Déverrouiller') + '</form>' +
+            '<p class="alt center">Pas vous ? <a href="' + href('image') + '" class="link">Changer de compte</a></p>';
+      }
+    }
+    function resendTpl() { return S.resendIn > 0 ? 'Renvoyer le code dans <strong>' + S.resendIn + ' s</strong>' : 'Code non reçu ? <button type="button" class="link btn-link" data-act="resend">Renvoyer</button>'; }
+
+    function render() {
+      var form = '<div class="form">' + screenTpl() + '</div>', html;
+      switch (cfg.layout) {
+        case 'centered':
+          html = '<div class="decor" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div><main class="panel card">' + brand() + form + '</main>' + legal(); break;
+        case 'split-right':
+          html = '<aside class="visual">' + brand(true) + '<div class="pitch"><h2>Pilotez toute votre activité depuis un seul espace.</h2><p>Clients, facturation, stocks et planning réunis dans une interface claire, sur ordinateur comme sur mobile.</p>' +
+            '<ul><li><span class="mi">bolt</span>Mise en route en 5 minutes</li><li><span class="mi">shield</span>Données chiffrées et sauvegardées</li><li><span class="mi">devices</span>Accessible partout, même hors ligne</li></ul></div>' +
+            '<div class="float-card fc-1"><span class="mi">trending_up</span><div><strong>+18 %</strong><span>Encaissements</span></div></div>' +
+            '<div class="float-card fc-2"><span class="avatars"><i>AK</i><i>MT</i><i>FD</i></span><div><strong>2 400+</strong><span>équipes actives</span></div></div></aside>' +
+            '<main class="panel side">' + brand(false, true) + form + legal() + '</main>'; break;
+        case 'split-left':
+          html = '<main class="panel side">' + brand() + form + legal() + '</main><aside class="visual testimonial"><div class="grid-deco" aria-hidden="true"></div><figure><span class="mi quote">format_quote</span>' +
+            '<blockquote>Nous avons divisé par deux le temps passé sur la facturation. L\'équipe terrain met à jour le planning depuis son téléphone.</blockquote>' +
+            '<figcaption><span class="ava">AK</span><span><strong>Aya Koné</strong><small>Directrice des opérations, Sotra Logistique</small></span></figcaption></figure>' +
+            '<div class="stats"><div><strong>98 %</strong><span>de satisfaction</span></div><div><strong>4,9/5</strong><span>sur 1 200 avis</span></div><div><strong>24/7</strong><span>support local</span></div></div></aside>'; break;
+        case 'image':
+          html = '<div class="photo" aria-hidden="true"></div><div class="caption">' + brand(true) + '<p>Entrepôt de Vridi · Abidjan</p></div><main class="panel glass">' + form + '</main>'; break;
+        default:
+          html = '<header class="topline">' + brand(false, true) + '<a class="link" href="' + href('register') + '">Créer un compte</a></header><main class="panel bare">' + form + '</main>' + legal();
+      }
+      app.className = 'auth layout-' + cfg.layout + ' screen-' + cfg.screen;
+      app.innerHTML = html;
+    }
+
+    // ── Actions ─────────────────────────────────────────────
+    function submit(err) {
+      S.error = err || '';
+      if (S.error) return render();
+      S.busy = true; render();
+      setTimeout(function () { S.busy = false; S.done = true; render(); }, 900);
+    }
+    function social(p) {
+      if (S.ssoBusy) return;
+      S.ssoBusy = p; render();
+      setTimeout(function () { S.ssoBusy = null; S.ssoUsed = p; S.done = true; render(); }, 1100);
+    }
+    function readForm(form) {
+      var r = S.reg;
+      form.querySelectorAll('input[name]').forEach(function (i) {
+        if (i.name === 'terms') r.terms = i.checked;
+        else if (form.dataset.form === 'register') r[i.name === 'rpw' ? 'password' : i.name] = i.value;
+      });
+      var e = form.querySelector('[name=email]'); if (e && form.dataset.form !== 'register') S.email = e.value;
+      var p = form.querySelector('[name=pwd],[name=lpwd]'); if (p) S.password = p.value;
+    }
+    function verify() {
+      if (S.code.length < 6) return;
+      S.busy = true; render();
+      setTimeout(function () {
+        S.busy = false; var ok = S.code === '123456'; S.otp = ok ? 'success' : 'error'; render();
+        if (ok) setTimeout(function () { S.done = true; render(); }, 500);
+      }, 700);
+    }
+
+    app.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = e.target; readForm(f);
+      if (f.dataset.form === 'login') submit(S.email.indexOf('@') < 0 ? 'Adresse e-mail invalide.' : S.password.length < 4 ? 'Mot de passe incorrect. Essayez « demo ».' : '');
+      if (f.dataset.form === 'lock') submit(S.password.length < 4 ? 'Mot de passe incorrect.' : '');
+      if (f.dataset.form === 'forgot') submit(S.email.indexOf('@') < 0 ? 'Saisissez l\'adresse e-mail de votre compte.' : '');
+      if (f.dataset.form === 'register') {
+        var r = S.reg;
+        var err = [
+          !r.firstName || !r.lastName ? 'Indiquez votre prénom et votre nom.' : r.email.indexOf('@') < 0 ? 'Adresse e-mail invalide.' : '',
+          r.password.length < 8 ? 'Le mot de passe doit contenir au moins 8 caractères.' : '',
+          !r.company ? 'Indiquez le nom de votre organisation.' : !r.terms ? 'Acceptez les conditions pour continuer.' : ''
+        ][S.step];
+        S.error = err;
+        if (err) return render();
+        if (S.step < STEPS.length - 1) { S.step++; render(); } else submit();
+      }
+    });
+
+    app.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-act],[data-sso],[data-account],[data-size],a[href="#"]');
+      if (!t) return;
+      if (t.matches('a[href="#"]')) { e.preventDefault(); return; }
+      if (t.dataset.sso) return social(t.dataset.sso);
+      if (t.dataset.account) { S.email = t.dataset.account; return social('google'); }
+      if (t.dataset.size) { readForm(t.closest('form')); S.reg.size = t.dataset.size; return render(); }
+      var form = t.closest('form'); if (form) readForm(form);
+      switch (t.dataset.act) {
+        case 'toggle-pw': S.showPw = !S.showPw; render(); var i = app.querySelector('.field-box input[type=text],.field-box input[type=password]'); if (i) i.focus(); break;
+        case 'gen-pw':
+          var cs = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*';
+          S.reg.password = Array.from(crypto.getRandomValues(new Uint32Array(16)), function (n) { return cs[n % cs.length]; }).join('') + 'aA1!';
+          S.showPw = true; render(); break;
+        case 'prev-step': S.step--; S.error = ''; render(); break;
+        case 'reset': S.ssoUsed = null; S.done = false; S.error = ''; S.step = 0; S.password = ''; S.otp = 'idle'; S.code = ''; render(); break;
+        case 'verify': verify(); break;
+        case 'resend': S.resendIn = 30; S.otp = 'idle'; S.code = ''; render(); break;
+      }
+    });
+
+    // Jauge du mot de passe (inscription) et saisie du code OTP
+    app.addEventListener('input', function (e) {
+      var t = e.target;
+      if (t.id === 'rpw') { S.reg.password = t.value; document.getElementById('pw-strength').innerHTML = pwStrength(t.value); }
+      if (t.closest('.otp')) {
+        var boxes = Array.prototype.slice.call(app.querySelectorAll('.otp input'));
+        var digits = t.value.replace(/\D/g, '');
+        if (digits.length > 1) { // collage du code entier
+          digits.split('').slice(0, 6).forEach(function (d, i) { boxes[i].value = d; });
+        } else {
+          t.value = digits;
+          if (digits) { var n = boxes[boxes.indexOf(t) + 1]; if (n) n.focus(); }
+        }
+        S.code = boxes.map(function (b) { return b.value; }).join('');
+        if (S.otp !== 'idle') { S.otp = 'idle'; app.querySelector('.otp').className = 'otp'; var er = app.querySelector('.error'); if (er) er.remove(); }
+        app.querySelector('[data-act=verify]').disabled = S.code.length < 6;
+        if (S.code.length === 6) verify();
+      }
+    });
+    app.addEventListener('keydown', function (e) {
+      var t = e.target;
+      if (t.closest && t.closest('.otp') && e.key === 'Backspace' && !t.value) {
+        var p = t.previousElementSibling; if (p) { p.focus(); p.value = ''; }
+      }
+    });
+
+    if (cfg.screen === 'otp') setInterval(function () {
+      if (S.resendIn > 0) { S.resendIn--; var r = document.getElementById('resend'); if (r) r.innerHTML = resendTpl(); }
+    }, 1000);
+
+    render();
+  })();
+  </script>
+</body>
+</html>

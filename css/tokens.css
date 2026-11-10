@@ -90,3 +90,9 @@
     --shadow-2: 0 4px 12px rgb(0 0 0 / .4); --shadow-3: 0 12px 32px rgb(0 0 0 / .55);
   }
 }
+
+/* Icônes Material (police embarquée) : <span class="mi">home</span> */
+@font-face { font-family: 'Material Icons'; font-style: normal; font-weight: 400; font-display: block; src: url('../assets/fonts/material-icons.woff2') format('woff2'); }
+.mi { font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 20px; line-height: 1;
+  display: inline-block; white-space: nowrap; direction: ltr; text-transform: none; letter-spacing: normal; vertical-align: middle; user-select: none;
+  -webkit-font-smoothing: antialiased; font-feature-settings: 'liga'; flex: none; }

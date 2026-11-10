@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Showcase</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/device-frame.css">
+  <script src="js/themes.js"></script>
+  <script src="js/ui-kit.js"></script>
+  <style>
+    .kit-shell .ui-content.sv { max-width: none; height: calc(100dvh - var(--header-height)); min-height: 520px; display: flex; flex-direction: column; gap: var(--space-2); padding-top: var(--space-2); padding-bottom: var(--space-4); }
+    .sv-bar { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; min-height: 56px; }
+    .sv-picker { display: flex; align-items: center; gap: var(--space-3); min-width: 0; max-width: 340px; height: 48px; padding: 0 var(--space-3) 0 var(--space-2); border-radius: 999px; background: var(--card-bg); color: var(--text-primary); cursor: pointer; }
+    .sv-picker > summary { display: flex; align-items: center; gap: var(--space-3); list-style: none; min-width: 0; }
+    .sv-picker > summary::-webkit-details-marker { display: none; }
+    .sv-picker__icon { width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--primary-soft); color: var(--primary); }
+    .sv-picker__text { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+    .sv-picker__text small { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .sv-picker__text strong { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sv-list { left: 0; right: auto; max-height: 70vh; overflow: auto; width: 320px; }
+    .sv-list .grp { padding: var(--space-2) var(--space-3) 2px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+    .sv-list .ui-menu__item { display: flex; gap: var(--space-2); align-items: center; }
+    .sv-list .ui-menu__item[aria-current] { color: var(--primary); background: var(--primary-soft); }
+    .sv-spacer { flex: 1; }
+    .sv-turned { transform: rotate(90deg); transition: transform .3s; }
+    .sv-stage { flex: 1; min-height: 0; border-radius: var(--radius-xl); background: radial-gradient(ellipse at top, var(--primary-soft), transparent 60%), var(--hover-bg); }
+    .sv-foot { display: flex; gap: var(--space-4); align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+    .sv-foot p { margin: 0 0 var(--space-1); color: var(--text-secondary); max-width: 80ch; }
+    .sv-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+    .sv-meta code { padding: 2px 8px; border-radius: 6px; background: var(--hover-bg); }
+    .sv-meta .tag { padding: 1px 8px; border-radius: 999px; background: var(--hover-bg); color: var(--text-secondary); }
+    .sv-siblings { display: flex; gap: 6px; flex-wrap: wrap; }
+    @media (max-width: 900px) { .sv-seg-label { display: none; } .sv-foot { display: none; } }
+  </style>
+</head>
+<body data-kit data-root="" data-active="showcases.html">
+  <main id="kit-content" class="sv">
+    <header class="sv-bar">
+      <a class="ui-btn ui-btn--icon" href="showcases.html" title="Tous les showcases" aria-label="Tous les showcases"><span class="mi">arrow_back</span></a>
+      <details class="ui-menu sv-picker" id="sv-picker">
+        <summary><span class="sv-picker__icon"><span class="mi" id="sv-icon"></span></span>
+          <span class="sv-picker__text"><small id="sv-group"></small><strong id="sv-label"></strong></span><span class="mi">expand_more</span></summary>
+        <div class="ui-menu__panel sv-list" id="sv-list" role="menu"></div>
+      </details>
+      <button class="ui-btn ui-btn--icon" id="sv-prev" aria-label="Précédent"><span class="mi">chevron_left</span></button>
+      <button class="ui-btn ui-btn--icon" id="sv-next" aria-label="Suivant"><span class="mi">chevron_right</span></button>
+      <span class="sv-spacer"></span>
+      <div class="ui-segmented" role="radiogroup" aria-label="Appareil" id="sv-devices"></div>
+      <button class="ui-btn ui-btn--icon" id="sv-rotate" title="Pivoter (R)" aria-label="Pivoter"><span class="mi">screen_rotation</span></button>
+      <label class="ui-row" style="gap:4px"><span class="mi" style="color:var(--text-secondary)">zoom_in</span>
+        <select class="ui-select" id="sv-zoom" style="min-height:36px;width:auto" aria-label="Zoom">
+          <option value="fit">Ajuster</option><option value="0.5">50 %</option><option value="0.75">75 %</option><option value="1">100 %</option>
+        </select></label>
+      <button class="ui-btn ui-btn--icon" id="sv-reload" title="Recharger l'aperçu" aria-label="Recharger"><span class="mi">refresh</span></button>
+      <a class="ui-btn ui-btn--icon" id="sv-open" target="_blank" title="Ouvrir dans un nouvel onglet" aria-label="Ouvrir dans un nouvel onglet"><span class="mi">open_in_new</span></a>
+    </header>
+    <div class="sv-stage" id="sv-stage"></div>
+    <footer class="sv-foot">
+      <div><p id="sv-desc"></p><div class="sv-meta" id="sv-meta"></div></div>
+      <nav class="sv-siblings" id="sv-siblings" aria-label="Écrans du groupe"></nav>
+    </footer>
+  </main>
+
+  <script src="js/showcases.js"></script>
+  <script src="js/device-frame.js"></script>
+  <script src="js/kit.js"></script>
+  <script>
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var sc = SHOWCASES.find(function (s) { return s.id === q.get('id'); }) || SHOWCASES[0];
+      var device = DeviceFrame.SPECS[q.get('device')] ? q.get('device') : (sc.device || 'desktop');
+      var landscape = q.get('landscape') === '1';
+      var path = sc.path, frame;
+      var $ = function (id) { return document.getElementById(id); };
+
+      function syncUrl() {
+        var p = new URLSearchParams({ id: sc.id, device: device });
+        if (landscape) p.set('landscape', '1');
+        history.replaceState(null, '', '?' + p);
+      }
+      function open(id) {
+        sc = SHOWCASES.find(function (s) { return s.id === id; }); path = sc.path;
+        render(); frame.update({ src: sc.path, title: sc.label }); syncUrl();
+      }
+      function idx(d) { var i = SHOWCASES.indexOf(sc); return SHOWCASES[(i + d + SHOWCASES.length) % SHOWCASES.length]; }
+
+      function render() {
+        var g = SHOWCASE_GROUPS.find(function (x) { return x.id === sc.group; });
+        document.title = sc.label + ' — Showcase — UI Kit HTML';
+        $('sv-icon').textContent = sc.icon; $('sv-group').textContent = g.label; $('sv-label').textContent = sc.label;
+        $('sv-prev').title = 'Précédent : ' + idx(-1).label + ' (←)'; $('sv-next').title = 'Suivant : ' + idx(1).label + ' (→)';
+        $('sv-list').innerHTML = SHOWCASE_GROUPS.map(function (gr) {
+          return '<div class="grp">' + gr.label + '</div>' + SHOWCASES.filter(function (s) { return s.group === gr.id; }).map(function (s) {
+            return '<button class="ui-menu__item" role="menuitem" data-open="' + s.id + '"' + (s.id === sc.id ? ' aria-current="true"' : '') + '><span class="mi">' + s.icon + '</span>' + s.label + '</button>';
+          }).join('');
+        }).join('');
+        $('sv-devices').innerHTML = Object.keys(DeviceFrame.SPECS).map(function (d, i) {
+          var s = DeviceFrame.SPECS[d];
+          return '<button type="button" role="radio" aria-checked="' + (d === device) + '" data-device="' + d + '" title="' + s.model + ' (' + (i + 1) + ')"><span class="mi">' + s.icon + '</span><span class="sv-seg-label">' + s.label + '</span></button>';
+        }).join('');
+        $('sv-rotate').disabled = device === 'desktop';
+        $('sv-rotate').firstChild.classList.toggle('sv-turned', landscape);
+        $('sv-open').href = path;
+        $('sv-desc').textContent = sc.description;
+        var spec = DeviceFrame.SPECS[device];
+        $('sv-meta').innerHTML = '<span class="ui-chip" style="height:26px"><span class="mi">' + spec.icon + '</span>' + spec.model + (landscape ? ' · paysage' : '') + '</span><code>' + path + '</code>' +
+          (sc.tags || []).map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
+        $('sv-siblings').innerHTML = SHOWCASES.filter(function (s) { return s.group === sc.group; }).map(function (s) {
+          return '<button class="ui-chip" data-open="' + s.id + '" aria-pressed="' + (s.id === sc.id) + '" title="' + s.description.replace(/"/g, '&quot;') + '"><span class="mi">' + s.icon + '</span>' + s.label + '</button>';
+        }).join('');
+      }
+      function setDevice(d) { device = d; if (d === 'desktop') landscape = false; render(); frame.update({ device: device, landscape: landscape }); syncUrl(); }
+      function rotate() { if (device === 'desktop') return; landscape = !landscape; render(); frame.update({ landscape: landscape }); syncUrl(); }
+
+      render();
+      frame = DeviceFrame.mount($('sv-stage'), { src: sc.path, title: sc.label, device: device, landscape: landscape,
+        onUrl: function (p) { path = p; render(); } });
+
+      document.addEventListener('click', function (e) {
+        var o = e.target.closest('[data-open]'), d = e.target.closest('[data-device]');
+        if (o) { $('sv-picker').removeAttribute('open'); open(o.dataset.open); }
+        if (d) setDevice(d.dataset.device);
+      });
+      $('sv-prev').onclick = function () { open(idx(-1).id); };
+      $('sv-next').onclick = function () { open(idx(1).id); };
+      $('sv-rotate').onclick = rotate;
+      $('sv-reload').onclick = function () { frame.reload(); };
+      $('sv-zoom').onchange = function (e) { frame.update({ zoom: e.target.value === 'fit' ? 'fit' : +e.target.value }); };
+      document.addEventListener('keydown', function (e) {
+        if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName) || e.metaKey || e.ctrlKey) return;
+        if (e.key === '1' || e.key === '2' || e.key === '3') setDevice(Object.keys(DeviceFrame.SPECS)[+e.key - 1]);
+        else if (e.key === 'r' || e.key === 'R') rotate();
+        else if (e.key === 'ArrowLeft') open(idx(-1).id);
+        else if (e.key === 'ArrowRight') open(idx(1).id);
+      });
+    })();
+  </script>
+</body>
+</html>

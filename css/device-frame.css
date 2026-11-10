@@ -1,0 +1,80 @@
+/* Cadres d'appareils dessinés en CSS (js/device-frame.js). */
+.df-host { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden;
+  --frame-dark: #1b1c1f; --frame-edge: #3a3b40; --frame-metal: linear-gradient(145deg, #5b5d63, #2a2b2f 40%, #46484d 70%, #232427); }
+.df-host.df-scroll { overflow: auto; align-items: flex-start; }
+.df-sizer { position: relative; flex: 0 0 auto; margin: auto; }
+.df-device { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.df-device iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
+.df-screen { position: relative; overflow: hidden; background: var(--bg); }
+.df-loader { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; background: var(--bg); pointer-events: none; }
+.df-loader[hidden] { display: none; }
+.df-loader span { width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--border); border-top-color: var(--primary); animation: df-spin .8s linear infinite; }
+@keyframes df-spin { to { transform: rotate(360deg); } }
+
+/* Ordinateur */
+.df-device.desktop { display: flex; flex-direction: column; align-items: center; }
+.df-monitor { width: 100%; flex: 1 1 auto; display: flex; flex-direction: column; padding: 14px 14px 0; border-radius: 24px; background: var(--frame-dark);
+  box-shadow: 0 0 0 2px var(--frame-edge), 0 40px 80px -30px rgba(0,0,0,.55), 0 18px 36px -18px rgba(0,0,0,.4); }
+.df-browser { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-radius: 8px; background: var(--hover-bg); }
+.df-tabbar { height: 40px; flex: 0 0 40px; display: flex; align-items: flex-end; gap: 8px; padding: 0 12px 0 16px; background: var(--hover-bg); }
+.df-lights { align-self: center; display: flex; gap: 8px; margin-right: 16px; }
+.df-lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.df-lights i:nth-child(2) { background: #febc2e; } .df-lights i:nth-child(3) { background: #28c840; }
+.df-tab { display: flex; align-items: center; gap: 8px; width: 240px; height: 32px; padding: 0 12px; border-radius: 12px 12px 0 0; background: var(--card-bg); color: var(--text-primary); font-size: 12.5px; }
+.df-tab img { width: 16px; height: 16px; }
+.df-tab .df-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.df-tab .mi, .df-newtab { font-size: 15px; color: var(--text-muted); }
+.df-newtab { align-self: center; font-size: 18px; }
+.df-toolbar { height: 44px; flex: 0 0 44px; display: flex; align-items: center; gap: 4px; padding: 0 12px; background: var(--card-bg); border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.df-toolbar button { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 50%; padding: 0; background: transparent; color: inherit; cursor: pointer; }
+.df-toolbar button:hover { background: var(--hover-bg); }
+.df-toolbar .mi { font-size: 19px; }
+.df-omnibox { flex: 1; min-width: 0; display: flex; align-items: center; gap: 2px; height: 32px; margin: 0 8px; padding: 0 12px; border-radius: 999px; background: var(--hover-bg); color: var(--text-primary); font-size: 13.5px; }
+.df-omnibox:focus-within { box-shadow: 0 0 0 2px var(--primary); background: var(--card-bg); }
+.df-omnibox .mi { font-size: 16px; color: var(--text-muted); margin-right: 6px; }
+.df-hostname { color: var(--text-muted); }
+.df-omnibox input { flex: 1; min-width: 0; border: 0; outline: 0; padding: 0; background: transparent; color: inherit; font: inherit; }
+.df-avatar { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; margin: 0 4px; background: var(--primary); color: var(--on-primary); font-size: 10.5px; font-weight: 700; }
+.df-device.desktop .df-screen { flex: 1; min-height: 0; }
+.df-chin { position: relative; height: 26px; flex: 0 0 26px; display: flex; align-items: center; justify-content: center; }
+.df-chin b { font-size: 9px; letter-spacing: .3em; color: #6b6d73; }
+.df-chin i { position: absolute; right: 24px; width: 5px; height: 5px; border-radius: 50%; background: #34d399; box-shadow: 0 0 6px #34d399; }
+.df-stand { flex: 0 0 96px; display: flex; flex-direction: column; align-items: center; }
+.df-stand div:first-child { width: 150px; height: 76px; background: linear-gradient(90deg, #8e9096, #d4d6db 30%, #eceef1 50%, #c3c5ca 70%, #8a8c92); clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%); }
+.df-stand div:last-child { width: 330px; height: 20px; border-radius: 4px 4px 16px 16px; background: linear-gradient(180deg, #e6e8eb, #a9abb0); }
+
+/* Tablette & téléphone */
+.df-device.tablet, .df-device.phone { background: var(--frame-dark);
+  box-shadow: inset 0 0 0 1px #000, 0 0 0 3px var(--frame-edge), 0 0 0 4px #0b0b0c, 0 40px 80px -30px rgba(0,0,0,.55); }
+.df-device.tablet { padding: 22px; border-radius: 44px; }
+.df-device.phone { padding: 13px; border-radius: 68px; }
+.df-glass { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+.tablet .df-glass { border-radius: 24px; } .phone .df-glass { border-radius: 55px; }
+.df-glass > .df-screen { position: absolute; left: 0; right: 0; bottom: 0; }
+.df-statusbar { position: absolute; top: 0; left: 0; right: 0; z-index: 2; display: flex; align-items: center; gap: 8px; background: var(--bg); color: var(--text-primary);
+  font: 600 15px/1 -apple-system, 'SF Pro Text', system-ui, sans-serif; }
+.df-icons { display: flex; align-items: center; gap: 6px; } .df-icons svg { height: 11px; fill: currentColor; }
+.df-battery { position: relative; width: 24px; height: 12px; border-radius: 4px; border: 1px solid color-mix(in srgb, currentColor 45%, transparent); }
+.df-battery i { position: absolute; inset: 1.5px; right: 5px; border-radius: 2px; background: currentColor; }
+.phone .df-statusbar { padding: 4px 30px 0 52px; } .phone .df-time { width: 54px; text-align: center; }
+.tablet .df-statusbar { padding: 0 24px; font-size: 12px; }
+.df-island { position: absolute; z-index: 3; top: 11px; left: 50%; width: 124px; height: 36px; border-radius: 20px; transform: translateX(-50%); background: #000; }
+.phone.landscape .df-island { top: 50%; left: 11px; width: 36px; height: 124px; transform: translateY(-50%); }
+.df-camera { position: absolute; z-index: 3; top: -14px; left: 50%; width: 7px; height: 7px; border-radius: 50%; transform: translateX(-50%); background: #2b2f3a; }
+.tablet.landscape .df-camera { top: 50%; left: -14px; transform: translateY(-50%); }
+.df-home { position: absolute; z-index: 3; bottom: 8px; left: 50%; width: 134px; height: 5px; border-radius: 4px; transform: translateX(-50%); background: var(--text-primary); opacity: .85; pointer-events: none; }
+.df-btn { position: absolute; background: var(--frame-metal); border-radius: 2px; }
+.phone .power { right: -7px; top: 220px; width: 4px; height: 98px; }
+.phone .action { left: -7px; top: 150px; width: 4px; height: 32px; }
+.phone .vol-up { left: -7px; top: 205px; width: 4px; height: 60px; }
+.phone .vol-down { left: -7px; top: 280px; width: 4px; height: 60px; }
+.phone.landscape .power { right: auto; top: -7px; left: 220px; width: 98px; height: 4px; }
+.phone.landscape .action { left: 150px; top: auto; bottom: -7px; width: 32px; height: 4px; }
+.phone.landscape .vol-up { left: 205px; top: auto; bottom: -7px; width: 60px; height: 4px; }
+.phone.landscape .vol-down { left: 280px; top: auto; bottom: -7px; width: 60px; height: 4px; }
+.tablet .power { right: 60px; top: -7px; width: 64px; height: 4px; }
+.tablet .vol-up { right: -7px; top: 90px; width: 4px; height: 56px; }
+.tablet .vol-down { right: -7px; top: 156px; width: 4px; height: 56px; }
+.tablet.landscape .power { right: auto; top: 60px; left: -7px; width: 4px; height: 64px; }
+.tablet.landscape .vol-up { right: 90px; top: -7px; width: 56px; height: 4px; }
+.tablet.landscape .vol-down { right: 156px; top: -7px; width: 56px; height: 4px; }

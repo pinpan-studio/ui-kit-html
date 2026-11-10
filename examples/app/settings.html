@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paramètres</title>
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/themes.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/pages/ex.css">
+  <script src="../../js/ui-kit.js"></script>
+  <script src="../../js/themes.js"></script>
+  <style>
+    .layout { display: grid; grid-template-columns: 216px minmax(0, 760px); gap: 32px; align-items: start; }
+    .sub { position: sticky; top: 0; display: flex; flex-direction: column; gap: 2px; }
+    .sub button { display: flex; align-items: center; gap: 12px; height: 36px; padding: 0 12px; border: 0; border-radius: var(--radius-sm); background: none; text-align: left; font: 500 14px var(--font-sans); color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
+    .sub button .mi { font-size: 20px; } .sub button:hover { background: var(--hover-bg); color: var(--text-primary); }
+    .sub button.on { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); font-weight: 600; }
+    @media (max-width: 1100px) { .layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .sub { position: static; flex-direction: row; overflow-x: auto; scrollbar-width: none; gap: 4px; }
+      .sub button { flex: 0 0 auto; border-radius: 0; height: 40px; } .sub button .mi { display: none; }
+      .sub button.on { background: none; color: var(--text-primary); box-shadow: inset 0 -2px 0 var(--primary); } }
+    .panes { display: flex; flex-direction: column; gap: 16px; }
+    .pane { padding: 0 24px; }
+    .pane > header { padding: 20px 0 16px; } .pane > header h2 { margin: 0; font-size: 18px; font-weight: 600; } .pane > header p { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); }
+    .pane > footer { display: flex; justify-content: flex-end; gap: 8px; margin: 0 -24px; padding: 12px 24px; background: var(--hover-bg); border-radius: 0 0 var(--radius-md) var(--radius-md); }
+    .pane.danger { background: color-mix(in srgb, var(--error) 5%, var(--card-bg)); } .pane.danger > header h2 { color: var(--error-text); }
+    @media (max-width: 600px) { .pane { padding: 0 16px; } .pane > footer { margin: 0 -16px; padding: 12px 16px; } }
+    .set { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 8px 24px; align-items: start; padding: 20px 0; }
+    .set.inline { display: flex; align-items: center; gap: 16px; } .set.inline .s-lbl { flex: 1; }
+    @media (max-width: 600px) { .set { grid-template-columns: minmax(0, 1fr); } }
+    .s-lbl { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .s-lbl strong { font-size: 14px; font-weight: 600; } .s-lbl small { font-size: 13px; line-height: 1.45; color: var(--text-muted); }
+    .s-ctl { min-width: 0; } .s-ctl.col { display: flex; flex-direction: column; gap: 12px; }
+    .row-2 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 12px; } @media (max-width: 600px) { .row-2 { grid-template-columns: 1fr; } }
+    .avatar-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; } .ava.lg { width: 56px; height: 56px; font-size: 18px; }
+    .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 44px; padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-input); background: var(--card-bg); }
+    .tags:focus-within { border-color: var(--primary); box-shadow: var(--focus-ring); }
+    .tags .tag { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 10px; border-radius: 14px; background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); font-size: 13px; font-weight: 500; }
+    .tags .tag button { display: grid; place-items: center; width: 20px; height: 20px; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer; } .tags .tag .mi { font-size: 16px; }
+    .tags input { flex: 1; min-width: 120px; border: 0; outline: 0; background: none; font: 14px var(--font-sans); color: var(--text-primary); }
+    .pw-meter { display: flex; gap: 4px; } .pw-meter i { flex: 1; height: 4px; border-radius: 2px; background: var(--hover-bg); }
+    .pw-hint { font-size: 12px; color: var(--text-muted); }
+    .matrix { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 14px; }
+    .matrix th { padding: 12px 0 8px; font: 600 11px/1.4 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); text-align: center; } .matrix th:first-child { text-align: left; }
+    .matrix td { padding: 12px 0; border-top: 1px solid color-mix(in srgb, var(--border) 55%, transparent); text-align: center; width: 72px; }
+    .matrix td:first-child { width: auto; text-align: left; font-weight: 500; } .matrix td small { display: block; font-size: 12px; font-weight: 400; color: var(--text-muted); }
+    @media (max-width: 600px) { .matrix td { width: 48px; } }
+    .theme-set { padding: 4px 0 24px; display: flex; flex-direction: column; gap: 16px; }
+    .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+    .swatches button { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--card-bg); box-shadow: 0 0 0 1px var(--border); cursor: pointer; }
+    .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--text-primary); }
+  </style>
+</head>
+<body data-ex data-root="../../" data-title="Paramètres" data-crumb="Compte">
+  <main id="ex-content">
+    <div class="page-head"><div class="titles"><span class="eyebrow">Compte</span><h1>Paramètres</h1><p>Profil, sécurité et préférences de l’espace de travail.</p></div></div>
+    <div class="layout">
+      <nav class="sub" aria-label="Sections" id="sub"></nav>
+      <div class="panes">
+        <div data-pane="profile">
+          <section class="card pane">
+            <header><h2>Profil</h2><p>Visible par les membres de votre organisation.</p></header>
+            <div class="set"><div class="s-lbl"><strong>Photo</strong><small>JPG ou PNG, 2 Mo maximum.</small></div>
+              <div class="s-ctl avatar-row"><span class="ava lg">JK</span><button class="ui-btn ui-btn--outlined"><span class="mi">upload</span>Changer</button><button class="ui-btn ui-btn--text">Retirer</button></div></div>
+            <div class="set"><div class="s-lbl"><strong>Nom</strong></div>
+              <div class="s-ctl row-2"><div class="field-box"><input value="Jean" aria-label="Prénom"></div><div class="field-box"><input value="Kouassi" aria-label="Nom"></div></div></div>
+            <div class="set"><div class="s-lbl"><strong>Coordonnées</strong><small>L’e-mail sert à la connexion.</small></div>
+              <div class="s-ctl col"><div class="field-box"><span class="mi">mail</span><input value="jean.kouassi@scstorage.ci" aria-label="E-mail"></div><div class="field-box"><span class="mi">call</span><input value="+225 07 08 09 10 11" aria-label="Téléphone"></div></div></div>
+            <div class="set"><div class="s-lbl"><strong>Compétences</strong><small>Aide vos collègues à vous mentionner.</small></div>
+              <div class="s-ctl"><div class="tags" id="tags"></div><datalist id="skills"><option>Logistique<option>Facturation<option>Formation<option>Support<option>Achats<option>Comptabilité</datalist></div></div>
+            <div class="set"><div class="s-lbl"><strong>Bio</strong></div>
+              <div class="s-ctl"><div class="field-box textarea-box"><textarea rows="3" aria-label="Bio">Administrateur de l’espace SC Storage.</textarea></div></div></div>
+            <footer><button class="ui-btn ui-btn--text">Annuler</button><button class="ui-btn" data-save>Enregistrer</button></footer>
+          </section>
+        </div>
+        <div data-pane="security" hidden>
+          <section class="card pane">
+            <header><h2>Mot de passe</h2><p>12 caractères minimum, avec majuscules, chiffres et symboles.</p></header>
+            <div class="set"><div class="s-lbl"><strong>Nouveau mot de passe</strong><small>Dernière modification il y a 3 mois.</small></div>
+              <div class="s-ctl col"><div class="field-box"><span class="mi">lock</span><input type="password" id="pw" aria-label="Nouveau mot de passe" autocomplete="new-password">
+                <button class="ui-btn ui-btn--icon" id="pw-eye" type="button" aria-label="Afficher"><span class="mi">visibility</span></button><button class="ui-btn ui-btn--icon" id="pw-gen" type="button" title="Générer" aria-label="Générer"><span class="mi">casino</span></button></div>
+                <div class="pw-meter" id="pw-meter"><i></i><i></i><i></i><i></i></div><span class="pw-hint" id="pw-hint">Saisissez un mot de passe.</span></div></div>
+            <footer><button class="ui-btn" id="pw-save" disabled data-save="Mot de passe mis à jour">Mettre à jour</button></footer>
+          </section>
+          <section class="card pane"><header><h2>Connexion</h2><p>Protégez l’accès à votre compte.</p></header><div id="sec-opts"></div></section>
+          <section class="card pane"><header><h2>Sessions actives</h2><p>Appareils actuellement connectés.</p></header>
+            <div class="set inline"><span class="ic-tile"><span class="mi">laptop_mac</span></span><div class="s-lbl"><strong>MacBook Pro · Chrome</strong><small>Abidjan · maintenant</small></div><span class="ui-badge ui-badge--success">Cette session</span></div>
+            <div class="set inline"><span class="ic-tile"><span class="mi">phone_iphone</span></span><div class="s-lbl"><strong>iPhone 15 Pro · Safari</strong><small>Abidjan · il y a 2 h</small></div><button class="ui-btn ui-btn--text" style="color:var(--error-text)" data-logout>Déconnecter</button></div>
+          </section>
+        </div>
+        <div data-pane="api" hidden>
+          <section class="card pane">
+            <header><h2>Clés d’API</h2><p>Accès programmatique à vos données. Ne partagez jamais la clé secrète.</p></header>
+            <div class="set"><div class="s-lbl"><strong>Identifiant public</strong><small>Utilisable côté navigateur.</small></div><div class="s-ctl" id="k-pub"></div></div>
+            <div class="set"><div class="s-lbl"><strong>Clé secrète</strong><small>Créée le 2 septembre 2026.</small></div><div class="s-ctl col"><div id="k-sec"></div><div><button class="ui-btn ui-btn--outlined ui-btn--sm" id="regen"><span class="mi">autorenew</span>Régénérer</button></div></div></div>
+            <div class="set"><div class="s-lbl"><strong>Webhook</strong><small>Événements facture et paiement.</small></div><div class="s-ctl" id="k-hook"></div></div>
+          </section>
+        </div>
+        <div data-pane="notifications" hidden>
+          <section class="card pane"><header><h2>Notifications</h2><p>Choisissez où être prévenu pour chaque événement.</p></header>
+            <table class="matrix"><thead><tr><th>Événement</th><th>E-mail</th><th>Push</th><th>SMS</th></tr></thead><tbody id="matrix"></tbody></table></section>
+        </div>
+        <div data-pane="appearance" hidden>
+          <section class="card pane"><header><h2>Apparence</h2><p>Mode et couleur s’appliquent immédiatement à toute l’interface.</p></header>
+            <div class="theme-set">
+              <div class="ui-segmented" role="group" aria-label="Mode"><button data-set-mode="light"><span class="mi">light_mode</span>Clair</button><button data-set-mode="dark"><span class="mi">dark_mode</span>Sombre</button><button data-set-mode="system"><span class="mi">contrast</span>Système</button></div>
+              <div class="swatches" id="swatches"></div>
+            </div></section>
+          <section class="card pane"><header><h2>Préférences régionales</h2></header>
+            <div class="set inline"><div class="s-lbl"><strong>Affichage compact</strong><small>Réduit l’espacement des listes et tableaux.</small></div><label class="ui-switch"><input type="checkbox" aria-label="Affichage compact"></label></div>
+            <div class="set inline"><div class="s-lbl"><strong>Langue</strong><small>Français (Côte d’Ivoire)</small></div><button class="ui-btn ui-btn--outlined">Modifier</button></div>
+            <div class="set inline"><div class="s-lbl"><strong>Fuseau horaire</strong><small>GMT · Abidjan</small></div><button class="ui-btn ui-btn--outlined">Modifier</button></div></section>
+        </div>
+        <div data-pane="danger" hidden>
+          <section class="card pane danger"><header><h2>Zone sensible</h2><p>Ces actions sont définitives.</p></header>
+            <div class="set inline"><div class="s-lbl"><strong>Exporter mes données</strong><small>Archive ZIP de toutes vos données, envoyée par e-mail.</small></div><button class="ui-btn ui-btn--outlined" data-save="Export demandé">Exporter</button></div>
+            <div class="set inline"><div class="s-lbl"><strong>Supprimer le compte</strong><small>Supprime définitivement votre compte et vos accès.</small></div><button class="ui-btn ui-btn--danger" id="del">Supprimer</button></div></section>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="../../js/components.js"></script>
+  <script src="../../js/ex-shell.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, esc = UIComp.esc;
+    var sections = [['profile', 'Profil', 'person'], ['security', 'Sécurité', 'shield'], ['api', 'API & intégrations', 'key'], ['notifications', 'Notifications', 'notifications'], ['appearance', 'Apparence', 'palette'], ['danger', 'Zone sensible', 'warning']];
+    function go(id) { $('sub').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.s === id); }); document.querySelectorAll('[data-pane]').forEach(function (p) { p.hidden = p.dataset.pane !== id; }); }
+    $('sub').innerHTML = sections.map(function (s) { return '<button data-s="' + s[0] + '"><span class="mi">' + s[2] + '</span><span>' + s[1] + '</span></button>'; }).join('');
+    $('sub').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) go(b.dataset.s); });
+    go(location.hash.slice(1) || 'profile');
+
+    // Compétences (saisie d'étiquettes)
+    var skills = ['Logistique', 'Formation'];
+    function tags() { $('tags').innerHTML = skills.map(function (s, i) { return '<span class="tag">' + esc(s) + '<button type="button" data-rm="' + i + '" aria-label="Retirer ' + esc(s) + '"><span class="mi">close</span></button></span>'; }).join('') + '<input list="skills" placeholder="Ajouter une compétence" aria-label="Ajouter une compétence">'; }
+    tags();
+    $('tags').addEventListener('click', function (e) { var b = e.target.closest('[data-rm]'); if (b) { skills.splice(+b.dataset.rm, 1); tags(); $('tags').querySelector('input').focus(); } });
+    $('tags').addEventListener('keydown', function (e) { var inp = e.target; if (inp.tagName !== 'INPUT') return;
+      if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) { e.preventDefault(); if (skills.indexOf(inp.value.trim()) < 0) skills.push(inp.value.trim()); tags(); $('tags').querySelector('input').focus(); }
+      else if (e.key === 'Backspace' && !inp.value && skills.length) { skills.pop(); tags(); $('tags').querySelector('input').focus(); } });
+
+    // Mot de passe
+    function strength(v) { var s = 0; if (v.length >= 8) s++; if (v.length >= 12) s++; if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++; if (/\d/.test(v) && /[^\w]/.test(v)) s++; return v ? Math.max(1, s) : 0; }
+    function pw() { var v = $('pw').value, s = strength(v), tone = ['', 'error', 'warning', 'info', 'success'][s];
+      $('pw-meter').querySelectorAll('i').forEach(function (i, k) { i.style.background = k < s ? 'var(--' + tone + ')' : ''; });
+      $('pw-hint').textContent = v ? ['', 'Très faible', 'Faible', 'Correct', 'Robuste'][s] + ' · ' + v.length + ' caractères' : 'Saisissez un mot de passe.'; $('pw-save').disabled = v.length < 8; }
+    $('pw').addEventListener('input', pw);
+    $('pw-eye').addEventListener('click', function () { var t = $('pw').type === 'password'; $('pw').type = t ? 'text' : 'password'; this.firstChild.textContent = t ? 'visibility_off' : 'visibility'; });
+    $('pw-gen').addEventListener('click', function () { var c = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*?', a = new Uint32Array(16); crypto.getRandomValues(a); $('pw').value = Array.from(a, function (n) { return c[n % c.length]; }).join('') + 'A9!'; $('pw').type = 'text'; pw(); });
+
+    $('sec-opts').innerHTML = [['Vérification en deux étapes', 'Code SMS à chaque nouvelle connexion', 1], ['Connexion avec Google', 'jean.kouassi@gmail.com', 1], ['Alertes de connexion', 'E-mail lors d’une connexion inhabituelle', 0]]
+      .map(function (o) { return '<div class="set inline"><div class="s-lbl"><strong>' + o[0] + '</strong><small>' + o[1] + '</small></div><label class="ui-switch"><input type="checkbox"' + (o[2] ? ' checked' : '') + ' aria-label="' + o[0] + '"></label></div>'; }).join('');
+
+    // API
+    var secret = 'sk_demo_51Nf3a9QeLx2Tb8Rk0pYv';
+    $('k-pub').innerHTML = UIComp.copyField('pk_live_7Hk2pQ9xWm4ZcV1n', 'key', 'l’identifiant public');
+    $('k-hook').innerHTML = UIComp.copyField('https://api.scstorage.ci/hooks/7Hk2-pQ', 'webhook', 'l’URL du webhook');
+    function sec() { $('k-sec').innerHTML = UIComp.copyField(secret, 'lock', 'la clé secrète'); var v = $('k-sec').querySelector('.cf__v'); v.textContent = secret.slice(0, 8) + '•'.repeat(16); }
+    sec();
+    $('regen').addEventListener('click', function () { secret = 'sk_demo_' + Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12); sec(); UIKit.toast('Nouvelle clé secrète générée'); });
+
+    $('matrix').innerHTML = [['Nouvelles factures', 'Émises par votre équipe', 1, 1, 0], ['Paiements reçus', 'Tous moyens de paiement', 1, 0, 0], ['Relances', 'Factures échues', 0, 1, 1], ['Mentions', 'Commentaires et fil d’équipe', 1, 1, 0]]
+      .map(function (n) { return '<tr><td>' + n[0] + '<small>' + n[1] + '</small></td>' + ['par e-mail', 'en push', 'par SMS'].map(function (w, i) { return '<td><label class="ui-check"><input type="checkbox"' + (n[i + 2] ? ' checked' : '') + ' aria-label="' + n[0] + ' ' + w + '"></label></td>'; }).join('') + '</tr>'; }).join('');
+
+    $('swatches').innerHTML = UIKIT_THEMES.map(function (t) { return '<button type="button" data-set-theme="' + t.id + '" title="' + t.label + '" aria-label="Thème ' + t.label + '" style="background:' + t.light + '"></button>'; }).join('');
+    var m = document.documentElement.getAttribute('data-mode'), th = (document.documentElement.className.match(/theme-([\w-]+)/) || [])[1];
+    UIKit.setMode(m || 'system'); if (th) UIKit.setTheme(th);
+    document.querySelectorAll('[data-set-mode]').forEach(function (b) { b.addEventListener('click', function () { document.querySelectorAll('.ui-segmented [data-set-mode]').forEach(function (x) { x.classList.toggle('on', x === b); }); }); b.classList.toggle('on', b.dataset.setMode === (m || 'system')); });
+
+    document.addEventListener('click', function (e) {
+      var s = e.target.closest('[data-save]'); if (s) UIKit.toast(s.dataset.save || 'Modifications enregistrées');
+      var l = e.target.closest('[data-logout]'); if (l) { l.closest('.set').remove(); UIKit.toast('Session déconnectée'); }
+    });
+    $('del').addEventListener('click', function () { UIKit.confirm({ title: 'Supprimer le compte ?', message: 'Votre compte, vos accès et vos préférences seront supprimés définitivement. Cette action est irréversible.', confirmLabel: 'Supprimer définitivement', type: 'danger' }).then(function (ok) { if (ok) UIKit.toast('Suppression simulée (exemple statique)'); }); });
+  })();
+  </script>
+</body>
+</html>

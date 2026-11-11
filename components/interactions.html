@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactions</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    kbd { padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; font: 12px var(--font-mono); background: var(--card-bg); }
+    .cmdk-scrim { position: fixed; inset: 0; z-index: 3000; display: flex; justify-content: center; align-items: flex-start; padding-top: 12vh; background: rgba(15,23,42,.45); }
+    .cmdk { width: min(620px, calc(100vw - 24px)); border-radius: 16px; background: var(--card-bg); box-shadow: var(--shadow-3); overflow: hidden; }
+    .cmdk-in { display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--border); } .cmdk-in input { flex: 1; height: 56px; border: 0; outline: 0; background: none; font: 16px var(--font-sans); color: var(--text-primary); }
+    .cmdk-list { max-height: 360px; overflow-y: auto; padding: 6px; } .cmdk-grp { padding: 8px 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+    .cmdk-it { display: flex; align-items: center; gap: 12px; width: 100%; padding: 9px 10px; border: 0; border-radius: 10px; background: none; text-align: left; font: 14px var(--font-sans); color: var(--text-primary); cursor: pointer; } .cmdk-it.act { background: var(--primary-soft); } .cmdk-it .mi { color: var(--text-muted); } .cmdk-it .t { flex: 1; } .cmdk-it small { color: var(--text-muted); }
+    .cmdk-it mark { background: none; color: var(--primary); font-weight: 700; } .cmdk-foot { display: flex; gap: 14px; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+    .reg { margin: 0; padding: 0; list-style: none; font-size: 13px; } .reg li { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); } .reg li .t { flex: 1; } .reg .mi { font-size: 18px; color: var(--text-muted); }
+    .sc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .sc-grid div { display: flex; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 10px; background: var(--hover-bg); font-size: 13px; transition: background .2s; } .sc-grid div.hit { background: var(--primary-soft); color: var(--primary); }
+    .log { margin: 0; min-height: 150px; padding: 10px 12px; border-radius: 8px; background: #0f172a; color: #e2e8f0; font: 12px/1.6 var(--font-mono); }
+    .pop { position: fixed; z-index: 2000; width: 280px; padding: 14px; border-radius: 14px; background: var(--card-bg); box-shadow: var(--shadow-3); border: 1px solid var(--border); font-size: 13px; animation: pin .15s; } @keyframes pin { from { opacity: 0; transform: translateY(4px); } }
+    .pop .h { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; } .pop .ava { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; font-weight: 700; } .pop p { margin: 6px 0; color: var(--text-secondary); }
+    .uname { color: var(--primary); font-weight: 600; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+    .fake-dash { position: relative; display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 12px; border-radius: 14px; background: var(--bg); min-height: 300px; } @media (max-width: 700px) { .fake-dash { grid-template-columns: 1fr; } }
+    .fake-dash .side, .fake-dash .box { padding: 12px; border-radius: 12px; background: var(--card-bg); } .fake-dash .main { display: grid; grid-template-rows: auto 1fr; gap: 12px; } .fake-dash .kp { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .fake-dash .kp div { padding: 12px; border-radius: 10px; background: var(--card-bg); font-size: 12px; color: var(--text-muted); } .fake-dash .kp b { display: block; font-size: 20px; color: var(--text-primary); }
+    .tour-hole { position: fixed; z-index: 2500; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(15,23,42,.55); transition: all .25s var(--ease); pointer-events: none; }
+    .tour-tip { position: fixed; z-index: 2600; width: 300px; padding: 16px; border-radius: 14px; background: var(--card-bg); box-shadow: var(--shadow-3); transition: all .25s var(--ease); } .tour-tip h4 { margin: 0 0 6px; } .tour-tip p { margin: 0 0 12px; font-size: 13px; color: var(--text-secondary); }
+    .tour-tip .f { display: flex; align-items: center; gap: 6px; } .tour-tip .f .sp { flex: 1; font-size: 12px; color: var(--text-muted); }
+    .appbar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 12px; background: var(--card-bg); } .appbar .sp { flex: 1; } .appbar strong { font-size: 15px; }
+    .nc { position: fixed; z-index: 2000; width: min(380px, calc(100vw - 24px)); max-height: 480px; display: flex; flex-direction: column; border-radius: 16px; background: var(--card-bg); box-shadow: var(--shadow-3); border: 1px solid var(--border); overflow: hidden; }
+    .nc header { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--border); } .nc header strong { flex: 1; } .nc .tabs2 { display: flex; gap: 4px; padding: 8px 12px 0; }
+    .nc .tabs2 button { padding: 6px 12px; border: 0; border-radius: 14px; background: none; font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; } .nc .tabs2 button.on { background: var(--primary-soft); color: var(--primary); }
+    .nc .list { overflow-y: auto; padding: 6px; } .nc .it { display: flex; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; } .nc .it:hover { background: var(--hover-bg); } .nc .it.unread { background: color-mix(in srgb, var(--primary) 6%, transparent); }
+    .nc .it .c { flex: 1; font-size: 13px; } .nc .it small { color: var(--text-muted); font-size: 12px; } .nc .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-top: 6px; flex: none; } .nc .empty { padding: 32px; text-align: center; color: var(--text-muted); font-size: 13px; }
+    .files.fgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; } .files.fgrid div { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border-radius: 10px; font-size: 12px; text-align: center; cursor: context-menu; user-select: none; }
+    .files.fgrid div:hover, .files.fgrid div.sel { background: var(--primary-soft); } .files.fgrid .mi { font-size: 36px; color: var(--primary); }
+    .ctx-table { width: 100%; border-collapse: collapse; font-size: 13px; } .ctx-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); } .ctx-table tr { cursor: context-menu; } .ctx-table tr:hover, .ctx-table tr.sel { background: var(--hover-bg); }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/interactions.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Interactions" data-icon="touch_app" data-subtitle="Palette de commandes ⌘K, raccourcis clavier, popover riche, visite guidée, centre de notifications et menu contextuel.">
+
+      <section class="doc-section" id="palette" data-title="Palette de commandes (⌘K)" data-toc="Palette ⌘K" data-cols="2" data-desc="Recherche floue dans les commandes enregistrées, groupes, navigation au clavier (↑ ↓ Entrée Échap), raccourcis affichés.">
+        <div class="demo" data-label="Ouvrir la palette" data-hint="ou Ctrl/⌘ + K" data-nocode><button class="ui-btn" id="open-cmdk"><span class="mi">search</span>Rechercher une commande <kbd style="margin-left:8px">⌘K</kbd></button><p class="muted small" id="cmdk-last">Dernière commande : —</p></div>
+        <div class="demo" data-label="Commandes enregistrées" data-nocode><ul class="reg" id="reg"></ul></div>
+      </section>
+
+      <section class="doc-section" id="shortcuts" data-title="Raccourcis clavier" data-toc="Raccourcis" data-cols="2" data-desc="Combinaisons et séquences (g puis c), ignorées pendant la saisie dans un champ. Appuyez sur ? pour la liste.">
+        <div class="demo" data-label="Essayez au clavier" data-nocode><div class="sc-grid" id="sc"></div></div>
+        <div class="demo" data-label="Journal" data-nocode><pre class="log" id="sc-log">Appuyez sur une combinaison…</pre></div>
+      </section>
+
+      <section class="doc-section" id="popover" data-title="Popover riche" data-cols="2">
+        <div class="demo" data-label="Carte au survol" data-nocode><p style="font-size:14px;line-height:1.8">Intervention assignée à <span class="uname" data-hover="koffi" tabindex="0">Koffi N’Guessan</span>, validée par <span class="uname" data-hover="aminata" tabindex="0">Aminata Diallo</span>.</p></div>
+        <div class="demo" data-label="Au clic + positions" data-nocode><div class="row"><button class="ui-btn ui-btn--outlined" data-pop="bottom">Dessous</button><button class="ui-btn ui-btn--outlined" data-pop="top">Dessus</button><button class="ui-btn ui-btn--outlined" data-pop="right">Droite</button><button class="ui-btn ui-btn--outlined" data-pop="left">Gauche</button></div></div>
+      </section>
+
+      <section class="doc-section" id="tour" data-title="Visite guidée / onboarding" data-toc="Visite guidée" data-desc="Mise en lumière d'un élément, bulle positionnée, progression, clavier (← → Échap), « ne plus afficher ».">
+        <div class="demo" data-label="Tableau de bord fictif" data-nocode>
+          <button class="ui-btn" id="tour-start" style="margin-bottom:12px"><span class="mi">tour</span>Démarrer la visite</button>
+          <div class="fake-dash"><div class="side" data-tour="1"><strong>Navigation</strong><p class="muted small">Clients · Véhicules · Factures</p></div><div class="main"><div class="kp" data-tour="2"><div>Clients<b>312</b></div><div>Véhicules<b>1 248</b></div><div>CA<b>55,8 M</b></div></div><div class="box" data-tour="3"><strong>Activité récente</strong><p class="muted small">Interventions, paiements et alertes de la journée.</p><button class="ui-btn ui-btn--sm" data-tour="4"><span class="mi">add</span>Nouvelle intervention</button></div></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="notifications" data-title="Centre de notifications" data-toc="Notifications" data-cols="2">
+        <div class="demo" data-label="Barre d'application" data-nocode><div class="appbar"><strong>Référentiel</strong><span class="sp"></span><button class="ui-btn ui-btn--icon ui-badge-dot" id="nc-btn" aria-label="Notifications"><span class="mi">notifications</span><b id="nc-count">4</b></button></div></div>
+        <div class="demo" data-label="Sans notification" data-nocode><div class="appbar"><strong>Référentiel</strong><span class="sp"></span><button class="ui-btn ui-btn--icon" id="nc-empty" aria-label="Notifications"><span class="mi">notifications_none</span></button></div></div>
+      </section>
+
+      <section class="doc-section" id="context-menu" data-title="Menu contextuel" data-cols="2" data-source="ExW.contextMenu()" data-desc="Clic droit (ou appui long sur mobile, touche Menu au clavier) : actions adaptées à l'élément.">
+        <div class="demo" data-label="Fichiers" data-hint="clic droit" data-nocode><div class="files fgrid" id="files"></div></div>
+        <div class="demo" data-label="Lignes de tableau" data-hint="clic droit" data-nocode><table class="ctx-table" id="rows"></table></div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/ex-widgets.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var CMDS = [['Navigation', 'dashboard', 'Aller au tableau de bord', 'G D'], ['Navigation', 'people', 'Aller aux clients', 'G C'], ['Navigation', 'receipt_long', 'Aller aux factures', 'G F'], ['Créer', 'person_add', 'Nouveau client', 'N'], ['Créer', 'note_add', 'Nouvelle facture', ''], ['Créer', 'build', 'Planifier une intervention', ''],
+      ['Affichage', 'dark_mode', 'Basculer le mode sombre', 'Ctrl+J'], ['Affichage', 'view_sidebar', 'Afficher / masquer le menu', 'Ctrl+B'], ['Aide', 'keyboard', 'Raccourcis clavier', '?'], ['Aide', 'support_agent', 'Contacter le support', '']];
+    $('reg').innerHTML = CMDS.map(function (c) { return '<li><span class="mi">' + c[1] + '</span><span class="t">' + c[2] + '</span><span class="muted small">' + c[0] + '</span>' + (c[3] ? '<kbd>' + c[3] + '</kbd>' : '') + '</li>'; }).join('');
+    function fuzzy(q, t) { q = q.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); var tt = t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''), j = 0, out = '', hit = []; for (var i = 0; i < tt.length && j < q.length; i++) if (tt[i] === q[j]) { hit.push(i); j++; } if (j < q.length) return null;
+      for (var k = 0; k < t.length; k++) out += hit.indexOf(k) >= 0 ? '<mark>' + esc(t[k]) + '</mark>' : esc(t[k]); return { html: out, score: hit[hit.length - 1] - hit[0] }; }
+    function run(c) { $('cmdk-last').textContent = 'Dernière commande : ' + c[2]; if (c[1] === 'dark_mode') UIKit.setMode(document.documentElement.getAttribute('data-mode') === 'dark' ? 'light' : 'dark'); UIKit.toast('« ' + c[2] + ' »'); }
+    function palette() {
+      if (document.querySelector('.cmdk-scrim')) return; var s = document.createElement('div'); s.className = 'cmdk-scrim';
+      s.innerHTML = '<div class="cmdk" role="dialog" aria-label="Palette de commandes"><div class="cmdk-in"><span class="mi">search</span><input placeholder="Tapez une commande…" aria-label="Rechercher une commande"><kbd>Échap</kbd></div><div class="cmdk-list" role="listbox"></div><div class="cmdk-foot"><span><kbd>↑</kbd><kbd>↓</kbd> naviguer</span><span><kbd>Entrée</kbd> exécuter</span><span><kbd>Échap</kbd> fermer</span></div></div>';
+      document.body.appendChild(s); var inp = s.querySelector('input'), list = s.querySelector('.cmdk-list'), act = 0, vis = [];
+      function draw() { var q = inp.value.trim(); vis = CMDS.map(function (c) { var f = q ? fuzzy(q, c[2]) : { html: esc(c[2]), score: 0 }; return f && { c: c, f: f }; }).filter(Boolean); if (q) vis.sort(function (a, b) { return a.f.score - b.f.score; }); act = Math.min(act, Math.max(0, vis.length - 1)); var g = null;
+        list.innerHTML = vis.length ? vis.map(function (v, i) { var h = (!q && v.c[0] !== g) ? '<div class="cmdk-grp">' + (g = v.c[0]) + '</div>' : ''; return h + '<button class="cmdk-it' + (i === act ? ' act' : '') + '" data-i="' + i + '" role="option"><span class="mi">' + v.c[1] + '</span><span class="t">' + v.f.html + '</span>' + (v.c[3] ? '<kbd>' + v.c[3] + '</kbd>' : '') + '</button>'; }).join('') : '<div class="cmdk-grp" style="text-transform:none;padding:20px;text-align:center">Aucune commande pour « ' + esc(q) + ' »</div>';
+        var a = list.querySelector('.act'); a && a.scrollIntoView({ block: 'nearest' }); }
+      function close() { s.remove(); }
+      inp.addEventListener('input', function () { act = 0; draw(); });
+      inp.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown') { act = Math.min(vis.length - 1, act + 1); draw(); e.preventDefault(); } else if (e.key === 'ArrowUp') { act = Math.max(0, act - 1); draw(); e.preventDefault(); } else if (e.key === 'Enter' && vis[act]) { close(); run(vis[act].c); } else if (e.key === 'Escape') close(); });
+      s.addEventListener('click', function (e) { var b = e.target.closest('[data-i]'); if (b) { close(); run(vis[+b.dataset.i].c); } else if (e.target === s) close(); });
+      draw(); inp.focus();
+    }
+    $('open-cmdk').onclick = palette;
+
+    var SC = [['Ctrl+K', 'Palette de commandes'], ['G puis C', 'Aller aux clients'], ['G puis F', 'Aller aux factures'], ['N', 'Nouveau client'], ['Ctrl+S', 'Enregistrer'], ['Ctrl+J', 'Mode sombre'], ['?', 'Afficher l’aide'], ['Échap', 'Fermer']];
+    $('sc').innerHTML = SC.map(function (s, i) { return '<div data-k="' + i + '"><span>' + s[1] + '</span><span>' + s[0].split(' puis ').map(function (k) { return '<kbd>' + k + '</kbd>'; }).join(' puis ') + '</span></div>'; }).join('');
+    var lines = [], seq = null, seqT;
+    function hit(i, label) { var el = $('sc').querySelector('[data-k="' + i + '"]'); el.classList.add('hit'); setTimeout(function () { el.classList.remove('hit'); }, 600); lines.unshift(new Date().toLocaleTimeString('fr-FR') + '  ' + SC[i][0].padEnd(9) + ' → ' + SC[i][1]); $('sc-log').textContent = lines.slice(0, 8).join('\n'); }
+    document.addEventListener('keydown', function (e) {
+      var typing = /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.target.isContentEditable, mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+      if (mod && k === 'k') { e.preventDefault(); hit(0); palette(); return; }
+      if (mod && k === 's') { e.preventDefault(); hit(4); UIKit.toast('Enregistré (démo)'); return; }
+      if (mod && k === 'j') { e.preventDefault(); hit(5); UIKit.setMode(document.documentElement.getAttribute('data-mode') === 'dark' ? 'light' : 'dark'); return; }
+      if (typing || mod) return;
+      if (e.key === 'Escape') { hit(7); return; }
+      if (seq === 'g') { clearTimeout(seqT); seq = null; if (k === 'c') hit(1); else if (k === 'f') hit(2); return; }
+      if (k === 'g') { seq = 'g'; seqT = setTimeout(function () { seq = null; }, 900); return; }
+      if (k === 'n') hit(3); if (e.key === '?') { hit(6); UIKit.confirm({ title: 'Raccourcis clavier', message: SC.map(function (s) { return s[0] + ' — ' + s[1]; }).join(' · '), confirmLabel: 'Fermer', cancelLabel: 'OK' }); }
+    });
+
+    var PEOPLE = { koffi: ['KN', 'Koffi N’Guessan', 'Technicien · Abidjan Sud', '12 interventions ce mois · note 4,8'], aminata: ['AD', 'Aminata Diallo', 'Superviseure terrain', 'Valide les PV d’installation'] }, popEl = null, hideT;
+    function pop(anchor, html, pos) { if (popEl) popEl.remove(); popEl = document.createElement('div'); popEl.className = 'pop'; popEl.innerHTML = html; document.body.appendChild(popEl);
+      var r = anchor.getBoundingClientRect(), w = popEl.offsetWidth, h = popEl.offsetHeight, x = r.left + r.width / 2 - w / 2, y = r.bottom + 8;
+      if (pos === 'top') y = r.top - h - 8; if (pos === 'right') { x = r.right + 8; y = r.top + r.height / 2 - h / 2; } if (pos === 'left') { x = r.left - w - 8; y = r.top + r.height / 2 - h / 2; }
+      popEl.style.left = Math.max(8, Math.min(innerWidth - w - 8, x)) + 'px'; popEl.style.top = Math.max(8, Math.min(innerHeight - h - 8, y)) + 'px';
+      popEl.addEventListener('mouseenter', function () { clearTimeout(hideT); }); popEl.addEventListener('mouseleave', function () { hideT = setTimeout(hide, 200); }); }
+    function hide() { if (popEl) { popEl.remove(); popEl = null; } }
+    document.querySelectorAll('[data-hover]').forEach(function (u) { var p = PEOPLE[u.dataset.hover], html = '<div class="h"><span class="ava">' + p[0] + '</span><div><strong>' + p[1] + '</strong><br><span class="muted small">' + p[2] + '</span></div></div><p>' + p[3] + '</p><div class="row"><button class="ui-btn ui-btn--sm"><span class="mi">chat</span>Message</button><button class="ui-btn ui-btn--outlined ui-btn--sm"><span class="mi">call</span>Appeler</button></div>';
+      u.addEventListener('mouseenter', function () { clearTimeout(hideT); hideT = setTimeout(function () { pop(u, html); }, 250); }); u.addEventListener('focus', function () { pop(u, html); }); u.addEventListener('mouseleave', function () { clearTimeout(hideT); hideT = setTimeout(hide, 250); }); u.addEventListener('blur', function () { setTimeout(hide, 150); }); });
+    document.querySelectorAll('[data-pop]').forEach(function (b) { b.addEventListener('click', function (e) { e.stopPropagation(); if (popEl && popEl._a === b) return hide(); pop(b, '<strong>Exporter le rapport</strong><p>Choisissez le format du rapport mensuel.</p><div class="stack" style="gap:6px"><label class="ui-check"><input type="radio" name="fmt" checked>PDF</label><label class="ui-check"><input type="radio" name="fmt">Excel</label></div><div class="row" style="justify-content:flex-end;margin-top:10px"><button class="ui-btn ui-btn--sm" data-x>Exporter</button></div>', b.dataset.pop); popEl._a = b; }); });
+    document.addEventListener('click', function (e) { if (popEl && (!popEl.contains(e.target) || e.target.closest('[data-x]'))) { if (e.target.closest('[data-x]')) UIKit.toast('Export lancé (démo)'); hide(); } });
+
+    var STEPS = [['Navigation', 'Accédez à tous les modules depuis ce menu.'], ['Indicateurs', 'Vos chiffres clés, mis à jour en temps réel.'], ['Activité', 'Les derniers évènements de vos équipes et de vos clients.'], ['Créer', 'Planifiez une intervention en un clic.']], ti = 0, hole, tip;
+    function tour(i) { ti = i; if (!hole) { hole = document.createElement('div'); hole.className = 'tour-hole'; tip = document.createElement('div'); tip.className = 'tour-tip'; tip.setAttribute('role', 'dialog'); document.body.append(hole, tip); }
+      var t = document.querySelector('[data-tour="' + (i + 1) + '"]'); t.scrollIntoView({ block: 'center', behavior: 'instant' }); var r = t.getBoundingClientRect();
+      Object.assign(hole.style, { left: r.left - 6 + 'px', top: r.top - 6 + 'px', width: r.width + 12 + 'px', height: r.height + 12 + 'px' });
+      tip.innerHTML = '<h4>' + STEPS[i][0] + '</h4><p>' + STEPS[i][1] + '</p><label class="ui-check small" style="margin-bottom:10px"><input type="checkbox" id="tour-never">Ne plus afficher</label><div class="f"><span class="sp">' + (i + 1) + ' / ' + STEPS.length + '</span>' + (i ? '<button class="ui-btn ui-btn--text ui-btn--sm" data-tp>Précédent</button>' : '<button class="ui-btn ui-btn--text ui-btn--sm" data-te>Passer</button>') + '<button class="ui-btn ui-btn--sm" data-tn>' + (i === STEPS.length - 1 ? 'Terminer' : 'Suivant') + '</button></div>';
+      var tw = 300, x = r.right + 16 + tw < innerWidth ? r.right + 16 : Math.max(8, r.left), y = r.right + 16 + tw < innerWidth ? r.top : r.bottom + 16; if (y + 180 > innerHeight) y = Math.max(8, r.top - 190);
+      tip.style.left = Math.min(x, innerWidth - tw - 8) + 'px'; tip.style.top = y + 'px'; tip.querySelector('[data-tn]').focus(); }
+    function endTour() { if (hole) { hole.remove(); tip.remove(); hole = tip = null; } }
+    $('tour-start').onclick = function () { tour(0); };
+    document.addEventListener('click', function (e) { if (!tip || !tip.contains(e.target)) return; if (e.target.closest('[data-tn]')) { if (ti === STEPS.length - 1) { endTour(); UIKit.toast('Visite terminée'); } else tour(ti + 1); } if (e.target.closest('[data-tp]')) tour(ti - 1); if (e.target.closest('[data-te]')) endTour(); });
+    document.addEventListener('keydown', function (e) { if (!tip) return; if (e.key === 'Escape') endTour(); if (e.key === 'ArrowRight' && ti < STEPS.length - 1) tour(ti + 1); if (e.key === 'ArrowLeft' && ti > 0) tour(ti - 1); });
+    window.addEventListener('resize', function () { if (tip) tour(ti); });
+
+    var NOTIFS = [{ ic: 'contact_support', t: 'Nouvelle requête', d: 'Transports Yao SARL : « Balise hors ligne ».', at: 'il y a 5 min', u: 1, k: 'Requêtes' }, { ic: 'task_alt', t: 'Mission terminée', d: 'MIS-0098 clôturée par Koffi N’Guessan.', at: 'il y a 1 h', u: 1, k: 'Missions' },
+      { ic: 'receipt_long', t: 'Rôle généré', d: '312 factures pour 48 750 000 FCFA.', at: 'hier', u: 1, k: 'Facturation' }, { ic: 'warning', t: 'Tâche en retard', d: 'Relancer Bolloré pour le renouvellement.', at: 'hier', u: 1, k: 'Tâches' }, { ic: 'cloud_sync', t: 'Synchronisation', d: '1 284 équipements importés.', at: 'il y a 2 j', u: 0, k: 'Système' }], nc = null, ntab = 'all';
+    function ncDraw(list) { var n = list.filter(function (x) { return x.u; }).length; $('nc-count').textContent = n; $('nc-count').hidden = !n; if (!nc) return; var vis = list.filter(function (x) { return ntab === 'all' || x.u; });
+      nc.innerHTML = '<header><strong>Notifications</strong>' + (n ? '<button class="ui-btn ui-btn--text ui-btn--sm" data-all>Tout marquer comme lu</button>' : '') + '<button class="ui-btn ui-btn--icon" data-close aria-label="Fermer"><span class="mi">close</span></button></header><div class="tabs2"><button class="' + (ntab === 'all' ? 'on' : '') + '" data-tab="all">Toutes</button><button class="' + (ntab === 'unread' ? 'on' : '') + '" data-tab="unread">Non lues (' + n + ')</button></div>' +
+        '<div class="list">' + (vis.length ? vis.map(function (x) { return '<div class="it' + (x.u ? ' unread' : '') + '" data-n="' + list.indexOf(x) + '"><span class="ic-tile"><span class="mi">' + x.ic + '</span></span><div class="c"><strong>' + x.t + '</strong><br>' + x.d + '<br><small>' + x.k + ' · ' + x.at + '</small></div>' + (x.u ? '<span class="dot"></span>' : '') + '</div>'; }).join('') : '<div class="empty"><span class="mi" style="font-size:36px">notifications_off</span><br>Vous êtes à jour !</div>') + '</div>'; }
+    function ncOpen(btn, list) { if (nc) { nc.remove(); nc = null; return; } nc = document.createElement('div'); nc.className = 'nc'; document.body.appendChild(nc); var r = btn.getBoundingClientRect(); nc.style.top = (innerHeight - r.bottom > 400 ? r.bottom + 8 : Math.max(8, r.top - Math.min(480, nc.offsetHeight || 420) - 8)) + 'px'; nc.style.left = Math.max(12, Math.min(r.right - 380, innerWidth - 392)) + 'px';
+      nc.onclick = function (e) { e.stopPropagation(); if (e.target.closest('[data-close]')) { nc.remove(); nc = null; return; } if (e.target.closest('[data-all]')) list.forEach(function (x) { x.u = 0; }); var t = e.target.closest('[data-tab]'); if (t) ntab = t.dataset.tab; var it = e.target.closest('[data-n]'); if (it) list[+it.dataset.n].u = 0; ncDraw(list); }; ncDraw(list); var h = nc.offsetHeight; if (r.bottom + 8 + h > innerHeight) nc.style.top = Math.max(8, r.top - h - 8) + 'px'; }
+    $('nc-btn').onclick = function (e) { e.stopPropagation(); ncOpen(this, NOTIFS); }; $('nc-empty').onclick = function (e) { e.stopPropagation(); ncOpen(this, []); };
+    document.addEventListener('click', function (e) { if (nc && !nc.contains(e.target)) { nc.remove(); nc = null; } }); ncDraw(NOTIFS);
+
+    var FILES = [['folder', 'Contrats'], ['picture_as_pdf', 'devis-0412.pdf'], ['table_chart', 'flotte.xlsx'], ['image', 'photo-pose.jpg'], ['description', 'notes.txt']];
+    $('files').innerHTML = FILES.map(function (f, i) { return '<div tabindex="0" data-f="' + i + '"><span class="mi">' + f[0] + '</span>' + f[1] + '</div>'; }).join('');
+    $('rows').innerHTML = [['FAC-2026-0981', 'Transports Yao', '1 250 000 F'], ['FAC-2026-0982', 'Bolloré Logistics', '890 000 F'], ['FAC-2026-0983', 'SOTRA Abidjan', '2 410 000 F'], ['FAC-2026-0984', 'Coulibaly Frères', '640 000 F']].map(function (r, i) { return '<tr tabindex="0" data-r="' + i + '"><td><code>' + r[0] + '</code></td><td>' + r[1] + '</td><td style="text-align:right">' + r[2] + '</td></tr>'; }).join('');
+    function act(label) { return function () { UIKit.toast(label); }; }
+    var CM = ExW.contextMenu;
+    function bindCtx(el, build) {
+      function open(ev, target) { var items = build(target); if (!items) return; items = items.map(function (x) { return x.sep ? { divider: true } : x; }); CM(ev, items, function (it) { it.action && it.action(); }); }
+      el.addEventListener('contextmenu', function (e) { open(e, e.target); });
+      el.addEventListener('keydown', function (e) { if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) { var r = e.target.getBoundingClientRect(); open({ preventDefault: function () { e.preventDefault(); }, clientX: r.left + 20, clientY: r.bottom }, e.target); } });
+      var lp; el.addEventListener('touchstart', function (e) { var t = e.touches[0]; lp = setTimeout(function () { open({ preventDefault: function () {}, clientX: t.clientX, clientY: t.clientY }, e.target); }, 550); }, { passive: true });
+      ['touchend', 'touchmove'].forEach(function (n) { el.addEventListener(n, function () { clearTimeout(lp); }, { passive: true }); });
+    }
+    bindCtx($('files'), function (t) { var f = t.closest('[data-f]'); if (!f) return null; $('files').querySelectorAll('.sel').forEach(function (x) { x.classList.remove('sel'); }); f.classList.add('sel'); var n = FILES[+f.dataset.f][1];
+      return [{ icon: 'open_in_new', label: 'Ouvrir', action: act('Ouvrir ' + n) }, { icon: 'download', label: 'Télécharger', action: act('Téléchargement de ' + n) }, { icon: 'drive_file_rename_outline', label: 'Renommer', action: act('Renommer ' + n) }, { sep: true }, { icon: 'delete', label: 'Supprimer', danger: true, action: act(n + ' supprimé') }]; });
+    bindCtx($('rows'), function (t) { var r = t.closest('[data-r]'); if (!r) return null; $('rows').querySelectorAll('.sel').forEach(function (x) { x.classList.remove('sel'); }); r.classList.add('sel'); var ref = r.querySelector('code').textContent;
+      return [{ icon: 'visibility', label: 'Voir la facture', action: act(ref) }, { icon: 'send', label: 'Envoyer par e-mail', action: act(ref + ' envoyée') }, { icon: 'payments', label: 'Enregistrer un paiement', action: act('Paiement ' + ref) }, { sep: true }, { icon: 'block', label: 'Annuler la facture', danger: true, action: act(ref + ' annulée') }]; });
+  })();
+  </script>
+</body>
+</html>

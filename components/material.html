@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Material &amp; CDK</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .acc { border-radius: var(--radius-md); background: var(--card-bg); box-shadow: inset 0 0 0 1px var(--border); overflow: hidden; } .acc details + details { border-top: 1px solid var(--border); }
+    .acc summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; list-style: none; } .acc summary::-webkit-details-marker { display: none; } .acc summary:hover { background: var(--hover-bg); }
+    .acc summary .t { flex: 1; font-weight: 600; font-size: 14px; } .acc summary .d { font-size: 12px; color: var(--text-muted); } .acc summary .chev { transition: transform .2s; color: var(--text-muted); } .acc details[open] > summary .chev { transform: rotate(180deg); }
+    .acc .body { padding: 0 16px 16px; font-size: 14px; color: var(--text-secondary); } .acc.sep details { margin-bottom: 8px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--border); } .acc.sep { background: none; box-shadow: none; } .acc.sep details + details { border: 0; }
+    .acc .num { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--hover-bg); font-size: 12px; font-weight: 700; } .acc details.done .num { background: var(--success); color: #fff; } .acc details[open] .num { background: var(--primary); color: #fff; }
+    .tree, .tree ul { margin: 0; padding: 0; list-style: none; } .tree ul { padding-left: 20px; } .tree .n { display: flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 6px; border-radius: 8px; cursor: pointer; font-size: 14px; } .tree .n:hover { background: var(--hover-bg); } .tree .n.sel { background: var(--primary-soft); color: var(--primary); }
+    .tree .tg { width: 22px; text-align: center; color: var(--text-muted); } .tree .mi { font-size: 19px; } .tree .meta { margin-left: auto; font-size: 12px; color: var(--text-muted); }
+    .sortable { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; } .sortable li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--card-bg); box-shadow: inset 0 0 0 1px var(--border); font-size: 14px; cursor: grab; user-select: none; }
+    .sortable li.drag { opacity: .45; } .sortable li.over { box-shadow: inset 0 2px 0 var(--primary), inset 0 0 0 1px var(--border); } .sortable .mi { color: var(--text-muted); } .sortable .n { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--hover-bg); font-size: 11px; font-weight: 700; }
+    .free { position: relative; height: 240px; border-radius: 12px; background: var(--bg); background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 16px 16px; overflow: hidden; }
+    .free .box { position: absolute; display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; background: var(--card-bg); box-shadow: var(--shadow-2); cursor: grab; touch-action: none; user-select: none; font-size: 13px; } .free .box.dragging { cursor: grabbing; box-shadow: var(--shadow-3); }
+    .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; } @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } }
+    .col { min-height: 160px; padding: 10px; border-radius: 12px; background: var(--hover-bg); } .col h5 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; color: var(--text-muted); } .col.over { box-shadow: inset 0 0 0 2px var(--primary); }
+    .col .card { padding: 9px 10px; margin-bottom: 6px; border-radius: 8px; background: var(--card-bg); font-size: 13px; cursor: grab; box-shadow: var(--shadow-1); }
+    .mcard { border-radius: 16px; background: var(--card-bg); overflow: hidden; } .mcard.outlined { box-shadow: inset 0 0 0 1px var(--border); } .mcard.raised { box-shadow: var(--shadow-2); }
+    .mcard .hd { display: flex; align-items: center; gap: 12px; padding: 16px; } .mcard .hd .t { flex: 1; } .mcard .hd small { color: var(--text-muted); } .mcard .ct { padding: 0 16px 12px; font-size: 14px; color: var(--text-secondary); } .mcard .ac { display: flex; justify-content: flex-end; gap: 6px; padding: 8px 12px 12px; }
+    .mcard img { width: 100%; height: 150px; object-fit: cover; display: block; } .mcard .ft { display: flex; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); font-size: 13px; }
+    .gridlist { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 90px; gap: 8px; } .gridlist div { display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 12px; border-radius: 12px; color: #fff; font-size: 13px; font-weight: 600; } .gridlist b { font-size: 22px; }
+    @media (max-width: 600px) { .gridlist { grid-template-columns: repeat(2, 1fr); } .gridlist div { grid-column: auto !important; } }
+    .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1500; max-width: 560px; margin: 0 auto; padding: 8px 8px 16px; border-radius: 20px 20px 0 0; background: var(--card-bg); box-shadow: var(--shadow-3); transform: translateY(100%); transition: transform .25s var(--ease); } .sheet.open { transform: none; }
+    .sheet .grab { width: 36px; height: 4px; margin: 4px auto 10px; border-radius: 2px; background: var(--border); } .scrim { position: fixed; inset: 0; z-index: 1400; background: rgba(0,0,0,.32); display: none; } .scrim.open { display: block; }
+    .vs { height: 320px; overflow-y: auto; position: relative; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--border); } .vs .spacer { position: relative; } .vs .row-v { position: absolute; left: 0; right: 0; height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .vs .row-v .t { flex: 1; } .vs code { font-size: 12px; } .vs-info { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+    .ripple { position: relative; overflow: hidden; } .ripple .wave { position: absolute; border-radius: 50%; transform: scale(0); background: currentColor; opacity: .25; animation: rip .55s ease-out forwards; pointer-events: none; } @keyframes rip { to { transform: scale(2.6); opacity: 0; } }
+    .rip-surface { display: grid; place-items: center; height: 140px; border-radius: 16px; background: var(--primary-soft); color: var(--primary); font-weight: 600; cursor: pointer; user-select: none; }
+    .sheet:not(.open), .drawer:not(.open) { visibility: hidden; transition: transform .25s, visibility 0s .25s; }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/material.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Material &amp; CDK" data-icon="extension" data-subtitle="Équivalents natifs des composants Material et CDK : accordéon, arbre, glisser-déposer, chips, cartes, grille, bottom sheet, défilement virtuel et effet ripple.">
+
+      <section class="doc-section" id="accordion" data-title="Accordion / Expansion panel" data-toc="Accordion" data-cols="2" data-source="details / summary">
+        <div class="demo" data-label="Accordéon en étapes" data-nocode><div class="acc" id="acc-steps">
+          <details class="done"><summary><span class="num">1</span><span class="t">Client</span><span class="d">Bolloré Logistics CI</span><span class="mi chev">expand_more</span></summary><div class="body">Client sélectionné. <button class="ui-btn ui-btn--text ui-btn--sm" data-next>Suivant</button></div></details>
+          <details open><summary><span class="num">2</span><span class="t">Véhicules</span><span class="d">3 sélectionnés</span><span class="mi chev">expand_more</span></summary><div class="body"><div class="stack"><label class="ui-check"><input type="checkbox" checked>CI-4521-AB</label><label class="ui-check"><input type="checkbox" checked>CI-2210-CD</label><label class="ui-check"><input type="checkbox" checked>CI-3307-EF</label></div><button class="ui-btn ui-btn--sm" data-next style="margin-top:10px">Suivant</button></div></details>
+          <details><summary><span class="num">3</span><span class="t">Planification</span><span class="d">À définir</span><span class="mi chev">expand_more</span></summary><div class="body">Choisissez la date d'intervention. <button class="ui-btn ui-btn--sm" data-done>Valider</button></div></details></div></div>
+        <div class="demo" data-label="Multi + tout déplier" data-nocode><div class="row" style="margin-bottom:10px"><button class="ui-btn ui-btn--text ui-btn--sm" data-all="1"><span class="mi">unfold_more</span>Tout déplier</button><button class="ui-btn ui-btn--text ui-btn--sm" data-all="0"><span class="mi">unfold_less</span>Tout replier</button></div>
+          <div class="acc" id="acc-multi"><details><summary><span class="mi">info</span><span class="t">Informations</span><span class="mi chev">expand_more</span></summary><div class="body">Raison sociale, contacts, adresse.</div></details><details><summary><span class="mi">description</span><span class="t">Contrat</span><span class="mi chev">expand_more</span></summary><div class="body">Premium Flotte · 24 mois.</div></details><details><summary><span class="mi">receipt_long</span><span class="t">Facturation</span><span class="mi chev">expand_more</span></summary><div class="body">Mensuelle, prélèvement Mobile Money.</div></details></div></div>
+        <div class="demo" data-label="Variantes"><div class="acc sep"><details open><summary><span class="t">Séparé (cartes)</span><span class="mi chev">expand_more</span></summary><div class="body">Chaque panneau est une carte indépendante.</div></details><details><summary><span class="t">Désactivé</span><span class="d">indisponible</span></summary></details></div></div>
+        <div class="demo" data-label="FAQ" data-nocode><div class="acc" id="faq" data-exclusive></div></div>
+        <div class="demo" data-label="Panneau de filtres"><div class="acc"><details open><summary><span class="mi">location_on</span><span class="t">Ville</span><span class="mi chev">expand_more</span></summary><div class="body stack"><label class="ui-check"><input type="checkbox" checked>Abidjan</label><label class="ui-check"><input type="checkbox">Bouaké</label></div></details><details><summary><span class="mi">flag</span><span class="t">Statut</span><span class="mi chev">expand_more</span></summary><div class="body stack"><label class="ui-check"><input type="checkbox" checked>Actif</label><label class="ui-check"><input type="checkbox">Suspendu</label></div></details></div></div>
+      </section>
+
+      <section class="doc-section" id="tree" data-title="Tree" data-cols="2">
+        <div class="demo" data-label="Explorateur de fichiers" data-hint="clavier ↑ ↓ ← →" data-nocode><ul class="tree" id="tree1" role="tree"></ul></div>
+        <div class="demo" data-label="Permissions (tri-état)" data-nocode><ul class="tree" id="tree2"></ul></div>
+      </section>
+
+      <section class="doc-section" id="drag-drop" data-title="Drag &amp; drop" data-toc="Drag & drop" data-cols="3">
+        <div class="demo" data-label="Liste triable" data-hint="glisser ou Alt + ↑ ↓" data-nocode><ol class="sortable" id="sort"></ol></div>
+        <div class="demo" data-label="Déplacement libre" data-nocode><div class="free" id="free"><div class="box" style="left:20px;top:20px"><span class="mi">local_shipping</span>CI-4521-AB</div><div class="box" style="left:140px;top:110px"><span class="mi">warehouse</span>Dépôt Vridi</div><div class="box" style="left:40px;top:170px"><span class="mi">flag</span>Arrivée</div></div></div>
+        <div class="demo" data-label="Colonnes connectées" data-nocode><div class="cols" id="cols"></div></div>
+      </section>
+
+      <section class="doc-section" id="chips-input" data-title="Chips input" data-cols="2">
+        <div class="demo" data-label="Destinataires (validation e-mail)" data-nocode><div id="ch1"></div></div>
+        <div class="demo" data-label="Étiquettes" data-nocode><div id="ch2"></div></div>
+      </section>
+
+      <section class="doc-section" id="card" data-title="Card" data-cols="3">
+        <div class="demo" data-label="Outlined + actions" data-muted><div class="mcard outlined"><div class="hd"><span class="ic-tile"><span class="mi">description</span></span><div class="t"><strong>Contrat CTR-0042</strong><br><small>Bolloré Logistics CI</small></div><button class="ui-btn ui-btn--icon" aria-label="Plus"><span class="mi">more_vert</span></button></div><div class="ct">Premium Flotte, 124 véhicules, renouvellement le 28/02/2027.</div><div class="ac"><button class="ui-btn ui-btn--text">Détails</button><button class="ui-btn ui-btn--tonal">Renouveler</button></div></div></div>
+        <div class="demo" data-label="Média + footer" data-muted><div class="mcard outlined"><img src="../assets/camion.png" alt="Camion" style="object-fit:contain;background:var(--hover-bg)"><div class="hd"><div class="t"><strong>Mercedes Actros</strong><br><small>CI-7781-JK · Poids lourd</small></div><span class="ui-badge ui-badge--success">En ligne</span></div><div class="ft"><span class="muted">Dernière position</span><strong>il y a 2 min</strong></div></div></div>
+        <div class="demo" data-label="Raised (KPI)" data-muted><div class="mcard raised"><div class="hd"><div class="t"><small>Kilomètres ce mois</small><br><strong style="font-size:26px">48 320 km</strong></div><span class="ic-tile tone-primary"><span class="mi">route</span></span></div><div class="ct"><span class="ui-badge ui-badge--success">+6,4 %</span> vs septembre</div></div></div>
+      </section>
+
+      <section class="doc-section" id="grid-list" data-title="Grid list" data-desc="Mosaïque à tuiles de tailles variables (grid-column / grid-row span).">
+        <div class="demo" data-label="Mosaïque de dashboard"><div class="gridlist">
+          <div style="grid-column:span 2;grid-row:span 2;background:linear-gradient(135deg,#0f766e,#14b8a6)"><span>Véhicules suivis</span><b>1 248</b></div>
+          <div style="background:#4f46e5"><span>Clients</span><b>312</b></div><div style="background:#ea580c"><span>Alertes</span><b>17</b></div>
+          <div style="grid-column:span 2;background:#0284c7"><span>CA du mois</span><b>55,8 M FCFA</b></div>
+          <div style="background:#16a34a"><span>Recouvrement</span><b>87 %</b></div><div style="grid-column:span 2;background:#7c3aed"><span>Interventions</span><b>142</b></div><div style="background:#db2777"><span>Hors ligne</span><b>37</b></div></div></div>
+      </section>
+
+      <section class="doc-section" id="bottom-sheet" data-title="Bottom sheet">
+        <div class="demo" data-label="Actions de partage" data-nocode><button class="ui-btn ui-btn--outlined" id="open-sheet"><span class="mi">share</span>Partager le rapport</button></div>
+      </section>
+
+      <section class="doc-section" id="virtual-scroll" data-title="Virtual scroll" data-desc="10 000 positions ; seules les lignes visibles (plus une marge) existent dans le DOM.">
+        <div class="demo" data-label="Positions de la flotte" data-nocode><div class="vs" id="vs"><div class="spacer"></div></div><div class="vs-info"><span id="vs-range"></span><span id="vs-dom"></span></div></div>
+      </section>
+
+      <section class="doc-section" id="ripple" data-title="Ripple" data-cols="2" data-source=".ripple">
+        <div class="demo" data-label="Surface personnalisée" data-nocode><div class="rip-surface ripple" tabindex="0">Cliquez n'importe où</div></div>
+        <div class="demo" data-label="Boutons" data-nocode><div class="row"><button class="ui-btn ripple">Primaire</button><button class="ui-btn ui-btn--outlined ripple">Contour</button><button class="ui-btn ui-btn--icon ripple" aria-label="Favori"><span class="mi">favorite</span></button></div></div>
+      </section>
+    </div>
+  </main>
+  <div class="scrim" id="scrim"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-label="Partager"><div class="grab"></div>
+    <button class="ui-menu__item" data-s="Lien copié"><span class="mi">link</span> Copier le lien</button><button class="ui-menu__item" data-s="Ouverture de l'e-mail"><span class="mi">mail</span> Envoyer par e-mail</button><button class="ui-menu__item" data-s="Partage WhatsApp"><span class="mi">chat</span> WhatsApp</button><button class="ui-menu__item" data-s="Téléchargement PDF"><span class="mi">picture_as_pdf</span> Télécharger en PDF</button></div>
+  <script src="../js/forms.js"></script>
+  <script src="../js/fields.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var steps = Array.from($('acc-steps').children);
+    $('acc-steps').addEventListener('click', function (e) { var d = e.target.closest('details'); if (e.target.closest('[data-next]')) { d.classList.add('done'); d.open = false; var n = steps[steps.indexOf(d) + 1]; if (n) n.open = true; } if (e.target.closest('[data-done]')) { d.classList.add('done'); d.open = false; UIKit.toast('Intervention planifiée'); } });
+    document.querySelectorAll('[data-all]').forEach(function (b) { b.onclick = function () { $('acc-multi').querySelectorAll('details').forEach(function (d) { d.open = b.dataset.all === '1'; }); }; });
+    $('faq').innerHTML = [['Combien de temps dure une installation ?', 'Environ 45 minutes par véhicule, sans immobilisation prolongée.'], ['La balise fonctionne-t-elle sans réseau ?', 'Les positions sont stockées puis envoyées dès le retour du réseau.'], ['Puis-je couper le moteur à distance ?', 'Oui, avec l’option coupe-moteur et uniquement à l’arrêt.']]
+      .map(function (q) { return '<details><summary><span class="t">' + q[0] + '</span><span class="mi chev">expand_more</span></summary><div class="body">' + q[1] + '</div></details>'; }).join('');
+    $('faq').addEventListener('toggle', function (e) { if (e.target.open) $('faq').querySelectorAll('details').forEach(function (d) { if (d !== e.target) d.open = false; }); }, true);
+
+    var FS = [{ l: 'Clients', ic: 'folder', c: [{ l: 'Bolloré Logistics', ic: 'folder', c: [{ l: 'contrat-2026.pdf', ic: 'picture_as_pdf', m: '1,2 Mo' }, { l: 'pv-installation.pdf', ic: 'picture_as_pdf', m: '380 Ko' }] }, { l: 'Transports Yao', ic: 'folder', c: [{ l: 'devis.xlsx', ic: 'table_chart', m: '42 Ko' }] }] }, { l: 'Modèles', ic: 'folder', c: [{ l: 'facture.docx', ic: 'description', m: '28 Ko' }] }, { l: 'lisez-moi.txt', ic: 'article', m: '2 Ko' }];
+    var open1 = new Set(['Clients', 'Clients/Bolloré Logistics']), sel1 = null, flat = [];
+    function t1() { flat = []; function row(n, p) { var path = p ? p + '/' + n.l : n.l, k = !!n.c, o = open1.has(path); flat.push({ path: path, n: n, parent: p });
+      return '<li role="treeitem" aria-expanded="' + (k ? o : '') + '"><div class="n' + (sel1 === path ? ' sel' : '') + '" data-p="' + path + '" tabindex="' + (sel1 === path || (!sel1 && !p && n === FS[0]) ? 0 : -1) + '"><span class="tg">' + (k ? '<span class="mi" style="font-size:18px">' + (o ? 'expand_more' : 'chevron_right') + '</span>' : '') + '</span><span class="mi" style="color:' + (k ? 'var(--warning)' : 'var(--text-muted)') + '">' + (k && o ? 'folder_open' : n.ic) + '</span>' + n.l + (n.m ? '<span class="meta">' + n.m + '</span>' : '') + '</div>' + (k && o ? '<ul role="group">' + n.c.map(function (c) { return row(c, path); }).join('') + '</ul>' : '') + '</li>'; }
+      $('tree1').innerHTML = FS.map(function (n) { return row(n, ''); }).join(''); }
+    $('tree1').addEventListener('click', function (e) { var r = e.target.closest('[data-p]'); if (!r) return; var p = r.dataset.p, f = flat.find(function (x) { return x.path === p; }); sel1 = p; if (f.n.c) open1.has(p) ? open1.delete(p) : open1.add(p); t1(); $('tree1').querySelector('[data-p="' + CSS.escape(p) + '"]').focus(); });
+    $('tree1').addEventListener('keydown', function (e) { var cur = document.activeElement.dataset.p; if (!cur) return; var vis = flat.map(function (x) { return x.path; }), i = vis.indexOf(cur), f = flat[i], go;
+      if (e.key === 'ArrowDown') go = vis[i + 1]; else if (e.key === 'ArrowUp') go = vis[i - 1]; else if (e.key === 'ArrowRight' && f.n.c) { if (!open1.has(cur)) { open1.add(cur); go = cur; } else go = vis[i + 1]; } else if (e.key === 'ArrowLeft') { if (open1.has(cur)) { open1.delete(cur); go = cur; } else go = f.parent; } else if (e.key === 'Enter') { document.activeElement.click(); return; } else return;
+      e.preventDefault(); if (go) { sel1 = go; t1(); $('tree1').querySelector('[data-p="' + CSS.escape(go) + '"]').focus(); } });
+    t1();
+    var PERMS = [{ l: 'Véhicules', c: ['Voir', 'Modifier', 'Couper le moteur'] }, { l: 'Facturation', c: ['Voir', 'Émettre', 'Annuler'] }, { l: 'Administration', c: ['Utilisateurs', 'Rôles'] }], on = new Set(['Véhicules/Voir', 'Véhicules/Modifier', 'Facturation/Voir']);
+    function t2() { $('tree2').innerHTML = PERMS.map(function (g) { var n = g.c.filter(function (c) { return on.has(g.l + '/' + c); }).length, st = n === 0 ? '' : n === g.c.length ? 'checked' : 'mid';
+      return '<li><div class="n"><span class="tg"></span><label class="ui-check"><input type="checkbox" data-g="' + g.l + '"' + (st === 'checked' ? ' checked' : '') + '><strong>' + g.l + '</strong></label><span class="meta">' + n + ' / ' + g.c.length + '</span></div><ul>' + g.c.map(function (c) { return '<li><div class="n"><span class="tg"></span><label class="ui-check"><input type="checkbox" data-c="' + g.l + '/' + c + '"' + (on.has(g.l + '/' + c) ? ' checked' : '') + '>' + c + '</label></div></li>'; }).join('') + '</ul></li>'; }).join('');
+      $('tree2').querySelectorAll('[data-g]').forEach(function (i) { var g = PERMS.find(function (x) { return x.l === i.dataset.g; }), n = g.c.filter(function (c) { return on.has(g.l + '/' + c); }).length; i.indeterminate = n > 0 && n < g.c.length; }); }
+    $('tree2').addEventListener('change', function (e) { var t = e.target; if (t.dataset.c) t.checked ? on.add(t.dataset.c) : on.delete(t.dataset.c); if (t.dataset.g) PERMS.find(function (x) { return x.l === t.dataset.g; }).c.forEach(function (c) { t.checked ? on.add(t.dataset.g + '/' + c) : on.delete(t.dataset.g + '/' + c); }); t2(); }); t2();
+
+    var order = ['Dépôt Vridi', 'Plateau', 'Cocody', 'Riviera', 'Bingerville'], dragI = null;
+    function sl() { $('sort').innerHTML = order.map(function (o, i) { return '<li draggable="true" data-i="' + i + '" tabindex="0" aria-label="' + o + ', position ' + (i + 1) + '"><span class="mi">drag_indicator</span><span class="n">' + (i + 1) + '</span>' + o + '</li>'; }).join(''); }
+    $('sort').addEventListener('dragstart', function (e) { var li = e.target.closest('li'); dragI = +li.dataset.i; li.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; });
+    $('sort').addEventListener('dragover', function (e) { e.preventDefault(); this.querySelectorAll('.over').forEach(function (x) { x.classList.remove('over'); }); var li = e.target.closest('li'); if (li) li.classList.add('over'); });
+    $('sort').addEventListener('drop', function (e) { e.preventDefault(); var li = e.target.closest('li'); if (!li || dragI === null) return; var to = +li.dataset.i, it = order.splice(dragI, 1)[0]; order.splice(to, 0, it); dragI = null; sl(); });
+    $('sort').addEventListener('dragend', function () { dragI = null; sl(); });
+    $('sort').addEventListener('keydown', function (e) { var li = e.target.closest('li'); if (!li || !e.altKey || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return; e.preventDefault(); var i = +li.dataset.i, j = e.key === 'ArrowUp' ? i - 1 : i + 1; if (j < 0 || j >= order.length) return; order.splice(j, 0, order.splice(i, 1)[0]); sl(); $('sort').children[j].focus(); });
+    sl();
+    $('free').querySelectorAll('.box').forEach(function (b) { b.addEventListener('pointerdown', function (e) { b.setPointerCapture(e.pointerId); b.classList.add('dragging'); var ox = e.clientX - b.offsetLeft, oy = e.clientY - b.offsetTop, P = $('free');
+      b.onpointermove = function (ev) { b.style.left = Math.max(0, Math.min(P.clientWidth - b.offsetWidth, ev.clientX - ox)) + 'px'; b.style.top = Math.max(0, Math.min(P.clientHeight - b.offsetHeight, ev.clientY - oy)) + 'px'; };
+      b.onpointerup = function () { b.onpointermove = null; b.classList.remove('dragging'); }; }); });
+    var COLS = { 'À faire': ['Relancer Bolloré', 'Devis SOTRA'], 'En cours': ['Installation CI-4521-AB'], 'Terminé': ['Facture FAC-0981', 'PV signé'] }, dragC = null;
+    function cl() { $('cols').innerHTML = Object.keys(COLS).map(function (k) { return '<div class="col" data-k="' + k + '"><h5>' + k + ' · ' + COLS[k].length + '</h5>' + COLS[k].map(function (c, i) { return '<div class="card" draggable="true" data-i="' + i + '">' + c + '</div>'; }).join('') + '</div>'; }).join(''); }
+    $('cols').addEventListener('dragstart', function (e) { var c = e.target.closest('.card'); dragC = { k: c.closest('.col').dataset.k, i: +c.dataset.i }; });
+    $('cols').addEventListener('dragover', function (e) { var c = e.target.closest('.col'); if (!c) return; e.preventDefault(); this.querySelectorAll('.over').forEach(function (x) { x.classList.remove('over'); }); c.classList.add('over'); });
+    $('cols').addEventListener('drop', function (e) { var c = e.target.closest('.col'); if (!c || !dragC) return; e.preventDefault(); var it = COLS[dragC.k].splice(dragC.i, 1)[0]; var over = e.target.closest('.card'); var arr = COLS[c.dataset.k]; arr.splice(over ? +over.dataset.i : arr.length, 0, it); dragC = null; cl(); });
+    $('cols').addEventListener('dragend', cl); cl();
+
+    UIFields.tags($('ch1'), { value: ['aminata.diallo@example.com'], icon: 'mail', placeholder: 'email@exemple.ci', validator: function (t) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t); }, invalidMessage: 'Adresse invalide' });
+    UIFields.tags($('ch2'), { value: ['Urgent', 'Flotte'], suggestions: ['Urgent', 'Maintenance', 'Installation', 'Garantie', 'Client VIP', 'Flotte', 'Balise'] });
+
+    $('open-sheet').onclick = function () { $('sheet').classList.add('open'); $('scrim').classList.add('open'); $('sheet').querySelector('button').focus(); };
+    function shut() { $('sheet').classList.remove('open'); $('scrim').classList.remove('open'); }
+    $('scrim').onclick = shut; $('sheet').onclick = function (e) { var b = e.target.closest('[data-s]'); if (b) { shut(); UIKit.toast(b.dataset.s); } };
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') shut(); });
+
+    var N = 10000, H = 48, vs = $('vs'), sp = vs.querySelector('.spacer'); sp.style.height = N * H + 'px';
+    var CITY = ['Plateau', 'Cocody', 'Yopougon', 'Marcory', 'Abobo', 'Treichville', 'Koumassi'];
+    function vr() { var a = Math.max(0, Math.floor(vs.scrollTop / H) - 5), b = Math.min(N, Math.ceil((vs.scrollTop + vs.clientHeight) / H) + 5), h = '';
+      for (var i = a; i < b; i++) h += '<div class="row-v" style="top:' + i * H + 'px"><span class="muted" style="width:56px">#' + (i + 1) + '</span><code>CI-' + String(1000 + (i * 37) % 9000) + '-' + String.fromCharCode(65 + i % 26, 65 + (i * 7) % 26) + '</code><span class="t">' + CITY[i % CITY.length] + '</span><span class="muted">' + (20 + (i * 13) % 90) + ' km/h</span></div>';
+      sp.innerHTML = h; $('vs-range').textContent = 'Lignes ' + (a + 1) + ' – ' + b + ' sur ' + N.toLocaleString('fr-FR'); $('vs-dom').textContent = (b - a) + ' éléments dans le DOM'; }
+    vs.addEventListener('scroll', function () { requestAnimationFrame(vr); }); vr();
+
+    document.addEventListener('pointerdown', function (e) { var r = e.target.closest('.ripple'); if (!r) return; var b = r.getBoundingClientRect(), s = Math.max(b.width, b.height), w = document.createElement('span'); w.className = 'wave'; w.style.width = w.style.height = s + 'px'; w.style.left = e.clientX - b.left - s / 2 + 'px'; w.style.top = e.clientY - b.top - s / 2 + 'px'; r.appendChild(w); setTimeout(function () { w.remove(); }, 600); });
+  })();
+  </script>
+</body>
+</html>

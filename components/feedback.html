@@ -44,6 +44,7 @@
     .undo-list { margin: 0; padding: 0; list-style: none; } .undo-list li { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 1px solid var(--border); font-size: 14px; } .undo-list li .t { flex: 1; } .undo-list li.leaving { opacity: .35; text-decoration: line-through; }
     .log { margin: 10px 0 0; padding: 10px 12px; border-radius: var(--radius-sm); background: #0f172a; color: #e2e8f0; font: 12px/1.6 var(--font-mono); min-height: 60px; }
     .overlay-full { position: fixed; inset: 0; z-index: 2500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(4px); font-weight: 600; }
+    .sheet:not(.open), .drawer:not(.open) { visibility: hidden; transition: transform .25s, visibility 0s .25s; }
   </style>
 </head>
 <body data-kit data-root="../" data-active="components/feedback.html">

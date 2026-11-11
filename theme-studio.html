@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Studio de thème</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/doc.css">
+  <script src="js/themes.js"></script>
+  <script src="js/ui-kit.js"></script>
+  <style>
+    .studio { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; align-items: start; } @media (max-width: 1100px) { .studio { grid-template-columns: 1fr; } }
+    .panel { display: flex; flex-direction: column; gap: 18px; padding: 18px; border-radius: 18px; background: var(--card-bg); position: sticky; top: 64px; } @media (max-width: 1100px) { .panel { position: static; } }
+    .panel h3 { margin: 0 0 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); } .panel h3 small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+    .seeds { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; } .seeds button { width: 24px; height: 24px; padding: 0; border: 2px solid var(--card-bg); border-radius: 50%; box-shadow: 0 0 0 1px var(--border); cursor: pointer; } .seeds button.on { box-shadow: 0 0 0 2px var(--text-primary); }
+    .styles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .styles button { padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-bg); text-align: left; font: 500 13px var(--font-sans); color: var(--text-primary); cursor: pointer; } .styles button.on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+    .style-desc { margin: 8px 0 0; font-size: 12px; color: var(--text-secondary); }
+    .ov { display: flex; flex-direction: column; gap: 8px; } .ov label { display: flex; align-items: center; gap: 10px; font-size: 13px; } .ov label span { flex: 1; } .ov input[type=color] { width: 34px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; } .ov small { color: var(--text-muted); }
+    .ov .ui-check { flex: none; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .previews { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } @media (max-width: 1400px) { .previews { grid-template-columns: 1fr; } }
+    .pv { --pv-pad: 16px; border-radius: 18px; padding: var(--pv-pad); background: var(--bg); color: var(--text-primary); box-shadow: inset 0 0 0 1px var(--border); } .pv > .lbl { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .pv .app { display: grid; grid-template-columns: 54px minmax(0, 1fr); border-radius: 14px; overflow: hidden; background: var(--card-bg); box-shadow: var(--shadow-1); }
+    .pv .rail { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0; background: var(--surface-c, var(--card-bg)); border-right: 1px solid var(--border); } .pv .rail span { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; color: var(--text-secondary); } .pv .rail span.on { background: var(--primary-container); color: var(--on-primary-container); }
+    .pv .ct { padding: 14px; display: flex; flex-direction: column; gap: 12px; min-width: 0; } .pv .hd { display: flex; align-items: center; gap: 8px; } .pv .hd strong { flex: 1; font-size: 16px; }
+    .pv .kp { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .pv .kp div { padding: 10px; border-radius: 10px; background: var(--surface-c, var(--hover-bg)); font-size: 11px; color: var(--text-secondary); } .pv .kp b { display: block; font-size: 17px; color: var(--text-primary); }
+    .pv .card { padding: 12px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--border); } .pv .card h4 { margin: 0 0 4px; font-size: 14px; } .pv .card p { margin: 0 0 10px; font-size: 12px; color: var(--text-secondary); }
+    .pv .tagrow { display: flex; flex-wrap: wrap; gap: 6px; } .pv .tag { padding: 3px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; } .pv .bar { height: 6px; border-radius: 3px; background: var(--hover-bg); overflow: hidden; } .pv .bar i { display: block; height: 100%; width: 62%; background: var(--primary); }
+    .pv .ban { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--tertiary-container, var(--primary-soft)); color: var(--on-tertiary-container, var(--text-primary)); font-size: 12px; }
+    .strips { display: flex; flex-direction: column; gap: 10px; } .strip { display: grid; grid-template-columns: 150px 1fr; gap: 12px; align-items: center; } .strip .nm { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; } .strip .nm i { width: 16px; height: 16px; border-radius: 4px; }
+    .tones { display: grid; grid-template-columns: repeat(18, minmax(0, 1fr)); border-radius: 8px; overflow: hidden; } .tones button { height: 38px; border: 0; padding: 0; cursor: copy; font: 600 9px var(--font-mono); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 3px; }
+    @media (max-width: 700px) { .strip { grid-template-columns: 1fr; } .tones button { font-size: 0; } }
+    .rolebar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 8px; }
+    .role { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 12px; border: 0; text-align: left; cursor: copy; min-height: 76px; font: inherit; } .role b { font-size: 13px; } .role code { font-size: 10.5px; opacity: .85; } .role .ct { margin-top: auto; display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; }
+    .css-out { max-height: 260px; overflow: auto; margin: 0; padding: 12px; border-radius: 10px; background: #0f172a; color: #e2e8f0; font: 11.5px/1.5 var(--font-mono); }
+  </style>
+</head>
+<body data-kit data-root="" data-active="theme-studio.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Studio de thème" data-icon="tune" data-eyebrow="Fondations" data-subtitle="Composez un thème Material 3 à partir d'une couleur : style de schéma, niveau de contraste, couleurs imposées par rôle. Aperçu en clair et en sombre, nuanciers, rôles avec contrastes, export CSS et application à tout le kit.">
+
+      <section class="doc-section" id="compose" data-title="Composer" data-source="js/lib/theme-kit.js (material-color-utilities)">
+        <div class="studio">
+          <div class="panel">
+            <div><h3>Couleur source <small id="src-hex"></small></h3><div id="src"></div><div class="seeds" id="seeds"></div></div>
+            <div><h3>Style</h3><div class="styles" id="styles"></div><p class="style-desc" id="style-desc"></p></div>
+            <div><h3>Contraste</h3><div class="ui-segmented" id="contrast" style="width:100%"></div></div>
+            <div><h3>Couleurs des rôles <small>(facultatif)</small></h3><div class="ov" id="ov"></div></div>
+            <div><label class="ui-switch"><input type="checkbox" id="live">Appliquer en direct à tout le kit</label></div>
+            <div class="actions"><button class="ui-btn" id="apply"><span class="mi">check</span>Appliquer au kit</button><button class="ui-btn ui-btn--outlined" id="export"><span class="mi">content_copy</span>Copier le CSS</button><button class="ui-btn ui-btn--text" id="reset"><span class="mi">restart_alt</span>Réinitialiser</button></div>
+          </div>
+          <div class="previews"><div class="pv" id="pv-light"></div><div class="pv" id="pv-dark"></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="tones" data-title="Nuances" data-desc="Palettes tonales (0 → 100) calculées dans l'espace HCT. Cliquez une nuance pour copier sa valeur.">
+        <div class="strips" id="strips"></div>
+      </section>
+
+      <section class="doc-section" id="roles" data-title="Rôles & contrastes" data-desc="Couples rôle / texte « on » avec ratio de contraste WCAG (AA ≥ 4,5 : 1).">
+        <div><div class="rolebar"><div class="ui-segmented" id="rmode"><button class="on" data-m="light">Clair</button><button data-m="dark">Sombre</button></div><span class="muted small" id="rsum"></span></div><div class="roles" id="rolegrid"></div></div>
+        <div class="demo" data-label="CSS exporté (jetons du kit + rôles M3)" data-nocode><pre class="css-out" id="css"></pre></div>
+      </section>
+    </div>
+  </main>
+  <script src="js/lib/theme-kit.js"></script>
+  <script src="js/forms.js"></script>
+  <script src="js/fields.js"></script>
+  <script src="js/doc.js"></script>
+  <script src="js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, K = ThemeKit;
+    var saved = null; try { saved = JSON.parse(localStorage.getItem('uikit-custom-config') || 'null'); } catch (e) {}
+    var cfg = K.normalizeConfig(saved || { source: '#0f766e' }, '#0f766e'), rmode = 'light';
+    var STRIP_ROLES = ['primary', 'secondary', 'tertiary', 'neutral', 'neutralVariant', 'error'];
+    var PAIRS = [['Primary', 'primary', 'on-primary'], ['Primary container', 'primary-container', 'on-primary-container'], ['Secondary', 'secondary', 'on-secondary'], ['Secondary container', 'secondary-container', 'on-secondary-container'], ['Tertiary', 'tertiary', 'on-tertiary'], ['Tertiary container', 'tertiary-container', 'on-tertiary-container'],
+      ['Error', 'error', 'on-error'], ['Error container', 'error-container', 'on-error-container'], ['Surface', 'surface', 'on-surface'], ['Surface container', 'surface-container', 'on-surface'], ['Surface container highest', 'surface-container-highest', 'on-surface-variant'], ['Inverse surface', 'inverse-surface', 'inverse-on-surface']];
+    function copy(t, w) { try { navigator.clipboard.writeText(t); } catch (e) {} UIKit.toast((w || t) + ' copié'); }
+
+    // Correspondance rôles M3 → jetons du kit
+    function kitVars(v, dark) { var g = function (r) { return v['--mat-sys-' + r]; };
+      return { '--primary': g('primary'), '--on-primary': g('on-primary'), '--primary-container': g('primary-container'), '--on-primary-container': g('on-primary-container'), '--secondary': g('secondary'), '--tertiary': g('tertiary'), '--tertiary-container': g('tertiary-container'), '--on-tertiary-container': g('on-tertiary-container'),
+        '--bg': g('surface-container-low'), '--card-bg': dark ? g('surface-container') : g('surface-container-lowest'), '--surface-c': g('surface-container-high'), '--text-primary': g('on-surface'), '--text-secondary': g('on-surface-variant'), '--text-muted': g('outline'), '--border': g('outline-variant'), '--error': g('error'), '--hover-bg': g('surface-container-highest') }; }
+    function decl(o) { return Object.keys(o).map(function (k) { return k + ':' + o[k] + ';'; }).join(''); }
+    function css() { var l = K.cssVariablesFor(cfg, false), d = K.cssVariablesFor(cfg, true), kl = kitVars(l, false), kd = kitVars(d, true);
+      return '/* Thème personnalisé — source ' + cfg.source + ', style ' + cfg.style + ', contraste ' + cfg.contrast + ' */\n.theme-custom{' + decl(kl) + '}\n[data-mode="dark"].theme-custom{' + decl(kd) + '}\n@media (prefers-color-scheme:dark){[data-mode="system"].theme-custom{' + decl(kd) + '}}\n' + K.exportCss(cfg, '.theme-custom'); }
+
+    function controls() {
+      $('src-hex').textContent = cfg.source;
+      $('seeds').innerHTML = K.THEME_PALETTES.slice(0, 24).map(function (p) { return '<button type="button" style="background:' + p.seed + '" data-seed="' + p.seed + '" title="' + p.label + '" aria-label="' + p.label + '" class="' + (p.seed.toLowerCase() === cfg.source.toLowerCase() ? 'on' : '') + '"></button>'; }).join('');
+      $('styles').innerHTML = K.SCHEME_STYLES.map(function (s) { return '<button type="button" data-st="' + s.id + '" class="' + (s.id === cfg.style ? 'on' : '') + '">' + s.label + '</button>'; }).join('');
+      $('style-desc').textContent = (K.SCHEME_STYLES.find(function (s) { return s.id === cfg.style; }) || {}).description || '';
+      $('contrast').innerHTML = K.CONTRAST_LEVELS.map(function (c) { return '<button type="button" data-ct="' + c.value + '" class="' + (c.value === cfg.contrast ? 'on' : '') + '" style="flex:1">' + c.label + '</button>'; }).join('');
+      var der = K.derivedKeyColors(cfg);
+      $('ov').innerHTML = K.OVERRIDABLE_ROLES.map(function (r) { var on = !!cfg.overrides[r.id]; return '<label><input type="checkbox" class="ui-check" data-ovc="' + r.id + '"' + (on ? ' checked' : '') + ' aria-label="Imposer ' + r.label + '"><span>' + r.label + '<br><small>' + r.hint + '</small></span><input type="color" data-ov="' + r.id + '" value="' + (cfg.overrides[r.id] || der[r.id]) + '"' + (on ? '' : ' style="opacity:.45"') + ' aria-label="Couleur ' + r.label + '"></label>'; }).join('');
+    }
+    function preview(id, dark) {
+      var v = K.cssVariablesFor(cfg, dark), kv = kitVars(v, dark), el = $(id), g = function (r) { return v['--mat-sys-' + r]; };
+      el.setAttribute('style', decl(kv) + '--shadow-1:0 1px 3px rgba(0,0,0,' + (dark ? '.5' : '.12') + ')');
+      el.innerHTML = '<div class="lbl"><span class="mi" style="font-size:16px">' + (dark ? 'dark_mode' : 'light_mode') + '</span>' + (dark ? 'Sombre' : 'Clair') + '</div><div class="app"><div class="rail"><span class="on"><span class="mi">space_dashboard</span></span><span><span class="mi">groups</span></span><span><span class="mi">local_shipping</span></span><span><span class="mi">receipt_long</span></span></div>' +
+        '<div class="ct"><div class="hd"><strong>Transports Yao &amp; Fils</strong><button class="ui-btn ui-btn--sm"><span class="mi">add</span>Intervention</button></div>' +
+        '<div class="kp"><div>Véhicules<b>48</b></div><div>CA mensuel<b>2,1 M</b></div><div>Alertes<b style="color:' + g('error') + '">3</b></div></div>' +
+        '<div class="ban"><span class="mi" style="font-size:18px">campaign</span>Renouvellement du contrat dans 30 jours.</div>' +
+        '<div class="card"><h4>Nouvelle intervention</h4><p>Pose de balise GT06 sur CI-4521-AB, vendredi 9 h.</p><div class="field-box" style="margin-bottom:10px;background:var(--card-bg)"><span class="mi">build</span><input value="Installation balise" aria-label="Type"></div>' +
+        '<div class="tagrow" style="margin-bottom:10px"><span class="tag" style="background:' + g('secondary-container') + ';color:' + g('on-secondary-container') + '">Flotte</span><span class="tag" style="background:' + g('tertiary-container') + ';color:' + g('on-tertiary-container') + '">Urgent</span><span class="tag" style="background:' + g('error-container') + ';color:' + g('on-error-container') + '">En retard</span></div>' +
+        '<div class="bar"><i></i></div><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="ui-btn ui-btn--text ui-btn--sm">Annuler</button><button class="ui-btn ui-btn--tonal ui-btn--sm" style="--_bg:' + g('secondary-container') + ';--_fg:' + g('on-secondary-container') + '">Brouillon</button><button class="ui-btn ui-btn--sm">Planifier</button></div></div>' +
+        '<div class="row"><label class="ui-switch"><input type="checkbox" checked>Notifications</label><label class="ui-check"><input type="checkbox" checked>SMS</label></div></div></div>';
+    }
+    function strips() { $('strips').innerHTML = K.paletteStrips(cfg).map(function (s) { return '<div class="strip"><span class="nm"><i style="background:' + s.keyColor + '"></i>' + s.label + '</span><div class="tones">' + s.tones.map(function (t) { return '<button type="button" style="background:' + t.hex + ';color:' + (t.tone > 55 ? '#000' : '#fff') + '" data-hex="' + t.hex + '" title="' + s.label + ' ' + t.tone + ' · ' + t.hex + '">' + t.tone + '</button>'; }).join('') + '</div></div>'; }).join(''); }
+    function roles() { var v = K.cssVariablesFor(cfg, rmode === 'dark'), ok = 0;
+      $('rolegrid').innerHTML = PAIRS.map(function (p) { var bg = v['--mat-sys-' + p[1]], fg = v['--mat-sys-' + p[2]], r = K.contrastRatio(bg, fg); if (r >= 4.5) ok++;
+        return '<button type="button" class="role" style="background:' + bg + ';color:' + fg + ';box-shadow:inset 0 0 0 1px rgba(127,127,127,.25)" data-copy-v="var(--mat-sys-' + p[1] + ')"><b>' + p[0] + '</b><code>--mat-sys-' + p[1] + ' · ' + bg + '</code><span class="ct"><span>' + r.toFixed(1).replace('.', ',') + ' : 1</span><span>' + (r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : r >= 3 ? 'AA grand' : '✕') + '</span></span></button>'; }).join('');
+      $('rsum').textContent = ok + ' / ' + PAIRS.length + ' couples conformes AA'; }
+    function applyKit(persist) { var c = css(), st = document.getElementById('uikit-custom-theme'); if (!st) { st = document.createElement('style'); st.id = 'uikit-custom-theme'; document.head.appendChild(st); } st.textContent = c; UIKit.setTheme('custom');
+      if (persist) try { localStorage.setItem('uikit-custom-css', c); localStorage.setItem('uikit-custom-config', JSON.stringify(cfg)); } catch (e) {} }
+    function render(skipControls) { if (!skipControls) controls(); preview('pv-light', false); preview('pv-dark', true); strips(); roles(); $('css').textContent = css(); if ($('live').checked) applyKit(true); }
+
+    var picker = UIFields.color($('src'), { value: cfg.source, swatches: K.THEME_PALETTES.slice(0, 10).map(function (p) { return p.seed; }) });
+    $('src').addEventListener('change', function (e) { if (K.isHexColor(e.detail)) { cfg = K.normalizeConfig(Object.assign({}, cfg, { source: e.detail }), cfg.source); render(); } });
+    document.querySelector('.panel').addEventListener('click', function (e) {
+      var s = e.target.closest('[data-seed]'); if (s) { cfg.source = s.dataset.seed; $('src').innerHTML = ''; picker = UIFields.color($('src'), { value: cfg.source }); render(); }
+      var st = e.target.closest('[data-st]'); if (st) { cfg.style = st.dataset.st; render(); }
+      var c = e.target.closest('[data-ct]'); if (c) { cfg.contrast = +c.dataset.ct; render(); }
+    });
+    $('ov').addEventListener('input', function (e) { var t = e.target;
+      if (t.dataset.ovc) { if (t.checked) cfg.overrides[t.dataset.ovc] = t.parentNode.querySelector('[data-ov]').value; else delete cfg.overrides[t.dataset.ovc]; render(); }
+      if (t.dataset.ov) { cfg.overrides[t.dataset.ov] = t.value; t.parentNode.querySelector('[data-ovc]').checked = true; t.style.opacity = 1; render(true); } });
+    $('apply').onclick = function () { applyKit(true); UIKit.toast('Thème appliqué à tout le kit (thème « custom »)'); };
+    $('export').onclick = function () { copy(css(), 'CSS du thème'); };
+    $('reset').onclick = function () { cfg = K.normalizeConfig({ source: '#0f766e' }, '#0f766e'); try { localStorage.removeItem('uikit-custom-css'); localStorage.removeItem('uikit-custom-config'); } catch (e) {} var st = document.getElementById('uikit-custom-theme'); if (st) st.remove(); UIKit.setTheme('cyan'); $('src').innerHTML = ''; picker = UIFields.color($('src'), { value: cfg.source }); render(); };
+    $('live').onchange = function () { if (this.checked) applyKit(true); };
+    $('rmode').onclick = function (e) { var b = e.target.closest('[data-m]'); if (!b) return; rmode = b.dataset.m; this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); roles(); };
+    document.addEventListener('click', function (e) { var h = e.target.closest('[data-hex]'); if (h) copy(h.dataset.hex); var r = e.target.closest('[data-copy-v]'); if (r) copy(r.dataset.copyV); });
+    render();
+  })();
+  </script>
+</body>
+</html>

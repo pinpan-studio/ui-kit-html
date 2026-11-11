@@ -3,254 +3,131 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UI Kit HTML — Catalogue</title>
+  <title>UI Showcase</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/fonts-extra.css">
+  <link rel="stylesheet" href="css/doc.css">
   <script src="js/themes.js"></script>
   <script src="js/ui-kit.js"></script>
+  <style>
+    .stat-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; } @media (max-width: 800px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 18px; background: var(--card-bg); color: inherit; text-decoration: none; transition: box-shadow .15s; } .stat:hover { box-shadow: var(--shadow-2); } .stat .mi { color: var(--primary); } .stat b { font-size: 28px; } .stat span:last-child { font-size: 13px; color: var(--text-secondary); }
+    .quick { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; } .quick a { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 18px; background: var(--card-bg); color: var(--text-secondary); font-size: 13px; font-weight: 500; text-decoration: none; } .quick a:hover { color: var(--primary); background: var(--primary-soft); } .quick .mi { font-size: 17px; }
+    .themes > * { min-width: 0; } .tset .ui-segmented { flex-wrap: wrap; } .themes { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; } @media (max-width: 1000px) { .themes { grid-template-columns: 1fr; } }
+    .tset { padding: 16px; border-radius: 18px; background: var(--card-bg); display: flex; flex-direction: column; gap: 14px; } .tset h4 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+    .sw { display: grid; grid-template-columns: repeat(auto-fill, 28px); gap: 8px; } .sw button { width: 28px; height: 28px; padding: 0; border: 2px solid var(--card-bg); border-radius: 50%; box-shadow: 0 0 0 1px var(--border); cursor: pointer; } .sw button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--text-primary); }
+    .tprev { padding: 16px; border-radius: 18px; background: var(--card-bg); display: flex; flex-direction: column; gap: 14px; } .roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    .role { display: flex; flex-direction: column; gap: 4px; min-height: 64px; padding: 10px 12px; border: 0; border-radius: 12px; text-align: left; font: inherit; cursor: copy; } .role b { font-size: 13px; } .role code { font-size: 10.5px; opacity: .8; } .role.bd { box-shadow: inset 0 0 0 1px var(--border); }
+    .sub-h { margin: 22px 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); } .sub-h:first-of-type { margin-top: 0; }
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; } .swatch { display: grid; grid-template-columns: 36px 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; padding: 10px; border: 0; border-radius: 12px; background: var(--card-bg); text-align: left; font: inherit; color: inherit; cursor: copy; }
+    .swatch .chip { grid-row: span 2; width: 36px; height: 36px; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(127,127,127,.25); } .swatch b { font-size: 13px; } .swatch code { font-size: 11px; color: var(--text-muted); }
+    .tswitch { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-size: 14px; }
+    .type-scale { border-radius: 18px; background: var(--card-bg); overflow: hidden; } .type-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--border); } .type-row .tag { font: 11px var(--font-mono); color: var(--text-muted); } .type-row > :last-child { margin: 0; }
+    @media (max-width: 700px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }
+    .space-row { display: grid; grid-template-columns: 110px 1fr 48px; gap: 12px; align-items: center; width: 100%; padding: 5px 0; border: 0; background: none; text-align: left; cursor: copy; font: inherit; color: inherit; } .space-row code { font-size: 12px; } .space-row .bar { height: 12px; border-radius: 3px; background: var(--primary); } .space-row i { font-style: normal; font-size: 12px; color: var(--text-muted); text-align: right; }
+    .radius-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; } .radius { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 92px; height: 72px; border: 0; background: var(--primary-soft); color: var(--primary); cursor: copy; font: inherit; } .radius code { font-size: 10.5px; } .radius i { font-style: normal; font-size: 11px; }
+    .shadow { display: grid; place-items: center; width: 130px; height: 72px; border-radius: 14px; background: var(--card-bg); font: 11px var(--font-mono); }
+    .icon-search { display: flex; align-items: center; gap: 10px; height: 42px; margin-bottom: 12px; padding: 0 14px; border-radius: 21px; background: var(--card-bg); } .icon-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: 14px var(--font-sans); color: var(--text-primary); }
+    .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; } .icon-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 4px; border: 0; border-radius: 12px; background: var(--card-bg); cursor: copy; font: 11px var(--font-sans); color: var(--text-secondary); } .icon-cell:hover { background: var(--primary-soft); color: var(--primary); } .icon-cell .mi { font-size: 26px; color: var(--text-primary); } .icon-cell span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 10px; } .cat-card { display: flex; gap: 14px; padding: 16px; border-radius: 18px; background: var(--card-bg); color: inherit; text-decoration: none; transition: box-shadow .15s, transform .15s; } .cat-card:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+    .cat-card .ic { display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 12px; background: var(--primary-soft); color: var(--primary); } .cat-card strong { display: block; margin-bottom: 2px; } .cat-card span { font-size: 12.5px; color: var(--text-secondary); }
+    .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; } .module { display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: 14px; background: var(--card-bg); color: inherit; text-decoration: none; } .module:hover { background: var(--primary-soft); } .module span { flex: 1; } .module b { min-width: 28px; height: 28px; display: grid; place-items: center; border-radius: 14px; background: var(--hover-bg); font-size: 13px; } .module .mi { color: var(--primary); }
+  </style>
 </head>
-<body>
-  <!-- Icônes SVG (sprite) -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
-    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
-    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></symbol>
-    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
-    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
-    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/></symbol>
-  </svg>
-
-  <div class="ui-shell">
-    <aside class="ui-sidebar" aria-label="Navigation du catalogue">
-      <div class="ui-sidebar__brand"><img src="assets/logo.png" alt="" width="28" height="28"> UI Kit HTML</div>
-      <nav>
-        <div class="ui-sidebar__group">Fondations</div>
-        <a class="ui-nav-link" href="#couleurs" aria-current="page">Couleurs &amp; thèmes</a>
-        <a class="ui-nav-link" href="#typo">Typographie</a>
-        <div class="ui-sidebar__group">Composants</div>
-        <a class="ui-nav-link" href="#boutons">Boutons</a>
-        <a class="ui-nav-link" href="#formulaires">Formulaires</a>
-        <a class="ui-nav-link" href="#cartes">Cartes</a>
-        <a class="ui-nav-link" href="#badges">Badges &amp; alertes</a>
-        <a class="ui-nav-link" href="#tableau">Tableau</a>
-        <a class="ui-nav-link" href="#onglets">Onglets</a>
-        <a class="ui-nav-link" href="#overlays">Dialogue, menu, toast</a>
-        <a class="ui-nav-link" href="#divers">Avatar, progression, vide</a>
-        <div class="ui-sidebar__group">Exemples</div>
-        <a class="ui-nav-link" href="examples/login.html">Connexion</a>
-      </nav>
-    </aside>
-    <div class="ui-scrim" data-nav-toggle></div>
-
-    <div class="ui-main">
-      <header class="ui-topbar">
-        <button class="ui-btn ui-btn--icon ui-menu-toggle" data-nav-toggle aria-label="Ouvrir le menu"><svg class="ui-icon"><use href="#i-menu"/></svg></button>
-        <h1 class="ui-topbar__title">Catalogue</h1>
-        <div class="ui-row" role="group" aria-label="Mode d'affichage">
-          <button class="ui-btn ui-btn--icon" data-set-mode="light" aria-label="Clair"><svg class="ui-icon"><use href="#i-sun"/></svg></button>
-          <button class="ui-btn ui-btn--icon" data-set-mode="dark" aria-label="Sombre"><svg class="ui-icon"><use href="#i-moon"/></svg></button>
-          <button class="ui-btn ui-btn--icon" data-set-mode="system" aria-label="Système"><svg class="ui-icon"><use href="#i-monitor"/></svg></button>
+<body data-kit data-root="" data-active="index.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="UI Showcase" data-icon="auto_awesome_mosaic" data-eyebrow="Catalogue visuel" data-subtitle="Vue globale du design system en HTML, CSS et JavaScript natifs : jetons de couleur, thèmes, typographie, icônes, composants, layouts et pages. Aucun framework, aucun backend.">
+      <section class="doc-section" id="overview" data-title="Vue d'ensemble" data-toc="Vue d'ensemble">
+        <div><div class="stat-row" id="stats"></div><div class="quick" id="quick"></div></div>
+      </section>
+      <section class="doc-section" id="themes" data-title="Thèmes" data-source="css/themes.css · UIKit.setTheme() · Studio de thème" data-desc="41 thèmes de couleur Material 3, chacun en clair, en sombre ou selon le réglage du système. Le Studio de thème permet d'en composer un nouveau.">
+        <div class="themes">
+          <div class="tset"><h4>Mode</h4><div class="ui-segmented" role="group" aria-label="Mode"><button data-set-mode="light"><span class="mi">light_mode</span>Clair</button><button data-set-mode="dark"><span class="mi">dark_mode</span>Sombre</button><button data-set-mode="system"><span class="mi">contrast</span>Système</button></div>
+            <h4>Couleur</h4><div class="sw" id="sw"></div><a class="ui-btn ui-btn--outlined ui-btn--sm" href="theme-studio.html" style="align-self:flex-start"><span class="mi">tune</span>Studio de thème</a></div>
+          <div class="tprev"><div class="roles" id="roles"></div>
+            <div class="row"><button class="ui-btn">Plein</button><button class="ui-btn ui-btn--tonal">Tonal</button><button class="ui-btn ui-btn--outlined">Contour</button><button class="ui-btn ui-btn--raised">Relief</button><button class="ui-btn ui-btn--text">Texte</button><button class="ui-btn ui-btn--fab-ext"><span class="mi">edit</span>FAB</button></div>
+            <div class="row"><label class="ui-switch"><input type="checkbox" checked>Activé</label><label class="ui-check"><input type="checkbox" checked>Coché</label><label class="ui-check"><input type="radio" checked>Sélection</label><div class="ui-progress" style="flex:1;min-width:120px"><span style="width:62%"></span></div></div></div>
         </div>
-      </header>
-
-      <main class="ui-content">
-
-        <section class="kit-section" id="couleurs">
-          <h2>Couleurs &amp; thèmes</h2>
-          <p class="ui-muted">Les 41 thèmes Material 3 de <code>ui-kit</code>. Cliquer une pastille applique <code>.theme-&lt;id&gt;</code> sur <code>&lt;html&gt;</code> (mémorisé).</p>
-          <div class="kit-themes" id="theme-picker"></div>
-          <div class="ui-grid" style="margin-top:var(--space-6)">
-            <div><div class="kit-swatch" style="background:var(--primary)"></div><small>--primary</small></div>
-            <div><div class="kit-swatch" style="background:var(--secondary)"></div><small>--secondary</small></div>
-            <div><div class="kit-swatch" style="background:var(--tertiary)"></div><small>--tertiary</small></div>
-            <div><div class="kit-swatch" style="background:var(--primary-container)"></div><small>--primary-container</small></div>
-            <div><div class="kit-swatch" style="background:var(--success)"></div><small>--success</small></div>
-            <div><div class="kit-swatch" style="background:var(--warning)"></div><small>--warning</small></div>
-            <div><div class="kit-swatch" style="background:var(--error)"></div><small>--error</small></div>
-            <div><div class="kit-swatch" style="background:var(--info)"></div><small>--info</small></div>
-          </div>
-        </section>
-
-        <section class="kit-section" id="typo">
-          <h2>Typographie</h2>
-          <div class="kit-demo ui-stack">
-            <h1>Titre 1 — 36px</h1><h2>Titre 2 — 28px</h2><h3>Titre 3 — 22px</h3><h4>Titre 4 — 18px</h4>
-            <p>Texte courant 14px, police TT Wellingtons. <a href="#typo">Lien</a>, <code>code</code>.</p>
-            <p class="ui-muted">Texte secondaire atténué.</p>
-          </div>
-        </section>
-
-        <section class="kit-section" id="boutons">
-          <h2>Boutons</h2>
-          <div class="kit-demo ui-stack">
-            <div class="ui-row">
-              <button class="ui-btn">Principal</button>
-              <button class="ui-btn ui-btn--tonal">Tonal</button>
-              <button class="ui-btn ui-btn--outlined">Contour</button>
-              <button class="ui-btn ui-btn--text">Texte</button>
-              <button class="ui-btn ui-btn--danger">Supprimer</button>
-              <button class="ui-btn" disabled>Désactivé</button>
-            </div>
-            <div class="ui-row">
-              <button class="ui-btn ui-btn--sm">Petit</button>
-              <button class="ui-btn">Moyen</button>
-              <button class="ui-btn ui-btn--lg">Grand</button>
-              <button class="ui-btn"><svg class="ui-icon"><use href="#i-plus"/></svg> Ajouter</button>
-              <button class="ui-btn ui-btn--icon" aria-label="Plus d'actions"><svg class="ui-icon"><use href="#i-more"/></svg></button>
-            </div>
-          </div>
-          <pre class="kit-code">&lt;button class="ui-btn ui-btn--tonal"&gt;Tonal&lt;/button&gt;</pre>
-        </section>
-
-        <section class="kit-section" id="formulaires">
-          <h2>Formulaires</h2>
-          <form class="kit-demo ui-grid" onsubmit="event.preventDefault(); UIKit.toast('Formulaire envoyé (démo)')">
-            <label class="ui-field"><span class="ui-label">Nom</span><input class="ui-input" placeholder="Jeanne Dupont"></label>
-            <label class="ui-field"><span class="ui-label">E-mail</span><input class="ui-input" type="email" placeholder="nom@exemple.fr"><span class="ui-hint">Jamais partagé.</span></label>
-            <label class="ui-field ui-field--error"><span class="ui-label">Téléphone</span><input class="ui-input" aria-invalid="true" value="06 12"><span class="ui-hint">Numéro incomplet.</span></label>
-            <label class="ui-field"><span class="ui-label">Statut</span>
-              <select class="ui-select"><option>Actif</option><option>En pause</option><option>Archivé</option></select></label>
-            <label class="ui-field" style="grid-column:1/-1"><span class="ui-label">Message</span><textarea class="ui-textarea" placeholder="Votre message…"></textarea></label>
-            <div class="ui-row" style="grid-column:1/-1">
-              <label class="ui-check"><input type="checkbox" checked> Case à cocher</label>
-              <label class="ui-check"><input type="radio" name="r" checked> Option A</label>
-              <label class="ui-check"><input type="radio" name="r"> Option B</label>
-              <label class="ui-switch"><input type="checkbox" role="switch" checked> Notifications</label>
-            </div>
-            <div class="ui-row" style="grid-column:1/-1"><button class="ui-btn">Envoyer</button><button class="ui-btn ui-btn--text" type="reset">Annuler</button></div>
-          </form>
-        </section>
-
-        <section class="kit-section" id="cartes">
-          <h2>Cartes</h2>
-          <div class="ui-grid">
-            <article class="ui-card"><h3 class="ui-card__title">Carte simple</h3><p class="ui-muted">Bordure fine, rayon 24px.</p><button class="ui-btn ui-btn--tonal ui-btn--sm">Action</button></article>
-            <article class="ui-card ui-card--elevated"><h3 class="ui-card__title">Carte élevée</h3><p class="ui-muted">Ombre portée, sans bordure.</p></article>
-            <article class="ui-card"><div class="ui-row"><span class="ui-avatar">JD</span><div><strong>Jeanne Dupont</strong><div class="ui-muted">Cheffe de projet</div></div></div></article>
-          </div>
-        </section>
-
-        <section class="kit-section" id="badges">
-          <h2>Badges &amp; alertes</h2>
-          <div class="kit-demo ui-stack">
-            <div class="ui-row">
-              <span class="ui-badge">Primaire</span><span class="ui-badge ui-badge--success">Terminé</span>
-              <span class="ui-badge ui-badge--warning">En attente</span><span class="ui-badge ui-badge--error">Échec</span>
-              <span class="ui-badge ui-badge--info">Info</span><span class="ui-badge ui-badge--neutral">Brouillon</span>
-            </div>
-            <div class="ui-alert" role="status"><div><strong>Information.</strong> Une mise à jour est disponible.</div></div>
-            <div class="ui-alert ui-alert--success" role="status"><div><strong>Succès.</strong> Les modifications sont enregistrées.</div></div>
-            <div class="ui-alert ui-alert--warning" role="status"><div><strong>Attention.</strong> L'abonnement expire dans 3 jours.</div></div>
-            <div class="ui-alert ui-alert--error" role="alert"><div><strong>Erreur.</strong> Impossible d'enregistrer le document.</div></div>
-          </div>
-        </section>
-
-        <section class="kit-section" id="tableau">
-          <h2>Tableau</h2>
-          <div class="ui-table-wrap">
-            <table class="ui-table">
-              <thead><tr><th>Référence</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th></tr></thead>
-              <tbody>
-                <tr><td>FAC-0142</td><td>Atelier Moreau</td><td>02/11/2026</td><td>1 240,00 €</td><td><span class="ui-badge ui-badge--success">Payée</span></td></tr>
-                <tr><td>FAC-0143</td><td>Studio Lumen</td><td>05/11/2026</td><td>860,50 €</td><td><span class="ui-badge ui-badge--warning">En attente</span></td></tr>
-                <tr><td>FAC-0144</td><td>Brasserie du Port</td><td>08/11/2026</td><td>3 100,00 €</td><td><span class="ui-badge ui-badge--error">En retard</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="kit-section" id="onglets">
-          <h2>Onglets</h2>
-          <div class="kit-demo" data-tabs>
-            <div class="ui-tabs__list" role="tablist">
-              <button class="ui-tabs__tab" role="tab" aria-controls="tab-1" aria-selected="true">Général</button>
-              <button class="ui-tabs__tab" role="tab" aria-controls="tab-2">Documents</button>
-              <button class="ui-tabs__tab" role="tab" aria-controls="tab-3">Historique</button>
-            </div>
-            <div class="ui-tabs__panel" id="tab-1" role="tabpanel">Contenu de l'onglet « Général ». Flèches ← → pour naviguer.</div>
-            <div class="ui-tabs__panel" id="tab-2" role="tabpanel">Aucun document pour le moment.</div>
-            <div class="ui-tabs__panel" id="tab-3" role="tabpanel">Créé le 02/11/2026.</div>
-          </div>
-        </section>
-
-        <section class="kit-section" id="overlays">
-          <h2>Dialogue, menu, toast</h2>
-          <div class="kit-demo ui-row">
-            <button class="ui-btn" data-dialog-open="demo-dialog">Ouvrir le dialogue</button>
-            <details class="ui-menu">
-              <summary class="ui-btn ui-btn--outlined">Menu ▾</summary>
-              <div class="ui-menu__panel" role="menu">
-                <button class="ui-menu__item" role="menuitem" data-toast="Modifier">Modifier</button>
-                <button class="ui-menu__item" role="menuitem" data-toast="Dupliquer">Dupliquer</button>
-                <button class="ui-menu__item" role="menuitem" data-toast="Supprimé (démo)">Supprimer</button>
-              </div>
-            </details>
-            <button class="ui-btn ui-btn--tonal" data-toast="Enregistré avec succès">Afficher un toast</button>
-          </div>
-          <dialog class="ui-dialog" id="demo-dialog" aria-labelledby="demo-dialog-title">
-            <div class="ui-dialog__body">
-              <h3 id="demo-dialog-title">Supprimer l'élément ?</h3>
-              <p class="ui-muted">Cette action est définitive.</p>
-            </div>
-            <div class="ui-dialog__actions">
-              <button class="ui-btn ui-btn--text" data-dialog-close>Annuler</button>
-              <button class="ui-btn ui-btn--danger" data-dialog-close="ok" data-toast="Élément supprimé (démo)">Supprimer</button>
-            </div>
-          </dialog>
-        </section>
-
-        <section class="kit-section" id="divers">
-          <h2>Avatar, progression, état vide, squelette</h2>
-          <div class="ui-grid">
-            <div class="kit-demo ui-stack">
-              <div class="ui-row"><span class="ui-avatar">AB</span><span class="ui-avatar">CM</span><span class="ui-avatar">LK</span></div>
-              <div class="ui-progress" role="progressbar" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100"><span style="width:64%"></span></div>
-            </div>
-            <div class="kit-demo ui-empty">
-              <svg class="ui-icon" style="width:40px;height:40px;margin:0 auto var(--space-2)"><use href="#i-inbox"/></svg>
-              <p><strong>Aucun résultat</strong></p><p class="ui-muted">Modifiez vos filtres.</p>
-            </div>
-            <div class="kit-demo ui-stack" aria-busy="true">
-              <div class="ui-skeleton" style="width:60%"></div><div class="ui-skeleton"></div><div class="ui-skeleton" style="width:80%"></div>
-            </div>
-          </div>
-        </section>
-
-      </main>
+      </section>
+      <section class="doc-section" id="colors" data-title="Colors" data-source="css/tokens.css :root · [data-mode=dark]" data-desc="Jetons CSS définis globalement et redéfinis en mode sombre. Cliquez une pastille pour copier var(--jeton).">
+        <div><div class="tswitch"><span>Mode actuel : <strong id="mode-now"></strong></span><button class="ui-btn ui-btn--outlined ui-btn--sm" id="toggle-mode"><span class="mi">contrast</span>Basculer</button></div>
+          <h4 class="sub-h">Marque</h4><div class="swatches" data-sw="primary:Primaire,primary-container:Conteneur primaire,primary-soft:Primaire douce,on-primary:Sur primaire,secondary:Secondaire,tertiary:Tertiaire"></div>
+          <h4 class="sub-h">Sémantique</h4><div class="swatches" data-sw="success:Succès,warning:Avertissement,error:Erreur,info:Information,purple:Violet,cyan:Cyan,success-text:Texte succès,error-text:Texte erreur"></div>
+          <h4 class="sub-h">Surfaces &amp; texte</h4><div class="swatches" data-sw="bg:Fond,card-bg:Carte,hover-bg:Survol,border:Bordure,text-primary:Texte,text-secondary:Texte secondaire,text-muted:Texte atténué,table-header-bg:En-tête de table"></div>
+          <h4 class="sub-h">Badges de statut</h4><div class="row"><span class="ui-badge ui-badge--success">success</span><span class="ui-badge ui-badge--warning">warning</span><span class="ui-badge ui-badge--error">error</span><span class="ui-badge ui-badge--info">info</span><span class="ui-badge ui-badge--neutral">neutral</span><span class="ui-badge">primary</span></div></div>
+      </section>
+      <section class="doc-section" id="typography" data-title="Typography" data-source="TT Wellingtons · Outfit · Inter · Space Mono" data-desc="Polices embarquées localement, aucune requête externe. Détail complet dans Components › Typographie.">
+        <div class="type-scale">
+          <div class="type-row"><span class="tag">.text-h1 · 32/700</span><h1 class="text-h1">Référentiel unique</h1></div>
+          <div class="type-row"><span class="tag">.text-page-title · 22</span><div class="text-page-title">Registre des produits</div></div>
+          <div class="type-row"><span class="tag">.text-h2 · 24/600</span><h2 class="text-h2">Tableau de bord Finance</h2></div>
+          <div class="type-row"><span class="tag">.text-h3 · 20/600</span><h3 class="text-h3">Informations générales</h3></div>
+          <div class="type-row"><span class="tag">.text-card-title · 16</span><div class="text-card-title">Abonnement Standard</div></div>
+          <div class="type-row"><span class="tag">.text-body · 14</span><p class="text-body">Le client signale une perte de signal récurrente entre 18 h et 20 h sur l'axe Yopougon–Abobo.</p></div>
+          <div class="type-row"><span class="tag">.text-body-sm · 13</span><p class="text-body-sm">Catalogue des offres : tarifs d'installation, d'abonnement et de désinstallation.</p></div>
+          <div class="type-row"><span class="tag">.text-label · 12/600</span><span class="text-label">Raison sociale</span></div>
+          <div class="type-row"><span class="tag">.text-overline · 11/700</span><span class="text-overline">Code client</span></div>
+          <div class="type-row"><span class="tag">.text-mono · Space Mono</span><span class="text-mono">FAC-2026-0912</span></div>
+          <div class="type-row"><span class="tag">.text-tabular · montant</span><strong class="text-tabular">1 245 000 F CFA</strong></div>
+          <div class="type-row"><a class="ui-btn ui-btn--text ui-btn--sm" href="components/typography.html">Toute la typographie<span class="mi end">arrow_forward</span></a><span></span></div>
+        </div>
+      </section>
+      <section class="doc-section" id="spacing" data-title="Espacements &amp; rayons" data-toc="Espacements" data-cols="2" data-source="css/tokens.css :root">
+        <div class="demo" data-label="Échelle d'espacement" data-nocode><div id="spaces"></div></div>
+        <div class="demo" data-label="Rayons &amp; ombres" data-nocode><div class="radius-row" id="radii"></div><div class="radius-row"><div class="shadow" style="box-shadow:var(--shadow-1)">--shadow-1</div><div class="shadow" style="box-shadow:var(--shadow-2)">--shadow-2</div><div class="shadow" style="box-shadow:var(--shadow-3)">--shadow-3</div></div></div>
+      </section>
+      <section class="doc-section" id="icons" data-title="Icons" data-source="Material Icons (police locale, classe .mi)" data-desc="Sélection des icônes utilisées dans le kit. Cliquez pour copier la balise.">
+        <div><label class="icon-search"><span class="mi muted">search</span><input id="iq" placeholder="Filtrer les icônes…" aria-label="Filtrer les icônes"><span class="muted small" id="icount"></span></label><div class="icon-grid" id="igrid"></div></div>
+      </section>
+      <section class="doc-section" id="catalog" data-title="Catalogue" data-desc="Accès direct aux galeries détaillées.">
+        <div class="cat-grid" id="cats"></div>
+      </section>
+      <section class="doc-section" id="modules" data-title="Pages par catégorie" data-toc="Pages" data-desc="Nombre de pages statiques disponibles dans chaque catégorie.">
+        <div class="module-grid" id="mods"></div>
+      </section>
     </div>
-  </div>
-
+  </main>
+  <script src="js/data/showcase.js"></script>
+  <script src="js/pages-registry.js"></script>
+  <script src="js/doc.js"></script>
+  <script src="js/kit.js"></script>
   <script>
-    // Pastilles de thème générées depuis js/themes.js
-    var picker = document.getElementById('theme-picker');
-    UIKIT_THEMES.forEach(function (t) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.title = t.label;
-      b.setAttribute('aria-label', 'Thème ' + t.label);
-      b.setAttribute('data-set-theme', t.id);
-      b.style.background = t.light;
-      picker.appendChild(b);
-    });
-    UIKit.setTheme(document.documentElement.className.match(/theme-([\w-]+)/)[1]);
-
-    // Lien actif de la sidebar au défilement
-    var links = document.querySelectorAll('.ui-nav-link[href^="#"]');
-    document.querySelectorAll('.ui-nav-link').forEach(function (a) {
-      a.addEventListener('click', function () { document.querySelector('.ui-shell').removeAttribute('data-nav-open'); });
-    });
-    var spy = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        links.forEach(function (l) {
-          if (l.getAttribute('href') === '#' + e.target.id) l.setAttribute('aria-current', 'page');
-          else l.removeAttribute('aria-current');
-        });
-      });
-    }, { rootMargin: '-30% 0px -60% 0px' });
-    document.querySelectorAll('.kit-section').forEach(function (s) { spy.observe(s); });
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    function copy(t, w) { try { navigator.clipboard.writeText(t); } catch (e) {} UIKit.toast((w || t) + ' copié'); }
+    var CATS = [['Typographie', 'components/typography.html', 'text_fields', 'Familles, échelle, hiérarchie, graisses, interlignage, mesure, contraste, chiffres, typographie française, testeur.'], ['Formulaires', 'components/forms.html', 'edit_note', 'Input, textarea, select, autocomplete, dates, checkbox, radio, toggle, upload, recherche, validation.'],
+      ['Champs avancés', 'components/fields.html', 'dynamic_form', 'OTP, nombre ±, montant FCFA, intervalle, notation, couleur, texte riche, Markdown, signature, arborescence, transfert, tags, adresse, mot de passe, copie.'], ['Boutons', 'components/buttons.html', 'smart_button', 'Variantes, états, icônes, actions de page, segmentés, menus, FAB, tailles.'],
+      ['Navigation', 'components/navigation.html', 'explore', 'Barre d’outils, sidecar, en-têtes, onglets, fil d’Ariane, pagination, stepper, menus.'], ['Data display', 'components/data.html', 'table_chart', 'Tables, cartes, listes, chronologie, badges, avatars, KPI, graphiques, diff, audit, QR code.'],
+      ['Feedback', 'components/feedback.html', 'notifications_active', 'Alertes, toasts, modales, tiroirs, chargements, squelettes, erreurs, envoi multiple, bannières, résultat, annulation.'], ['Planning', 'components/planning.html', 'view_timeline', 'Kanban, Gantt, notes, vue groupée, calendrier, agenda.'],
+      ['Cartes', 'components/maps.html', 'map', 'Leaflet : fonds gratuits, marqueurs, regroupement, trajets, zones, dessin GeoJSON.'], ['Médias', 'components/media.html', 'perm_media', 'Vidéo, YouTube, audio, PDF, visionneuse, carrousel, galeries, recadrage.'],
+      ['Interactions', 'components/interactions.html', 'touch_app', 'Palette ⌘K, raccourcis, popover, visite guidée, notifications, menu contextuel.'], ['Material & CDK', 'components/material.html', 'extension', 'Accordéon, arbre, glisser-déposer, chips, cartes, mosaïque, bottom sheet, défilement virtuel, ripple.'],
+      ['Layout', 'components/layout.html', 'dashboard_customize', 'Page, tableau de bord, colonnes, module, pleine largeur, sections, conteneurs responsive.'], ['Layouts', 'layouts.html', 'view_compact', 'Shell applicatif, module, fiche, authentification, lecture, tiroir, dialogues, conversation, catalogue.'],
+      ['Pages', 'pages.html', 'view_quilt', 'Toutes les pages statiques, par catégorie, avec leurs variantes.'], ['Showcases', 'showcases.html', 'devices', 'Aperçus des écrans dans des cadres d’appareils.'], ['Studio de thème', 'theme-studio.html', 'tune', 'Composer un thème Material 3 et l’appliquer au kit.'], ['Harnais', 'harnais/index.html', 'auto_awesome', 'Interface conversationnelle et widgets d’agent.']];
+    var R = PAGE_REGISTRY, total = R.reduce(function (s, g) { return s + g.pages.length; }, 0), variants = R.reduce(function (s, g) { return s + g.pages.reduce(function (t, p) { return t + (p.variants ? p.variants.length : 0); }, 0); }, 0);
+    $('stats').innerHTML = [['view_quilt', total, 'pages statiques', 'pages.html'], ['layers', variants, 'variantes d’état', 'pages.html'], ['apps', R.length, 'catégories de pages', 'pages.html'], ['widgets', 13, 'galeries de composants', '#catalog']].map(function (s) { return '<a class="stat" href="' + s[3] + '"><span class="mi">' + s[0] + '</span><b>' + s[1] + '</b><span>' + s[2] + '</span></a>'; }).join('');
+    $('quick').innerHTML = [['Studio de thème', 'theme-studio.html', 'tune'], ['Colors', '#colors', 'palette'], ['Typography', 'components/typography.html', 'text_fields'], ['Icons', '#icons', 'emoji_symbols'], ['Buttons', 'components/buttons.html', 'smart_button'], ['Inputs', 'components/forms.html#input', 'input'], ['Selects', 'components/forms.html#select', 'arrow_drop_down_circle'],
+      ['Forms', 'components/forms.html#validation', 'fact_check'], ['Tables', 'components/data.html#table', 'table_rows'], ['Cards', 'components/data.html#cards', 'view_agenda'], ['Modals', 'components/feedback.html#modal', 'open_in_new'], ['Drawers', 'components/feedback.html#drawer', 'view_sidebar'], ['Alerts', 'components/feedback.html#alert', 'report'], ['Toasts', 'components/feedback.html#toast', 'chat_bubble'],
+      ['Navigation', 'components/navigation.html', 'explore'], ['Pagination', 'components/navigation.html#pagination', 'last_page'], ['Accordion', 'components/material.html#accordion', 'expand_circle_down'], ['Tree', 'components/material.html#tree', 'account_tree'], ['Drag & drop', 'components/material.html#drag-drop', 'drag_indicator'], ['Loading', 'components/feedback.html#loading', 'hourglass_top'],
+      ['Empty states', 'components/data.html#empty', 'inbox'], ['Error states', 'components/feedback.html#error', 'error'], ['Kanban', 'components/planning.html#kanban', 'view_kanban'], ['Timeline', 'components/planning.html#timeline', 'view_timeline'], ['Agenda', 'components/planning.html#agenda', 'calendar_month'], ['Maps', 'components/maps.html', 'map'], ['Layouts', 'layouts.html', 'dashboard_customize'], ['Pages', 'pages.html', 'view_quilt']]
+      .map(function (q) { return '<a href="' + q[1] + '"><span class="mi">' + q[2] + '</span>' + q[0] + '</a>'; }).join('');
+    $('sw').innerHTML = UIKIT_THEMES.map(function (t) { return '<button type="button" data-set-theme="' + t.id + '" title="' + t.label + '" aria-label="Thème ' + t.label + '" style="background:' + t.light + '"></button>'; }).join('');
+    var cur = (document.documentElement.className.match(/theme-([\w-]+)/) || [])[1]; if (cur) UIKit.setTheme(cur); UIKit.setMode(document.documentElement.getAttribute('data-mode') || 'system');
+    $('roles').innerHTML = [['Primaire', 'primary', 'on-primary'], ['Conteneur primaire', 'primary-container', 'text-primary'], ['Secondaire', 'secondary', 'on-primary'], ['Tertiaire', 'tertiary', 'on-primary'], ['Carte', 'card-bg', 'text-primary', 1], ['Fond', 'bg', 'text-primary', 1], ['Erreur', 'error', 'on-primary'], ['Succès', 'success', 'on-primary']]
+      .map(function (r) { return '<button type="button" class="role' + (r[3] ? ' bd' : '') + '" style="background:var(--' + r[1] + ');color:var(--' + r[2] + ')" data-v="var(--' + r[1] + ')"><b>' + r[0] + '</b><code>--' + r[1] + '</code></button>'; }).join('');
+    document.querySelectorAll('[data-sw]').forEach(function (b) { b.innerHTML = b.dataset.sw.split(',').map(function (x) { var p = x.split(':'); return '<button type="button" class="swatch" data-v="var(--' + p[0] + ')"><span class="chip" style="background:var(--' + p[0] + ')"></span><b>' + p[1] + '</b><code>--' + p[0] + '</code></button>'; }).join(''); });
+    function mode() { var m = document.documentElement.getAttribute('data-mode'), dark = m === 'dark' || (m === 'system' && matchMedia('(prefers-color-scheme: dark)').matches); $('mode-now').textContent = (dark ? 'sombre' : 'clair') + (m === 'system' ? ' (système)' : ''); return dark; }
+    $('toggle-mode').onclick = function () { UIKit.setMode(mode() ? 'light' : 'dark'); mode(); }; document.addEventListener('click', function (e) { if (e.target.closest('[data-set-mode]')) setTimeout(mode); }); mode();
+    $('spaces').innerHTML = [['--space-1', '4 px'], ['--space-2', '8 px'], ['--space-3', '12 px'], ['--space-4', '16 px'], ['--space-5', '20 px'], ['--space-6', '24 px'], ['--space-8', '32 px'], ['--space-10', '40 px'], ['--space-12', '48 px'], ['--space-16', '64 px']].map(function (s) { return '<button type="button" class="space-row" data-v="var(' + s[0] + ')"><code>' + s[0] + '</code><span class="bar" style="width:var(' + s[0] + ')"></span><i>' + s[1] + '</i></button>'; }).join('');
+    $('radii').innerHTML = [['--radius-xs', '4'], ['--radius-sm', '8'], ['--radius-md', '12'], ['--radius-lg', '16'], ['--radius-xl', '20'], ['--radius-2xl', '24'], ['--radius-full', 'pilule']].map(function (r) { return '<button type="button" class="radius" style="border-radius:var(' + r[0] + ')" data-v="var(' + r[0] + ')"><code>' + r[0] + '</code><i>' + r[1] + '</i></button>'; }).join('');
+    var ICONS = DATA.MATERIAL_ICONS;
+    function icons() { var q = $('iq').value.trim().toLowerCase(), l = ICONS.filter(function (i) { return !q || i.indexOf(q) >= 0; }); $('icount').textContent = l.length + ' icône(s)'; $('igrid').innerHTML = l.map(function (i) { return '<button type="button" class="icon-cell" data-icon="' + i + '" title="' + i + '"><span class="mi">' + i + '</span><span>' + i + '</span></button>'; }).join(''); }
+    $('iq').oninput = icons; icons();
+    $('cats').innerHTML = CATS.map(function (c) { return '<a class="cat-card" href="' + c[1] + '"><span class="ic"><span class="mi">' + c[2] + '</span></span><span><strong>' + c[0] + '</strong><span>' + c[3] + '</span></span></a>'; }).join('');
+    $('mods').innerHTML = R.map(function (g) { return '<a class="module" href="pages.html#' + g.id + '"><span class="mi">' + g.icon + '</span><span>' + g.label + '</span><b>' + g.pages.length + '</b></a>'; }).join('');
+    document.addEventListener('click', function (e) { var v = e.target.closest('[data-v]'); if (v) copy(v.dataset.v); var ic = e.target.closest('[data-icon]'); if (ic) copy('<span class="mi">' + ic.dataset.icon + '</span>', ic.dataset.icon); });
+  })();
   </script>
 </body>
 </html>

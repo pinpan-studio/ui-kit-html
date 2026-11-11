@@ -16,6 +16,9 @@
     try { localStorage.setItem(key, value); } catch (e) { /* stockage indisponible */ }
   }
 
+  /* Thème personnalisé composé dans le Studio de thème (règles .theme-custom mémorisées). */
+  (function () { var css = read('uikit-custom-css', ''); if (!css) return; var st = document.createElement('style'); st.id = 'uikit-custom-theme'; st.textContent = css; document.head.appendChild(st); })();
+
   /* ---------- Thème : mode clair / sombre / système + palette ---------- */
   function setMode(mode) {
     root.setAttribute('data-mode', mode);

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartes</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .mapwrap { position: relative; border-radius: var(--radius-md); overflow: hidden; }
+    .legend { position: absolute; z-index: 500; left: 12px; bottom: 12px; display: flex; flex-wrap: wrap; gap: 10px; padding: 8px 12px; border-radius: 10px; background: var(--card-bg); box-shadow: var(--shadow-2); font-size: 12px; }
+    .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border-radius: 50%; vertical-align: -1px; }
+    .providers { width: 100%; border-collapse: collapse; font-size: 13px; } .providers td, .providers th { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; } .providers th { font-size: 11px; text-transform: uppercase; color: var(--text-muted); }
+    .cl-pin { display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--primary) 85%, transparent); color: #fff; font: 700 12px var(--font-sans); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 25%, transparent); }
+    .draw-bar { position: absolute; z-index: 500; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 2px; padding: 4px; border-radius: 10px; background: var(--card-bg); box-shadow: var(--shadow-2); }
+    .draw-bar button { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 8px; background: none; color: var(--text-secondary); cursor: pointer; } .draw-bar button:hover { background: var(--hover-bg); } .draw-bar button.on { background: var(--primary); color: #fff; }
+    .draw-hint { position: absolute; z-index: 500; top: 10px; left: 50%; transform: translateX(-50%); padding: 6px 12px; border-radius: 16px; background: #1e293b; color: #fff; font-size: 12px; white-space: nowrap; }
+    .geo { margin: 0; height: 360px; overflow: auto; padding: 12px; border-radius: var(--radius-sm); background: #0f172a; color: #e2e8f0; font: 11.5px/1.5 var(--font-mono); }
+    .states-bar { display: flex; gap: 6px; margin-bottom: 10px; } .map-state { position: absolute; inset: 0; z-index: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: color-mix(in srgb, var(--card-bg) 82%, transparent); backdrop-filter: blur(2px); color: var(--text-secondary); text-align: center; }
+    .map-state .mi { font-size: 36px; } .map-state.err .mi { color: var(--error); }
+    .compact .leaflet-control-container { display: none; }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/maps.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Cartes" data-icon="map" data-subtitle="Cartes Leaflet (embarqué dans vendor/leaflet) au style flat : fonds gratuits sans clé, marqueurs, regroupement, trajets, zones, dessin avec sortie GeoJSON, mode sombre automatique.">
+
+      <section class="doc-section" id="basemaps" data-title="Fonds de carte" data-cols="2" data-source="UIMap.BASEMAPS" data-desc="Fonds gratuits sans clé : Esri gris clair / gris foncé, Rues, Topographique, Satellite, OpenStreetMap. Sans fond imposé, la carte suit le mode clair / sombre.">
+        <div class="demo" data-label="Sélecteur de fond" data-nocode><div class="ui-segmented" id="bm-seg" style="margin-bottom:10px;flex-wrap:wrap"></div><div class="mapwrap" id="m-bm"></div></div>
+        <div class="demo" data-label="Fournisseurs disponibles" data-nocode><table class="providers" id="prov"></table></div>
+      </section>
+
+      <section class="doc-section" id="markers" data-title="Marqueurs" data-source="UIMap.create({ markers })" data-desc="Pastilles colorées par ton avec icône, popup au clic. La légende est superposée à la carte.">
+        <div class="demo" data-label="Flotte en temps réel" data-flush><template class="demo-code">UIMap.create(el, { height: '380px', fitBounds: true, markers: [
+  { lat: 5.3237, lng: -4.0193, title: 'CI-4521-AB', lines: ['En mouvement · 54 km/h'], icon: 'local_shipping', tone: 'success' }
+] });</template><div class="mapwrap"><div id="m-mk"></div><div class="legend"><span><i style="background:var(--success)"></i>En mouvement</span><span><i style="background:var(--warning)"></i>À l'arrêt</span><span><i style="background:var(--error)"></i>Alerte</span><span><i style="background:var(--text-muted)"></i>Hors ligne</span></div></div></div>
+      </section>
+
+      <section class="doc-section" id="cluster" data-title="Clustering" data-source="regroupement par grille" data-desc="420 balises regroupées par proximité ; les groupes éclatent au zoom (clic sur un groupe pour zoomer).">
+        <div class="demo" data-label="Parc de balises" data-flush data-nocode><div id="m-cl"></div></div>
+      </section>
+
+      <section class="doc-section" id="routes" data-title="Trajets" data-source="polylines" data-desc="Trajet réalisé avec départ / arrivée, itinéraire prévu en pointillés, évènements (arrêts, excès de vitesse) en marqueurs.">
+        <div class="demo" data-label="Historique CI-4521-AB" data-flush data-nocode><div id="m-rt"></div></div>
+      </section>
+
+      <section class="doc-section" id="zones" data-title="Zones / géofences" data-source="polygons · circles" data-desc="Zones colorées par ton, contour fin et remplissage léger, libellé au survol.">
+        <div class="demo" data-label="Géofences d'exploitation" data-flush data-nocode><div id="m-zn"></div></div>
+      </section>
+
+      <section class="doc-section" id="draw" data-title="Dessin (GeoJSON)" data-toc="Dessin" data-cols="2" data-desc="Outils de dessin sans extension : point, ligne, polygone, cercle ; double-clic pour terminer, suppression d'une forme au clic en mode gomme. Le résultat est émis en GeoJSON.">
+        <div class="demo" data-label="Dessiner une zone" data-flush data-nocode><div class="mapwrap"><div id="m-dr"></div><div class="draw-bar" id="dbar"></div><div class="draw-hint" id="dhint" hidden></div></div></div>
+        <div class="demo" data-label="Sortie GeoJSON" data-nocode><pre class="geo" id="geo"></pre></div>
+      </section>
+
+      <section class="doc-section" id="compact" data-title="Carte compacte" data-cols="3" data-desc="Aperçu statique pour fiches de détail ou cartes de liste : pas de zoom ni de déplacement.">
+        <div class="demo" data-label="Fiche véhicule" data-flush data-nocode><div id="m-c1" class="compact"></div></div>
+        <div class="demo" data-label="Satellite" data-flush data-nocode><div id="m-c2" class="compact"></div></div>
+        <div class="demo" data-label="Zone" data-flush data-nocode><div id="m-c3" class="compact"></div></div>
+      </section>
+
+      <section class="doc-section" id="states" data-title="États" data-desc="Chargement, erreur (avec action Réessayer) et vide, superposés à la carte.">
+        <div class="demo" data-label="États de la carte" data-nocode><div class="ui-segmented states-bar" id="st-seg"><button class="on" data-s="ready">Prête</button><button data-s="loading">Chargement</button><button data-s="error">Erreur</button><button data-s="empty">Vide</button></div><div class="mapwrap"><div id="m-st"></div><div id="st-ov"></div></div></div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/data/map.js"></script>
+  <script src="../js/map.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, D = DATA, M = UIMap, cv = function (t) { return getComputedStyle(document.documentElement).getPropertyValue('--' + (t || 'primary')).trim(); };
+    function mk(m) { return { lat: m.lat, lng: m.lng, title: m.title, lines: m.lines, icon: m.icon, tone: m.tone === 'neutral' ? 'text-muted' : m.tone }; }
+
+    var bmMap, bmCur = 'auto';
+    $('bm-seg').innerHTML = '<button class="on" data-b="auto">Auto</button>' + Object.keys(M.BASEMAPS).map(function (k) { return '<button data-b="' + k + '">' + M.BASEMAPS[k].label + '</button>'; }).join('');
+    M.create($('m-bm'), { height: '320px', zoom: 12 }).then(function (m) { bmMap = m; });
+    $('bm-seg').addEventListener('click', function (e) { var b = e.target.closest('[data-b]'); if (!b || !bmMap) return; this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      var dark = document.documentElement.getAttribute('data-mode') === 'dark' || (document.documentElement.getAttribute('data-mode') === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      bmMap.setBasemap(b.dataset.b === 'auto' ? (dark ? 'dark' : 'light') : b.dataset.b); });
+    $('prov').innerHTML = '<tr><th>Clé</th><th>Fond</th><th>Fournisseur</th></tr>' + Object.keys(M.BASEMAPS).map(function (k) { return '<tr><td><code>' + k + '</code></td><td>' + M.BASEMAPS[k].label + '</td><td class="muted">' + (k === 'osm' ? 'OpenStreetMap' : 'Esri ArcGIS Online') + '</td></tr>'; }).join('');
+
+    M.create($('m-mk'), { height: '380px', fitBounds: true, markers: D.FLOTTE.map(mk) });
+
+    M.create($('m-cl'), { height: '420px', center: [5.35, -4.0], zoom: 10 }).then(function (map) {
+      if (!map) return; var layer = L.layerGroup().addTo(map);
+      function draw() { layer.clearLayers(); var z = map.getZoom(), cell = 80, groups = {};
+        D.POSITIONS_DENSES.forEach(function (p) { var pt = map.project([p.lat, p.lng], z), k = Math.floor(pt.x / cell) + ':' + Math.floor(pt.y / cell); (groups[k] = groups[k] || []).push(p); });
+        Object.keys(groups).forEach(function (k) { var g = groups[k];
+          if (g.length === 1 || z >= 16) g.forEach(function (p) { L.marker([p.lat, p.lng], { icon: L.divIcon({ className: 'um-pin', iconSize: [30, 30], iconAnchor: [15, 30], html: '<span class="um-pin__in" style="--tone:var(--' + p.tone + ')"><span class="mi">' + p.icon + '</span></span>' }) }).bindPopup('<strong>' + p.title + '</strong><br>' + p.lines.join('<br>')).addTo(layer); });
+          else { var lat = g.reduce(function (s, p) { return s + p.lat; }, 0) / g.length, lng = g.reduce(function (s, p) { return s + p.lng; }, 0) / g.length, sz = Math.min(56, 28 + Math.log2(g.length) * 5);
+            L.marker([lat, lng], { icon: L.divIcon({ className: '', iconSize: [sz, sz], html: '<div class="cl-pin" style="width:' + sz + 'px;height:' + sz + 'px">' + g.length + '</div>' }) }).on('click', function () { map.fitBounds(L.latLngBounds(g.map(function (p) { return [p.lat, p.lng]; })), { padding: [30, 30] }); }).addTo(layer); } });
+      }
+      map.on('zoomend', draw); draw();
+    });
+
+    M.create($('m-rt'), { height: '380px', fitBounds: true, markers: D.TRAJET_ETAPES.map(mk).concat(D.TRAJETS[0].endpoints ? [{ lat: D.TRAJETS[0].points[0][0], lng: D.TRAJETS[0].points[0][1], title: 'Départ', icon: 'trip_origin', tone: 'success' }, { lat: D.TRAJETS[0].points.slice(-1)[0][0], lng: D.TRAJETS[0].points.slice(-1)[0][1], title: 'Arrivée', icon: 'flag', tone: 'error' }] : []),
+      polylines: D.TRAJETS.map(function (t) { return { points: t.points, color: cv(t.tone), dash: t.dashed ? '6 8' : null }; }) });
+    M.create($('m-zn'), { height: '380px', fitBounds: true, markers: D.ZONE_MARKERS.map(mk), polygons: D.ZONES.filter(function (z) { return z.polygon; }).map(function (z) { return { points: z.polygon, title: z.label, color: cv(z.tone) }; }), circles: D.ZONES.filter(function (z) { return z.circle; }).map(function (z) { return { center: z.circle.center, radius: z.circle.radius, title: z.label, color: cv(z.tone) }; }) });
+
+    // Dessin
+    M.create($('m-dr'), { height: '360px', zoom: 12 }).then(function (map) {
+      if (!map) return; var shapes = L.featureGroup().addTo(map), mode = null, pts = [], temp = null, circ = null;
+      var TOOLS = [['marker', 'place', 'Point'], ['polyline', 'timeline', 'Ligne'], ['polygon', 'pentagon', 'Polygone'], ['circle', 'radio_button_unchecked', 'Cercle'], ['erase', 'ink_eraser', 'Gomme'], ['clear', 'delete_sweep', 'Tout effacer']];
+      $('dbar').innerHTML = TOOLS.map(function (t) { return '<button type="button" data-t="' + t[0] + '" title="' + t[2] + '" aria-label="' + t[2] + '"><span class="mi">' + t[1] + '</span></button>'; }).join('');
+      function hint(t) { $('dhint').hidden = !t; $('dhint').textContent = t || ''; }
+      function out() { $('geo').textContent = JSON.stringify(shapes.toGeoJSON(), null, 2); }
+      function setMode(m) { mode = m === mode ? null : m; pts = []; if (temp) { map.removeLayer(temp); temp = null; } $('dbar').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.t === mode); });
+        map.doubleClickZoom[mode ? 'disable' : 'enable'](); hint({ marker: 'Cliquez pour placer un point', polyline: 'Cliquez pour ajouter des sommets · double-clic pour terminer', polygon: 'Cliquez pour ajouter des sommets · double-clic pour fermer', circle: 'Cliquez le centre, puis le rayon', erase: 'Cliquez une forme pour la supprimer' }[mode]); }
+      function bind(l) { l.on('click', function (e) { if (mode === 'erase') { L.DomEvent.stop(e); shapes.removeLayer(l); out(); } }); shapes.addLayer(l); out(); }
+      $('dbar').addEventListener('click', function (e) { var b = e.target.closest('[data-t]'); if (!b) return; if (b.dataset.t === 'clear') { shapes.clearLayers(); out(); setMode(null); return; } setMode(b.dataset.t); });
+      var col = cv('primary');
+      map.on('click', function (e) {
+        if (mode === 'marker') bind(L.marker(e.latlng));
+        else if (mode === 'polyline' || mode === 'polygon') { pts.push(e.latlng); if (temp) map.removeLayer(temp); temp = (mode === 'polygon' && pts.length > 2 ? L.polygon(pts, { color: col, dashArray: '4 4' }) : L.polyline(pts, { color: col, dashArray: '4 4' })).addTo(map); }
+        else if (mode === 'circle') { if (!circ) { circ = e.latlng; hint('Cliquez pour fixer le rayon'); } else { bind(L.circle(circ, { radius: circ.distanceTo(e.latlng), color: col, fillOpacity: .15 })); circ = null; hint('Cliquez le centre, puis le rayon'); } }
+      });
+      map.on('dblclick', function () { if ((mode === 'polyline' && pts.length > 1) || (mode === 'polygon' && pts.length > 2)) { if (temp) map.removeLayer(temp); temp = null; bind(mode === 'polygon' ? L.polygon(pts, { color: col, fillOpacity: .15 }) : L.polyline(pts, { color: col, weight: 4 })); pts = []; } });
+      bind(L.polygon([[5.33, -4.03], [5.34, -4.0], [5.315, -3.99], [5.31, -4.02]], { color: col, fillOpacity: .15 }));
+    });
+
+    var MK = D.FLOTTE[0];
+    M.create($('m-c1'), { height: '200px', center: [MK.lat, MK.lng], zoom: 15, markers: [mk(MK)] }).then(function (m) { if (m) freeze(m); });
+    M.create($('m-c2'), { height: '200px', center: [5.3, -4.0], zoom: 14, basemap: 'satellite' }).then(function (m) { if (m) freeze(m); });
+    var Z = D.ZONES.find(function (z) { return z.circle; });
+    M.create($('m-c3'), { height: '200px', fitBounds: true, circles: [{ center: Z.circle.center, radius: Z.circle.radius, color: cv(Z.tone) }] }).then(function (m) { if (m) freeze(m); });
+    function freeze(m) { ['dragging', 'touchZoom', 'doubleClickZoom', 'scrollWheelZoom', 'boxZoom', 'keyboard'].forEach(function (h) { m[h] && m[h].disable(); }); }
+
+    M.create($('m-st'), { height: '300px', zoom: 11 });
+    $('st-seg').addEventListener('click', function (e) { var b = e.target.closest('[data-s]'); if (!b) return; this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      $('st-ov').innerHTML = { ready: '', loading: '<div class="map-state"><span class="ui-spinner" style="width:32px;height:32px;color:var(--primary)"></span>Chargement de la carte…</div>', error: '<div class="map-state err"><span class="mi">wrong_location</span><strong>Impossible de charger les positions</strong><button class="ui-btn ui-btn--outlined ui-btn--sm" id="retry"><span class="mi">refresh</span>Réessayer</button></div>', empty: '<div class="map-state"><span class="mi">location_off</span><strong>Aucun véhicule à afficher</strong><span class="small">Modifiez les filtres pour élargir la recherche.</span></div>' }[b.dataset.s];
+      var r = $('retry'); if (r) r.onclick = function () { $('st-seg').querySelector('[data-s="ready"]').click(); }; });
+  })();
+  </script>
+</body>
+</html>

@@ -20,8 +20,13 @@
   (function () { var css = read('uikit-custom-css', ''); if (!css) return; var st = document.createElement('style'); st.id = 'uikit-custom-theme'; st.textContent = css; document.head.appendChild(st); })();
 
   /* ---------- Thème : mode clair / sombre / système + palette ---------- */
+  // data-scheme : schéma effectif (light|dark), « system » résolu via prefers-color-scheme.
+  var mqDark = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
+  function syncScheme() { var m = root.getAttribute('data-mode') || 'system'; root.setAttribute('data-scheme', m === 'dark' || (m === 'system' && mqDark && mqDark.matches) ? 'dark' : 'light'); }
+  if (mqDark) (mqDark.addEventListener ? mqDark.addEventListener('change', syncScheme) : mqDark.addListener(syncScheme));
+  new MutationObserver(syncScheme).observe(root, { attributes: true, attributeFilter: ['data-mode'] });
   function setMode(mode) {
-    root.setAttribute('data-mode', mode);
+    root.setAttribute('data-mode', mode); syncScheme();
     write(STORE_MODE, mode);
     document.querySelectorAll('[data-set-mode]').forEach(function (el) {
       el.setAttribute('aria-pressed', String(el.getAttribute('data-set-mode') === mode));

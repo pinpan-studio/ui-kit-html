@@ -23,9 +23,9 @@
   }
 
   document.querySelectorAll('.doc-page').forEach(function (page) {
-    var d = page.dataset, secs = page.querySelectorAll(':scope > .doc-section');
-    var hero = '<header class="doc-hero"><div class="hero-icon"><span class="mi">' + (d.icon || 'widgets') + '</span></div><div class="hero-text"><span class="eyebrow">' + esc(d.eyebrow || 'Composants') + '</span><h1>' + esc(d.title) + '</h1>' + (d.subtitle ? '<p>' + esc(d.subtitle) + '</p>' : '') + '</div></header>';
-    var toc = secs.length > 1 ? '<nav class="doc-toc" aria-label="Sommaire">' + Array.from(secs).map(function (s) { return '<a class="toc-chip" href="#' + s.id + '">' + esc(s.dataset.toc || s.dataset.title) + '</a>'; }).join('') + '</nav>' : '';
+    var d = page.dataset, secs = page.querySelectorAll(':scope > .doc-section, :scope > [data-toc-label]');
+    var hero = '<header class="doc-hero"><div class="hero-icon"><mat-icon>' + (d.icon || 'widgets') + '</mat-icon></div><div class="hero-text"><span class="eyebrow">' + esc(d.eyebrow || 'Composants') + '</span><h1>' + esc(d.title) + '</h1>' + (d.subtitle ? '<p>' + esc(d.subtitle) + '</p>' : '') + '</div></header>';
+    var toc = secs.length > 1 ? '<nav class="doc-toc" aria-label="Sommaire">' + Array.from(secs).map(function (s) { return '<a class="toc-chip" href="#' + s.id + '">' + esc(s.dataset.toc || s.dataset.tocLabel || s.dataset.title) + '</a>'; }).join('') + '</nav>' : '';
     page.insertAdjacentHTML('afterbegin', hero + toc);
   });
 
@@ -47,11 +47,11 @@
     while (demo.firstChild) stage.appendChild(demo.firstChild);
     if ('dense' in d) demo.classList.add('dense');
     demo.innerHTML = '<div class="demo-head"><span class="demo-label">' + esc(d.label) + '</span>' + (d.hint ? '<span class="demo-hint">' + esc(d.hint) + '</span>' : '') + '<span class="spacer"></span>' +
-      (code ? '<button type="button" class="ui-btn ui-btn--icon demo-btn" title="Voir le code" aria-label="Voir le code" aria-expanded="false"><span class="mi">code</span></button>' : '') + '</div>';
+      (code ? '<button type="button" class="ui-btn ui-btn--icon demo-btn" title="Voir le code" aria-label="Voir le code" aria-expanded="false"><mat-icon>code</mat-icon></button>' : '') + '</div>';
     demo.appendChild(stage);
     if (!code) return;
     var box = document.createElement('div'); box.className = 'demo-code'; box.hidden = true;
-    box.innerHTML = '<button type="button" class="ui-btn ui-btn--icon copy-btn" title="Copier" aria-label="Copier"><span class="mi">content_copy</span></button><pre><code></code></pre>';
+    box.innerHTML = '<button type="button" class="ui-btn ui-btn--icon copy-btn" title="Copier" aria-label="Copier"><mat-icon>content_copy</mat-icon></button><pre><code></code></pre>';
     box.querySelector('code').textContent = code;
     demo.appendChild(box);
     var btn = demo.querySelector('.demo-btn');

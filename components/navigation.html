@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navigation</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .toolbar { display: flex; align-items: center; gap: 4px; height: 68px; padding: 0 12px; background: var(--card-bg); }
+    .toolbar .title { margin-left: 6px; font: 600 18px var(--font-sans); } .toolbar .spacer { flex: 1; }
+    .avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; } @media (max-width: 767px) { .grid-2 { grid-template-columns: 1fr; } }
+    /* Sidecar */
+    .sidecar { display: flex; height: 460px; width: max-content; max-width: 100%; border-radius: var(--radius-lg); background: var(--card-bg); box-shadow: var(--shadow-1); overflow: hidden; }
+    .sc-rail { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 68px; padding: 12px 0; border-right: 1px solid var(--border); }
+    .sc-rail img { width: 36px; height: 36px; object-fit: contain; margin-bottom: 8px; } .sc-rail .items { flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+    .sc-rail button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 12px; background: none; color: var(--text-secondary); cursor: pointer; } .sc-rail button:hover { background: var(--hover-bg); }
+    .sc-rail button.active { background: var(--primary-soft); color: var(--primary); }
+    .sc-panel { width: 0; overflow: hidden; transition: width .25s var(--ease); } .sidecar.open .sc-panel { width: 260px; }
+    .sc-panel .in { width: 260px; height: 100%; display: flex; flex-direction: column; } .sc-head { display: flex; align-items: center; gap: 10px; padding: 14px 10px 10px 14px; }
+    .hib { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--primary-soft); color: var(--primary); } .hib .mi { font-size: 19px; }
+    .sc-head strong { flex: 1; font-size: 15px; } .sc-body { flex: 1; overflow-y: auto; padding: 0 8px 12px; }
+    .sc-sec { margin-top: 10px; } .sc-sec h5 { display: flex; align-items: center; gap: 6px; margin: 0 6px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); } .sc-sec h5 .mi { font-size: 15px; }
+    .sc-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: 0; border-radius: 10px; background: none; text-align: left; font: 14px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .sc-item:hover { background: var(--hover-bg); color: var(--text-primary); } .sc-item.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; } .sc-item .mi { font-size: 19px; }
+    .rdrawer { width: 340px; max-width: 100%; border-radius: var(--radius-lg); background: var(--card-bg); box-shadow: var(--shadow-1); overflow: hidden; }
+    .rd-head { display: flex; align-items: center; gap: 10px; padding: 14px; border-bottom: 1px solid var(--border); } .rd-head .t { flex: 1; display: flex; flex-direction: column; } .rd-head small { font-size: 12px; color: var(--text-muted); }
+    .rd-items { padding: 8px; } .rd-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 10px; cursor: pointer; } .rd-item:hover, .rd-item.active { background: var(--hover-bg); }
+    .rd-item .ic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; background: var(--hover-bg); } .rd-item.danger .ic { background: color-mix(in srgb, var(--error) 12%, transparent); color: var(--error-text); }
+    .rd-item .c { flex: 1; display: flex; flex-direction: column; } .rd-item .c b { font-size: 14px; } .rd-item .c small { font-size: 12px; color: var(--text-muted); }
+    /* En-tête de page */
+    .page-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .title-row { display: flex; align-items: flex-start; gap: 8px; } .title-row h1 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 22px; } .title-row p { margin: 4px 0 0; font-size: 13px; color: var(--text-secondary); }
+    .page-actions { display: flex; flex-wrap: wrap; gap: 8px; } .create-btn { height: 42px; border-radius: 10px; }
+    .overline { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+    /* Onglets */
+    .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; } .tabs.center { justify-content: center; } .tabs.stretch button, .tabs.stretch a { flex: 1; justify-content: center; }
+    .tabs button, .tabs a { display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px; border: 0; background: none; font: 500 14px var(--font-sans); color: var(--text-secondary); cursor: pointer; white-space: nowrap; text-decoration: none; box-shadow: inset 0 -2px 0 transparent; }
+    .tabs button:hover:not(:disabled), .tabs a:hover { background: var(--hover-bg); } .tabs .on { color: var(--primary); box-shadow: inset 0 -2px 0 var(--primary); font-weight: 600; } .tabs button:disabled { opacity: .4; cursor: default; }
+    .tabs .mi { font-size: 18px; } .tab-count { padding: 0 7px; border-radius: 10px; background: var(--primary-soft); color: var(--primary); font-size: 11px; font-weight: 700; }
+    .tab-body { margin: 14px 2px 0; font-size: 14px; color: var(--text-secondary); }
+    /* Fil d'Ariane */
+    .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 14px; } .crumbs a { display: inline-flex; color: var(--text-secondary); text-decoration: none; border-radius: 6px; padding: 2px 4px; } .crumbs a:hover { color: var(--primary); background: var(--hover-bg); }
+    .crumbs .sep { font-size: 18px; color: var(--text-muted); } .crumbs .current { font-weight: 600; } .crumbs .mi { font-size: 18px; }
+    /* Pagination */
+    .pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--text-secondary); }
+    .pager .size { display: flex; align-items: center; gap: 8px; } .pager select { height: 34px; padding: 0 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text-primary); font: 13px var(--font-sans); }
+    .pager .pages { display: flex; align-items: center; gap: 2px; } .pager .pages button { min-width: 34px; height: 34px; padding: 0 6px; border: 0; border-radius: 8px; background: none; font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+    .pager .pages button:hover:not(:disabled) { background: var(--hover-bg); } .pager .pages button.on { background: var(--primary); color: #fff; } .pager .pages button:disabled { opacity: .35; cursor: default; } .pager .ell { padding: 0 4px; color: var(--text-muted); } .pager .pages .mi { font-size: 18px; }
+    /* Stepper */
+    .stepper-h { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; } .stepper-h .st { display: flex; align-items: center; gap: 8px; border: 0; background: none; font: 500 14px var(--font-sans); color: var(--text-muted); cursor: pointer; padding: 0; }
+    .stepper-h .st:disabled { cursor: default; } .stepper-h .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--hover-bg); font-size: 12px; font-weight: 700; } .stepper-h .n .mi { font-size: 16px; }
+    .stepper-h .st.cur { color: var(--text-primary); font-weight: 600; } .stepper-h .st.cur .n, .stepper-h .st.done .n { background: var(--primary); color: #fff; } .stepper-h .line { flex: 1; height: 1px; background: var(--border); min-width: 16px; }
+    @media (max-width: 600px) { .stepper-h .st span:last-child { display: none; } }
+    .step-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+    .vstep { position: relative; padding: 0 0 18px 40px; } .vstep::before { content: ''; position: absolute; left: 12px; top: 30px; bottom: 4px; width: 1px; background: var(--border); } .vstep:last-child::before { display: none; }
+    .vstep .n { position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--hover-bg); font-size: 12px; font-weight: 700; color: var(--text-secondary); } .vstep .n .mi { font-size: 16px; }
+    .vstep.done .n, .vstep.cur .n { background: var(--primary); color: #fff; } .vstep h5 { margin: 3px 0 0; font-size: 14px; cursor: pointer; } .vstep .body { margin-top: 8px; } .vstep:not(.cur) .body { display: none; }
+    .steps-ind { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; } .steps-ind .step { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); }
+    .steps-ind .dot { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); font-size: 11px; font-weight: 700; } .steps-ind .dot .mi { font-size: 14px; }
+    .steps-ind .done .dot { background: var(--success); border-color: var(--success); color: #fff; } .steps-ind .current .dot { border-color: var(--primary); color: var(--primary); } .steps-ind .current { color: var(--text-primary); font-weight: 600; }
+    .steps-ind .bar { flex: 1; min-width: 16px; height: 2px; background: var(--border); } .steps-ind .bar.done { background: var(--success); }
+    /* Menus */
+    .ui-menu__panel.left { left: 0; right: auto; } .ui-menu__item { display: flex !important; align-items: center; gap: 10px; } .ui-menu__item .mi { font-size: 19px; color: var(--text-secondary); } .ui-menu__item .count { margin-left: auto; font-size: 12px; color: var(--text-muted); }
+    .ui-menu__item.active { color: var(--primary); font-weight: 600; } .ui-menu__item .chev { margin-left: auto; } .ui-menu__sep { margin: 4px 0; border: 0; border-top: 1px solid var(--border); }
+    .sub { position: relative; } .sub > .ui-menu__panel { display: none; top: -4px; left: 100%; right: auto; } .sub:hover > .ui-menu__panel, .sub:focus-within > .ui-menu__panel { display: block; }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/navigation.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Navigation" data-icon="explore" data-subtitle="Éléments de navigation du shell (sidecar rail + sous-navigation, barre d'outils, panneau droit), en-têtes de page, onglets, fil d'Ariane, pagination, stepper et menus.">
+
+      <section class="doc-section" id="header" data-title="Header (barre d'outils du shell)" data-toc="Header" data-source=".toolbar" data-desc="Barre supérieure de 68px : bascule du menu, titre de page, actions globales (thème, tâches du jour, notifications, paramètres, compte).">
+        <div class="demo" data-label="Desktop" data-flush>
+          <div class="toolbar">
+            <button class="ui-btn ui-btn--icon" aria-label="Menu"><span class="mi">menu_open</span></button><span class="title">Clients</span><span class="spacer"></span>
+            <button class="ui-btn ui-btn--icon" title="Changer de thème" aria-label="Changer de thème"><span class="mi">dark_mode</span></button>
+            <button class="ui-btn ui-btn--icon ui-badge-dot" title="Mes tâches du jour" aria-label="Mes tâches du jour"><span class="mi">checklist</span><b class="primary">7</b></button>
+            <button class="ui-btn ui-btn--icon ui-badge-dot" title="Notifications" aria-label="Notifications"><span class="mi">notifications</span><b>3</b></button>
+            <button class="ui-btn ui-btn--icon" title="Paramètres" aria-label="Paramètres"><span class="mi">settings</span></button><span class="avatar">JK</span>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="demo" data-label="Déconnecté" data-flush>
+            <div class="toolbar"><button class="ui-btn ui-btn--icon" aria-label="Menu"><span class="mi">menu</span></button><span class="title">Référentiel unique</span><span class="spacer"></span><button class="ui-btn ui-btn--icon" aria-label="Thème"><span class="mi">dark_mode</span></button><button class="ui-btn ui-btn--raised"><span class="mi">login</span>Connexion</button></div>
+          </div>
+          <div class="demo" data-label="Mobile (titre masqué)" data-flush>
+            <div class="toolbar"><button class="ui-btn ui-btn--icon" aria-label="Menu"><span class="mi">menu</span></button><span class="spacer"></span><button class="ui-btn ui-btn--icon ui-badge-dot" aria-label="Notifications"><span class="mi">notifications</span><b>3</b></button><span class="avatar">JK</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="sidebar" data-title="Sidebar" data-source="sidecar (rail + sous-navigation) · panneau droit"
+        data-desc="Le sidecar réunit le rail d'icônes et la sous-navigation : replié par défaut, un clic sur une icône l'active et déploie une seconde colonne avec les sous-menus du module ; un second clic la referme.">
+        <div class="demo" data-label="Sidecar (rail + sous-navigation)" data-hint="cliquez une icône" data-muted data-nocode>
+          <nav class="sidecar" id="sidecar" aria-label="Modules"><div class="sc-rail"><img src="../assets/logo.png" alt=""><div class="items" id="sc-rail"></div><span class="avatar">JK</span></div><div class="sc-panel"><div class="in" id="sc-panel"></div></div></nav>
+        </div>
+        <div class="demo" data-label="Panneau droit (compte)" data-muted>
+          <div class="rdrawer">
+            <div class="rd-head"><span class="hib"><span class="mi">manage_accounts</span></span><div class="t"><strong>Paramètres du compte</strong><small>Profil &amp; sécurité</small></div><button class="ui-btn ui-btn--icon" aria-label="Fermer"><span class="mi">close</span></button></div>
+            <div class="rd-items">
+              <div class="rd-item active"><span class="ic"><span class="mi">badge</span></span><span class="c"><b>Paramètres personnels</b><small>Modifiez vos données personnelles</small></span><span class="mi">chevron_right</span></div>
+              <div class="rd-item"><span class="ic"><span class="mi">lock_reset</span></span><span class="c"><b>Mot de passe</b><small>Changez votre mot de passe</small></span><span class="mi">chevron_right</span></div>
+              <div class="rd-item danger"><span class="ic"><span class="mi">logout</span></span><span class="c"><b>Déconnexion</b><small>Fermer la session en cours</small></span><span class="mi">chevron_right</span></div>
+            </div>
+          </div>
+          <p class="muted small">Version réelle : ouvrez <a href="../app/main.html">l'application</a> et cliquez sur l'avatar.</p>
+        </div>
+      </section>
+
+      <section class="doc-section" id="navbar" data-title="Navbar / en-tête de page" data-toc="En-tête de page" data-source=".page-header · .title-row · .page-actions" data-desc="Chaque page commence par cet en-tête : bouton de bascule du menu du module, titre 22px + sous-titre, actions à droite (retour à la ligne automatique en mobile).">
+        <div class="demo" data-label="En-tête de liste">
+          <div class="page-header">
+            <div class="title-row"><button class="ui-btn ui-btn--icon" title="Afficher/masquer le menu" aria-label="Menu"><span class="mi">menu</span></button><div><h1>Registre des produits</h1><p>Catalogue des offres : tarifs d'installation, d'abonnement et de désinstallation — 24 produit(s)</p></div></div>
+            <div class="page-actions"><button class="ui-btn ui-btn--icon" title="Rafraîchir" aria-label="Rafraîchir"><span class="mi">refresh</span></button><button class="ui-btn ui-btn--raised create-btn"><span class="mi">add</span>Nouveau produit</button></div>
+          </div>
+        </div>
+        <div class="demo" data-label="En-tête de fiche (retour + statut)">
+          <div class="page-header">
+            <div class="title-row"><button class="ui-btn ui-btn--icon" aria-label="Retour"><span class="mi">arrow_back</span></button><div><div class="overline">Clients / Fiche client</div><h1>Bolloré Logistics CI <span class="ui-badge ui-badge--success">Actif</span></h1><p>CLI-1043 · Abidjan, Plateau · client depuis mars 2024</p></div></div>
+            <div class="page-actions"><button class="ui-btn ui-btn--outlined ui-btn--neutral"><span class="mi">edit</span>Modifier</button><button class="ui-btn"><span class="mi">add</span>Nouveau contrat</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="tabs" data-title="Tabs" data-cols="2" data-source=".tabs · .ui-toggle-group">
+        <div class="demo" data-label="Onglets avec icônes" data-hint="clavier ← →">
+          <div class="tabs" role="tablist" data-tabs>
+            <button role="tab" class="on" aria-selected="true" data-p="t1"><span class="mi">info</span>Informations</button>
+            <button role="tab" aria-selected="false" data-p="t2"><span class="mi">directions_car</span>Véhicules <span class="tab-count">42</span></button>
+            <button role="tab" aria-selected="false" data-p="t3"><span class="mi">receipt_long</span>Factures</button>
+            <button role="tab" disabled>Archives</button>
+          </div>
+          <p class="tab-body" id="t1">Raison sociale, contacts, adresse de facturation et gestionnaire attitré.</p>
+          <p class="tab-body" id="t2" hidden>Liste des véhicules équipés et état des balises.</p>
+          <p class="tab-body" id="t3" hidden>Historique de facturation et encaissements.</p>
+        </div>
+        <div class="demo" data-label="Onglets pilule (segmentés)">
+          <div class="ui-toggle-group" role="tablist" id="pills"><button class="on" data-v="Informations">Informations</button><button data-v="Contrats">Contrats</button><button data-v="Factures">Factures</button><button data-v="Historique">Historique</button></div>
+          <p class="tab-body" id="pill-out">Contenu de l'onglet « Informations ».</p>
+        </div>
+        <div class="demo" data-label="Onglets étirés">
+          <div class="tabs stretch" role="tablist" data-tabs><button role="tab" class="on">Aujourd'hui</button><button role="tab">En retard</button><button role="tab">À valider</button></div>
+        </div>
+        <div class="demo" data-label="Liens de navigation">
+          <nav class="tabs" aria-label="Sections du projet" data-tabs><a href="#tabs" class="on" aria-current="page">Vue d'ensemble</a><a href="#tabs">Backlog</a><a href="#tabs">Analytics</a></nav>
+        </div>
+      </section>
+
+      <section class="doc-section" id="breadcrumb" data-title="Breadcrumb" data-cols="2" data-source=".overline · nav.crumbs">
+        <div class="demo" data-label="Surtitre majuscule"><div class="overline">SC REGISTRY / CONTRATS</div><h1 style="margin:4px 0 0;font-size:22px">Contrat CTR-2026-0042</h1></div>
+        <div class="demo" data-label="Fil d'Ariane cliquable">
+          <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#breadcrumb" aria-label="Accueil"><span class="mi">home</span></a><span class="mi sep">chevron_right</span><a href="#breadcrumb">Clients</a><span class="mi sep">chevron_right</span><a href="#breadcrumb">Bolloré Logistics CI</a><span class="mi sep">chevron_right</span><span class="current" aria-current="page">Contrat CTR-2026-0042</span></nav>
+        </div>
+      </section>
+
+      <section class="doc-section" id="pagination" data-title="Pagination" data-source="paginator(el, o)" data-desc="Taille de page, plage, première / précédente / numéros avec ellipses / suivante / dernière.">
+        <div class="demo" data-label="Plusieurs pages" data-hint="1 284 éléments"><template class="demo-code">paginator(el, { total: 1284, page: 3, size: 25, sizes: [10, 25, 50, 100], onChange: function (page, size) { load(page, size); } });</template><div id="pg1"></div></div>
+        <div class="grid-2">
+          <div class="demo" data-label="Peu de pages" data-nocode><div id="pg2"></div></div>
+          <div class="demo" data-label="Vide" data-nocode><div id="pg3"></div></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="stepper" data-title="Stepper" data-source="assistant à étapes">
+        <div class="demo" data-label="Horizontal (linéaire, validation)" data-nocode>
+          <div class="stepper-h" id="sh"></div>
+          <div data-step="0"><div class="ui-field"><label class="ui-label" for="s-client">Client *</label><div class="field-box"><span class="mi">business</span><input id="s-client" value="Bolloré Logistics CI"></div></div><div class="step-actions"><button class="ui-btn" data-next>Suivant</button></div></div>
+          <div data-step="1" hidden><div class="ui-field" id="s-per-f"><label class="ui-label" for="s-per">Période *</label><div class="field-box"><span class="mi">event</span><input id="s-per" placeholder="Ex : Octobre 2026"></div><span class="field-error" hidden>La période est requise</span></div><div class="step-actions"><button class="ui-btn ui-btn--text" data-prev>Retour</button><button class="ui-btn" data-next>Suivant</button></div></div>
+          <div data-step="2" hidden><p id="s-recap"></p><div class="step-actions"><button class="ui-btn ui-btn--text" data-prev>Retour</button><button class="ui-btn ui-btn--text" data-reset>Recommencer</button><button class="ui-btn" data-done>Générer</button></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="demo" data-label="Vertical" data-nocode>
+            <div id="vs">
+              <div class="vstep done"><span class="n"><span class="mi">check</span></span><h5>Informations générales</h5><div class="body"><p class="tab-body">Nom, type, description.</p><button class="ui-btn ui-btn--text ui-btn--sm" data-vnext>Suivant</button></div></div>
+              <div class="vstep cur"><span class="n">2</span><h5>Permissions</h5><div class="body"><p class="tab-body">Arbre des droits par module.</p><button class="ui-btn ui-btn--text ui-btn--sm" data-vnext>Suivant</button></div></div>
+              <div class="vstep"><span class="n">3</span><h5>Membres</h5><div class="body"><p class="tab-body">Utilisateurs rattachés.</p></div></div>
+            </div>
+          </div>
+          <div class="demo" data-label="Indicateur d'étapes (assistant compact)">
+            <div class="steps-ind"><div class="step done"><span class="dot"><span class="mi">check</span></span>Sélection</div><span class="bar done"></span><div class="step done"><span class="dot"><span class="mi">check</span></span>Paramètres</div><span class="bar done"></span><div class="step current"><span class="dot">3</span>Aperçu</div><span class="bar"></span><div class="step"><span class="dot">4</span>Génération</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="menu" data-title="Menu" data-cols="3" data-source="details.ui-menu">
+        <div class="demo" data-label="Actions de ligne">
+          <details class="ui-menu"><summary class="ui-btn ui-btn--icon" aria-label="Actions"><span class="mi">more_vert</span></summary>
+            <div class="ui-menu__panel left"><button class="ui-menu__item"><span class="mi">visibility</span>Voir la fiche</button><button class="ui-menu__item"><span class="mi">edit</span>Modifier</button><hr class="ui-menu__sep"><button class="ui-menu__item danger"><span class="mi">delete</span>Supprimer</button></div></details>
+        </div>
+        <div class="demo" data-label="Sous-menu">
+          <details class="ui-menu"><summary class="ui-btn ui-btn--outlined ui-btn--neutral"><span class="mi">swap_horiz</span>Changer le statut</summary>
+            <div class="ui-menu__panel left">
+              <div class="sub"><button class="ui-menu__item"><span class="mi">flag</span>Statut<span class="mi chev">chevron_right</span></button><div class="ui-menu__panel"><button class="ui-menu__item">En cours</button><button class="ui-menu__item">Résolue</button><button class="ui-menu__item">Clôturée</button></div></div>
+              <div class="sub"><button class="ui-menu__item"><span class="mi">person</span>Affecter à<span class="mi chev">chevron_right</span></button><div class="ui-menu__panel"><button class="ui-menu__item">Koffi N’Guessan</button><button class="ui-menu__item">Aminata Diallo</button></div></div>
+            </div></details>
+        </div>
+        <div class="demo" data-label="Menu avec compteurs">
+          <details class="ui-menu"><summary class="ui-btn ui-btn--outlined ui-btn--neutral"><span class="mi">filter_list</span>Statut</summary>
+            <div class="ui-menu__panel left"><button class="ui-menu__item active">Tous<span class="count">48</span></button><button class="ui-menu__item">Actifs<span class="count">31</span></button><button class="ui-menu__item">Suspendus<span class="count">5</span></button></div></details>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    function L(_id, libelle, icon) { return { _id: _id, libelle: libelle, icon: icon, children: [] }; }
+    function G(_id, libelle, icon, ch) { return { _id: _id, libelle: libelle, icon: icon, children: ch }; }
+    var MENU = [L('dashboard', 'Tableau de bord', 'dashboard'), L('client', 'Clients', 'people'), L('produit', 'Produits', 'inventory_2'), L('equipement', 'Équipement', 'settings_input_antenna'),
+      G('sc', 'Service Client', 'support_agent', [L('a', 'Tableau de bord', 'analytics'), L('b', 'Requêtes clients', 'contact_support'), L('c', 'Programmations', 'event_available'), L('d', 'Gestionnaires clients', 'assignment_ind'), L('e', 'Équipe', 'groups')]),
+      G('int', 'Intervention', 'build', [L('f', 'Tableau de bord', 'analytics'), L('g', 'Missions', 'assignment'), L('h', 'Interventions programmées', 'event_note'), L('i', 'Équipe technique', 'engineering')]),
+      L('sync', 'Synchronisations', 'cloud_sync'), L('rep', 'Répertoire', 'menu_book'),
+      G('fin', 'Finance', 'account_balance', [L('j', 'Factures', 'receipt'), L('k', 'Exercices comptables', 'event_note'), L('l', 'Rôles de facturation', 'workspaces'), L('m', 'Paiements', 'payments'), L('n', 'Abonnements', 'subscriptions')]),
+      G('admin', 'Administration', 'admin_panel_settings', [L('o', 'Utilisateurs', 'people'), L('p', 'Groupes', 'group')])];
+    var SECTIONS = { produit: [{ title: 'Tableau de bord', icon: 'dashboard', items: [L('pd', 'Vue générale & tarifs', 'space_dashboard')] }, { title: 'Catalogue', icon: 'category', items: [L('pp', 'Tous les produits', 'inventory_2'), L('pf', 'Forfaits', 'sell')] }, { title: 'Paramètres', icon: 'settings', items: [L('pt', 'Tarification', 'tune')] }] };
+    var open = null, item = null;
+    function secs(m) { return SECTIONS[m._id] || [{ title: m.libelle, icon: m.icon, items: m.children.length ? m.children : [m] }]; }
+    function sc() {
+      $('sc-rail').innerHTML = MENU.map(function (m) { return '<button type="button" class="' + (open === m._id ? 'active' : '') + '" data-m="' + m._id + '" title="' + m.libelle + '" aria-label="' + m.libelle + '" aria-expanded="' + (open === m._id) + '"><span class="mi">' + m.icon + '</span></button>'; }).join('');
+      $('sidecar').classList.toggle('open', !!open);
+      var m = MENU.find(function (x) { return x._id === open; });
+      $('sc-panel').innerHTML = m ? '<div class="sc-head"><span class="hib"><span class="mi">' + m.icon + '</span></span><strong>' + m.libelle + '</strong><button class="ui-btn ui-btn--icon" data-close title="Masquer le menu" aria-label="Masquer le menu"><span class="mi">chevron_left</span></button></div><div class="sc-body">' +
+        secs(m).map(function (s) { return '<div class="sc-sec"><h5><span class="mi">' + s.icon + '</span>' + s.title + '</h5>' + s.items.map(function (i) { return '<button type="button" class="sc-item' + (item === i._id ? ' active' : '') + '" data-i="' + i._id + '"><span class="mi">' + i.icon + '</span>' + i.libelle + '</button>'; }).join('') + '</div>'; }).join('') + '</div>' : '';
+    }
+    $('sidecar').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-m]'), i = e.target.closest('[data-i]');
+      if (b) { if (open === b.dataset.m) open = null; else { open = b.dataset.m; item = secs(MENU.find(function (x) { return x._id === open; }))[0].items[0]._id; } sc(); }
+      else if (e.target.closest('[data-close]')) { open = null; sc(); }
+      else if (i) { item = i.dataset.i; sc(); }
+    });
+    sc();
+
+    document.querySelectorAll('[data-tabs]').forEach(function (bar) {
+      var tabs = Array.from(bar.querySelectorAll('button:not(:disabled), a'));
+      function sel(t) { tabs.forEach(function (x) { var on = x === t; x.classList.toggle('on', on); x.setAttribute(x.tagName === 'A' ? 'aria-current' : 'aria-selected', on ? (x.tagName === 'A' ? 'page' : 'true') : 'false'); if (x.dataset.p) $(x.dataset.p).hidden = !on; }); t.focus(); }
+      bar.addEventListener('click', function (e) { var t = e.target.closest('button, a'); if (t && !t.disabled) { if (t.tagName === 'A') e.preventDefault(); sel(t); } });
+      bar.addEventListener('keydown', function (e) { var k = tabs.indexOf(document.activeElement); if (k < 0) return; if (e.key === 'ArrowRight') sel(tabs[(k + 1) % tabs.length]); if (e.key === 'ArrowLeft') sel(tabs[(k - 1 + tabs.length) % tabs.length]); });
+    });
+    $('pills').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); $('pill-out').textContent = 'Contenu de l’onglet « ' + b.dataset.v + ' ».'; });
+
+    function paginator(el, o) {
+      var page = o.page || 1, size = o.size || 20;
+      function draw() {
+        var pages = Math.max(1, Math.ceil(o.total / size)), a = o.total ? (page - 1) * size + 1 : 0, b = Math.min(o.total, page * size), list = [];
+        for (var p = 1; p <= pages; p++) if (p === 1 || p === pages || Math.abs(p - page) <= 1) list.push(p); else if (list[list.length - 1] !== '…') list.push('…');
+        el.innerHTML = '<div class="pager">' + (o.sizes ? '<label class="size">Éléments par page <select aria-label="Éléments par page">' + o.sizes.map(function (s) { return '<option' + (s === size ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></label>' : '<span></span>') +
+          '<span>' + (o.total ? a.toLocaleString('fr-FR') + ' – ' + b.toLocaleString('fr-FR') + ' sur ' + o.total.toLocaleString('fr-FR') : 'Aucun élément') + '</span>' +
+          '<div class="pages"><button data-p="1"' + (page <= 1 ? ' disabled' : '') + ' aria-label="Première page"><span class="mi">first_page</span></button><button data-p="' + (page - 1) + '"' + (page <= 1 ? ' disabled' : '') + ' aria-label="Page précédente"><span class="mi">chevron_left</span></button>' +
+          list.map(function (p) { return p === '…' ? '<span class="ell">…</span>' : '<button data-p="' + p + '" class="' + (p === page ? 'on' : '') + '"' + (p === page ? ' aria-current="page"' : '') + '>' + p + '</button>'; }).join('') +
+          '<button data-p="' + (page + 1) + '"' + (page >= pages || !o.total ? ' disabled' : '') + ' aria-label="Page suivante"><span class="mi">chevron_right</span></button><button data-p="' + pages + '"' + (page >= pages || !o.total ? ' disabled' : '') + ' aria-label="Dernière page"><span class="mi">last_page</span></button></div></div>';
+      }
+      el.addEventListener('click', function (e) { var b = e.target.closest('[data-p]'); if (b && !b.disabled) { page = +b.dataset.p; draw(); o.onChange && o.onChange(page, size); } });
+      el.addEventListener('change', function (e) { if (e.target.tagName === 'SELECT') { size = +e.target.value; page = 1; draw(); o.onChange && o.onChange(page, size); } });
+      draw();
+    }
+    paginator($('pg1'), { total: 1284, page: 3, size: 25, sizes: [10, 25, 50, 100] });
+    paginator($('pg2'), { total: 42, page: 1, size: 20 });
+    paginator($('pg3'), { total: 0, page: 1, size: 20 });
+
+    var step = 0, LABELS = ['Client', 'Période', 'Récapitulatif'];
+    function steps() {
+      $('sh').innerHTML = LABELS.map(function (l, i) { return (i ? '<span class="line"></span>' : '') + '<button class="st' + (i === step ? ' cur' : i < step ? ' done' : '') + '"' + (i > step ? ' disabled' : '') + ' data-go="' + i + '"><span class="n">' + (i < step ? '<span class="mi">check</span>' : i + 1) + '</span><span>' + l + '</span></button>'; }).join('');
+      document.querySelectorAll('[data-step]').forEach(function (s) { s.hidden = +s.dataset.step !== step; });
+      $('s-recap').innerHTML = 'Client : <strong>' + $('s-client').value + '</strong> — Période : <strong>' + $('s-per').value + '</strong>';
+    }
+    function valid() { if (step === 0) return !!$('s-client').value.trim(); if (step === 1) { var ok = !!$('s-per').value.trim(); $('s-per-f').classList.toggle('invalid', !ok); $('s-per-f').querySelector('.field-error').hidden = ok; return ok; } return true; }
+    document.querySelector('#stepper .demo').addEventListener('click', function (e) {
+      if (e.target.closest('[data-next]') && valid()) { step++; steps(); }
+      if (e.target.closest('[data-prev]')) { step--; steps(); }
+      if (e.target.closest('[data-reset]')) { step = 0; $('s-per').value = ''; steps(); }
+      if (e.target.closest('[data-done]')) UIKit.toast('Rôle de facturation généré (démo)');
+      var g = e.target.closest('[data-go]'); if (g && !g.disabled) { step = +g.dataset.go; steps(); }
+    });
+    steps();
+    var vs = Array.from($('vs').children), vcur = 1;
+    function vdraw() { vs.forEach(function (s, i) { s.className = 'vstep' + (i < vcur ? ' done' : i === vcur ? ' cur' : ''); s.querySelector('.n').innerHTML = i < vcur ? '<span class="mi">check</span>' : i + 1; }); }
+    $('vs').addEventListener('click', function (e) { if (e.target.closest('[data-vnext]')) { vcur = Math.min(vs.length - 1, vcur + 1); vdraw(); } var h = e.target.closest('h5'); if (h) { vcur = vs.indexOf(h.parentNode); vdraw(); } });
+    document.querySelectorAll('.ui-menu__panel .ui-menu__item').forEach(function (b) { b.addEventListener('click', function () { if (b.parentNode.classList.contains('sub')) return; var d = b.closest('details'); if (d) d.open = false; UIKit.toast('« ' + Array.from(b.childNodes).filter(function (n) { return n.nodeType === 3; }).map(function (n) { return n.textContent; }).join('').trim() + ' »'); }); });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Champs avancés</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <link rel="stylesheet" href="../vendor/leaflet/leaflet.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .req { color: var(--error); }
+    .otp-card { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+    .otp-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); }
+    .otp-msg { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); } .otp-msg.ok { color: var(--success-text); } .otp-msg.bad { color: var(--error-text); } .otp-msg .mi { font-size: 18px; }
+    .center { align-items: center; text-align: center; }
+    .cart-line { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-md); } .cart-line .grow { flex: 1; font-size: 14px; } .cart-line .mi { color: var(--text-muted); }
+    .reviews { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; } .reviews .big { font: 700 40px var(--font-sans); }
+    .bar-row { display: grid; grid-template-columns: 12px 18px 1fr 28px; align-items: center; gap: 6px; font-size: 12px; } .bar-row .mi { font-size: 14px; color: #f59e0b; } .bar-row em { font-style: normal; color: var(--text-muted); text-align: right; }
+    .bar { height: 6px; border-radius: 3px; background: var(--hover-bg); } .bar i { display: block; height: 100%; border-radius: 3px; background: #f59e0b; }
+    .color-preview { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-md); color: #fff; font-weight: 600; }
+    .tag-preview { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; padding: 4px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; } .tag-preview i { width: 8px; height: 8px; border-radius: 50%; }
+    .html-out { margin: 10px 0 0; padding: 10px 12px; border-radius: var(--radius-sm); background: #0f172a; color: #e2e8f0; font: 12px/1.5 var(--font-mono); white-space: pre-wrap; word-break: break-all; max-height: 140px; overflow: auto; }
+    .sig-out { display: grid; place-items: center; min-height: 160px; border: 1px dashed var(--border); border-radius: var(--radius-md); background: repeating-conic-gradient(var(--hover-bg) 0 25%, transparent 0 50%) 0 0 / 16px 16px; } .sig-out img { max-width: 100%; max-height: 160px; }
+    .mt { margin-top: 14px; }
+    .pv-form .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; } @media (max-width: 800px) { .pv-form .grid-2 { grid-template-columns: 1fr; } }
+    .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); } .form-actions .spacer { flex: 1; }
+    details.json { margin-top: 14px; } details.json summary { cursor: pointer; font-size: 13px; color: var(--text-secondary); } details.json pre { margin: 8px 0 0; padding: 12px; border-radius: var(--radius-sm); background: #0f172a; color: #e2e8f0; font: 12px/1.5 var(--font-mono); overflow-x: auto; }
+    .ui-field.invalid .uf-sig, .ui-field.invalid .sig { outline: 1px solid var(--error); border-radius: 12px; }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/fields.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Champs avancés" data-icon="dynamic_form"
+      data-subtitle="Types de champs complémentaires aux formulaires de base, alignés sur le motif « field-box » : codes OTP, nombre + / −, montant FCFA, intervalle, notation, couleur, texte riche, Markdown, signature, sélection arborescente, transfert, tags, adresse, mot de passe et valeur à copier. Tous émettent l'évènement « change ».">
+
+      <section class="doc-section" id="otp" data-title="Code OTP / PIN" data-toc="OTP" data-cols="3" data-source="UIFields.otp()"
+        data-desc="Cases séparées avec avance automatique, retour arrière, flèches, collage d'un code complet et autocomplétion SMS (one-time-code). onComplete se déclenche quand toutes les cases sont remplies.">
+        <div class="demo" data-label="Vérification SMS" data-hint="essayez 246810"><template class="demo-code">UIFields.otp(el, { length: 6, onComplete: function (code) { verify(code); } });</template>
+          <div class="otp-card"><span class="otp-ic"><span class="mi">sms</span></span><strong>Saisissez le code reçu</strong><span class="muted small">Envoyé au +225 07 •• •• 42 18</span><div id="otp1"></div><span class="otp-msg" id="otp-msg">Renvoyer le code (0:42)</span></div>
+        </div>
+        <div class="demo" data-label="PIN masqué" data-hint="length: 4, mask" data-nocode><div class="stack center"><div id="otp2"></div><span class="muted small" id="otp2-v">Valeur : —</span></div></div>
+        <div class="demo" data-label="Alphanumérique + séparateur" data-hint="numeric: false, separator" data-nocode><div class="stack center"><div id="otp3"></div><span class="muted small" id="otp3-v">Code d'activation de balise : —</span></div></div>
+      </section>
+
+      <section class="doc-section" id="stepper" data-title="Nombre avec + / −" data-toc="Nombre ±" data-cols="3" data-source="UIFields.stepper()"
+        data-desc="Bornes, pas, décimales, unité. Appui long pour répéter (accéléré), flèches ↑/↓ (Maj = ×10), saisie directe au clavier.">
+        <div class="demo" data-label="Quantité de véhicules"><template class="demo-code">UIFields.stepper(el, { value: 12, min: 1, max: 500, unit: 'véh.' });</template>
+          <div class="ui-field"><span class="ui-label">Véhicules à équiper</span><div id="st1"></div><span class="field-hint" id="st1-v"></span></div></div>
+        <div class="demo" data-label="Décimales + pas" data-hint="step: 0.5, decimals: 1" data-nocode><div class="ui-field"><span class="ui-label">Remise</span><div id="st2"></div></div></div>
+        <div class="demo" data-label="Compact (panier)" data-hint="compact" data-nocode><div class="cart-line"><span class="mi">router</span><span class="grow">Balise GPS 4G</span><div id="st3"></div><strong id="st3-v"></strong></div></div>
+      </section>
+
+      <section class="doc-section" id="currency" data-title="Montant / devise" data-toc="Montant" data-cols="3" data-source="UIFields.currency()"
+        data-desc="Séparateurs de milliers fr-FR au fil de la frappe, curseur préservé, décimales selon la devise (FCFA : aucune), ↑/↓ = ±1 000. Valeur : nombre. Option « en toutes lettres » pour les chèques et factures.">
+        <div class="demo" data-label="FCFA + en lettres"><template class="demo-code">UIFields.currency(el, { value: 1250000, inWords: true });</template>
+          <div class="ui-field"><span class="ui-label">Montant de la facture</span><div id="cu1"></div><span class="field-hint" id="cu1-v"></span></div></div>
+        <div class="demo" data-label="Multi-devises" data-hint="currencies: ['XOF','EUR','USD']" data-nocode><div class="ui-field"><span class="ui-label">Prix d'achat</span><div id="cu2"></div><span class="field-hint" id="cu2-v"></span></div></div>
+        <div class="demo" data-label="Vide + plafond" data-hint="max: 5 000 000" data-nocode><div class="ui-field"><span class="ui-label">Caution (max 5 000 000)</span><div id="cu3"></div></div></div>
+      </section>
+
+      <section class="doc-section" id="range" data-title="Intervalle à double curseur" data-toc="Intervalle" data-cols="2" data-source="UIFields.range()"
+        data-desc="Filtre min / max avec histogramme de distribution (les barres dans l'intervalle sont colorées), infobulles, champs saisissables, clavier (←/→, Page ↑/↓, Début/Fin). Valeur : [min, max].">
+        <div class="demo" data-label="Prix avec histogramme"><template class="demo-code">UIFields.range(el, { min: 0, max: 500000, step: 5000, value: [50000, 250000], minGap: 10000,
+  histogram: [2, 4, 7, 12, 18, …], unit: 'FCFA', format: function (v) { return v.toLocaleString('fr-FR') + ' F'; } });</template>
+          <div class="ui-field"><span class="ui-label">Prix de l'abonnement</span><div id="rg1"></div><span class="field-hint" id="rg1-v"></span></div></div>
+        <div class="demo" data-label="Simple, sans champs" data-hint="inputs: false" data-nocode><div class="ui-field"><span class="ui-label">Vitesse tolérée</span><div id="rg2"></div><span class="field-hint" id="rg2-v"></span></div></div>
+      </section>
+
+      <section class="doc-section" id="rating" data-title="Notation" data-cols="3" data-source="UIFields.rating()" data-desc="Étoiles (demi-étoiles possibles), cœurs ou émojis de satisfaction. Aperçu au survol, clavier ←/→, re-clic pour effacer, lecture seule pour afficher une moyenne.">
+        <div class="demo" data-label="Étoiles"><template class="demo-code">UIFields.rating(el, { value: 4, showValue: true });
+UIFields.rating(el2, { value: 3.5, half: true, size: 'large', showValue: true });</template><div class="stack"><div id="ra1"></div><div id="ra2"></div></div></div>
+        <div class="demo" data-label="Satisfaction (émojis)" data-hint="variant: 'emoji'" data-nocode><div class="stack"><span class="muted small">Comment s'est passée l'intervention ?</span><div id="ra3"></div><div id="ra4"></div></div></div>
+        <div class="demo" data-label="Lecture seule (moyenne)" data-hint="readonly" data-nocode>
+          <div class="reviews"><div class="big">4,3</div><div class="stack" style="gap:2px"><div id="ra5"></div><span class="muted small">128 avis clients</span></div></div>
+          <div class="stack" style="gap:4px" id="bars"></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="color" data-title="Sélecteur de couleur" data-toc="Couleur" data-cols="3" data-source="UIFields.color()"
+        data-desc="Champ hexadécimal + panneau : saturation / luminosité, teinte, palette, couleurs récentes et pipette (EyeDropper, Chrome / Edge). Mode inline = panneau seul.">
+        <div class="demo" data-label="Champ + panneau"><template class="demo-code">UIFields.color(el, { value: '#4f6bed' });</template><div class="ui-field"><span class="ui-label">Couleur du groupe</span><div id="co1"></div></div><div class="color-preview" id="co1-p"><span class="mi">local_shipping</span>Groupe Nord</div></div>
+        <div class="demo" data-label="Palette de marque" data-hint="swatches" data-nocode><div class="ui-field"><span class="ui-label">Couleur d'étiquette</span><div id="co2"></div></div></div>
+        <div class="demo" data-label="Inline" data-hint="inline: true" data-nocode><div id="co3"></div><span class="tag-preview" id="tagp"><i></i>Maintenance</span></div>
+      </section>
+
+      <section class="doc-section" id="rich-text" data-title="Éditeur de texte riche" data-toc="Texte riche" data-cols="2" data-source="UIFields.richText()"
+        data-desc="Éditeur léger sans dépendance (contenteditable) : styles de paragraphe, gras, italique, souligné, barré, listes, citation, lien, nettoyage, annuler / rétablir, compteur. Le collage est converti en texte brut.">
+        <div class="demo" data-label="Compte rendu"><template class="demo-code">UIFields.richText(el, { value: '&lt;h3&gt;Compte rendu&lt;/h3&gt;&lt;p&gt;…&lt;/p&gt;', maxLength: 1000 });</template><div id="rt1"></div></div>
+        <div class="demo" data-label="Vide + aperçu HTML" data-nocode><div id="rt2"></div><pre class="html-out" id="rt2-out">(vide)</pre></div>
+      </section>
+
+      <section class="doc-section" id="markdown" data-title="Éditeur Markdown" data-toc="Markdown" data-source="UIFields.markdown() · UIKitUtils.markdownToHtml()"
+        data-desc="Écrire / Aperçu / Côte à côte, barre d'insertion, raccourcis Ctrl+B / I / K, Tab, continuation automatique des listes.">
+        <div class="demo" data-label="Procédure (côte à côte)"><template class="demo-code">UIFields.markdown(el, { value: '## Procédure…', mode: 'split', minHeight: '300px' });</template><div id="md1"></div></div>
+      </section>
+
+      <section class="doc-section" id="signature" data-title="Signature" data-cols="2" data-source="ExW.signature()" data-desc="Souris, doigt ou stylet ; bouton effacer ; rendu net en haute densité. Valeur : image PNG transparente (data URL).">
+        <div class="demo" data-label="PV d'installation"><template class="demo-code">ExW.signature(el, { height: '160px', onChange: function (png) { save(png); } });</template><div class="ui-field"><span class="ui-label">Signature du client <span class="req">*</span></span><div id="sig1"></div></div></div>
+        <div class="demo" data-label="Résultat (PNG)" data-nocode><div class="sig-out" id="sig-out"><span class="muted small">Signez à gauche pour voir l'image produite.</span></div><span class="muted small" id="sig-size"></span></div>
+      </section>
+
+      <section class="doc-section" id="tree-select" data-title="Sélection arborescente" data-toc="Arborescence" data-cols="2" data-source="UIFields.treeSelect()"
+        data-desc="Hiérarchie dans un panneau déroulant : recherche insensible aux accents (garde les ancêtres), dépli / repli, simple (chemin affiché) ou multiple avec cases tri-état — cocher un parent coche ses feuilles.">
+        <div class="demo" data-label="Simple" data-hint="chemin complet, feuilles seulement"><template class="demo-code">UIFields.treeSelect(el, { options: ZONES, value: 'marcory', leafOnly: true, icon: 'location_on' });</template><div class="ui-field"><span class="ui-label">Quartier d'intervention</span><div id="ts1"></div><span class="field-hint" id="ts1-v"></span></div></div>
+        <div class="demo" data-label="Multiple (tri-état)" data-hint="multiple: true" data-nocode><div class="ui-field"><span class="ui-label">Zones couvertes</span><div id="ts2"></div><span class="field-hint" id="ts2-v"></span></div></div>
+      </section>
+
+      <section class="doc-section" id="transfer" data-title="Liste de transfert" data-toc="Transfert" data-cols="2" data-source="UIFields.transfer()"
+        data-desc="Deux colonnes filtrables ; sélection multiple (Maj+clic pour une plage), boutons de transfert, double-clic, ou glisser-déposer entre colonnes (et réordonnancement à droite). Les éléments désactivés restent en place.">
+        <div class="demo" data-label="Affecter des véhicules à un groupe"><template class="demo-code">UIFields.transfer(el, { items: VEHICULES, value: ['CI-2210-CD'], sourceTitle: 'Parc disponible', targetTitle: 'Groupe « Livraisons Nord »' });</template><div id="tr1"></div><span class="muted small" id="tr1-v"></span></div>
+        <div class="demo" data-label="Permissions d'un rôle" data-nocode><div id="tr2"></div></div>
+      </section>
+
+      <section class="doc-section" id="tags" data-title="Tags libres avec suggestions" data-toc="Tags" data-cols="3" data-source="UIFields.tags()"
+        data-desc="Entrée, virgule ou Tab pour valider ; collage d'une liste ; retour arrière pour retirer ; double-clic pour modifier ; suggestions au clavier ; limite, validation et normalisation.">
+        <div class="demo" data-label="Mots-clés" data-hint="max: 6"><template class="demo-code">UIFields.tags(el, { value: ['Installation'], suggestions: MOTS_CLES, max: 6 });</template><div class="ui-field"><span class="ui-label">Étiquettes du ticket</span><div id="tg1"></div></div></div>
+        <div class="demo" data-label="Destinataires (validation)" data-hint="validator" data-nocode><div class="ui-field"><span class="ui-label">Envoyer le rapport à</span><div id="tg2"></div><span class="field-error" id="tg2-e" hidden>Une adresse est invalide (soulignée).</span></div></div>
+        <div class="demo" data-label="Liste fermée" data-hint="allowCustom: false" data-nocode><div class="ui-field"><span class="ui-label">Catégories</span><div id="tg3"></div></div></div>
+      </section>
+
+      <section class="doc-section" id="address" data-title="Adresse avec carte" data-toc="Adresse" data-cols="2" data-source="UIFields.address()"
+        data-desc="La recherche est fournie par l'hôte (search : répertoire local ici, géocodeur en production). « Ma position » utilise la géolocalisation du navigateur ; un clic sur la carte place le point.">
+        <div class="demo" data-label="Autocomplétion" data-hint="essayez « port », « cocody », « bouake »"><template class="demo-code">UIFields.address(el, { search: function (q) { return geocode(q); }, map: true });</template><div class="ui-field"><span class="ui-label">Adresse de livraison</span><div id="ad1"></div></div></div>
+        <div class="demo" data-label="Avec carte" data-hint="map: true" data-nocode><div class="ui-field"><span class="ui-label">Lieu d'installation</span><div id="ad2"></div></div></div>
+      </section>
+
+      <section class="doc-section" id="password" data-title="Mot de passe avec jauge" data-toc="Mot de passe" data-cols="2" data-source="UIFields.password()"
+        data-desc="Jauge de robustesse en 4 niveaux (longueur, variété, pénalités pour suites et mots courants), règles cochées en direct, alerte de verrouillage majuscules, générateur (crypto.getRandomValues).">
+        <div class="demo" data-label="Création de compte"><template class="demo-code">UIFields.password(el, { generator: true, showRulesEmpty: true });</template><div class="ui-field"><span class="ui-label">Nouveau mot de passe</span><div id="pw1"></div></div></div>
+        <div class="demo" data-label="Mot de passe faible" data-hint="contient un mot courant" data-nocode><div class="ui-field"><span class="ui-label">Mot de passe</span><div id="pw2"></div></div></div>
+      </section>
+
+      <section class="doc-section" id="copy" data-title="Valeur à copier" data-toc="Copie" data-cols="3" data-source="UIFields.copy()"
+        data-desc="Clé API, lien de partage, IMEI, code d'intégration : bouton de copie avec confirmation, secret masqué (4 premiers / 4 derniers caractères), régénération, variante multi-ligne.">
+        <div class="demo" data-label="Clé API (secret)"><template class="demo-code">UIFields.copy(el, { value: apiKey, secret: true, regenerable: true, icon: 'key', label: 'la clé API', regenerate: newKey });</template><div class="ui-field"><span class="ui-label">Clé API de production</span><div id="cp1"></div><span class="field-hint">Ne la partagez jamais publiquement.</span></div></div>
+        <div class="demo" data-label="Lien de partage" data-nocode><div class="ui-field"><span class="ui-label">Suivi en temps réel (24 h)</span><div id="cp2"></div></div><div class="ui-field mt"><span class="ui-label">IMEI</span><div id="cp3"></div></div></div>
+        <div class="demo" data-label="Code d'intégration" data-hint="multiline" data-nocode><div class="ui-field"><span class="ui-label">Widget à intégrer</span><div id="cp4"></div></div></div>
+      </section>
+
+      <section class="doc-section" id="form" data-title="Formulaire complet" data-toc="Formulaire" data-source="composition des champs avancés" data-desc="Tous les champs avancés se combinent dans un formulaire validé à la soumission, comme des champs natifs.">
+        <div class="demo" data-label="PV d'installation" data-nocode>
+          <form class="pv-form" id="pv" novalidate>
+            <div class="grid-2">
+              <div class="ui-field" data-f="quartier"><span class="ui-label">Quartier <span class="req">*</span></span><div id="pv-q"></div><span class="field-error" hidden>Choisissez un quartier</span></div>
+              <div class="ui-field" data-f="adresse"><span class="ui-label">Adresse exacte <span class="req">*</span></span><div id="pv-a"></div><span class="field-error" hidden>Adresse requise</span></div>
+              <div class="ui-field" data-f="balises"><span class="ui-label">Balises installées <span class="req">*</span></span><div id="pv-b"></div><span class="field-error" hidden>Au moins une balise</span></div>
+              <div class="ui-field" data-f="montant"><span class="ui-label">Montant encaissé <span class="req">*</span></span><div id="pv-m"></div><span class="field-error" hidden>Minimum 10 000 FCFA</span></div>
+              <div class="ui-field" data-f="etiquettes"><span class="ui-label">Étiquettes</span><div id="pv-t"></div></div>
+              <div class="ui-field" data-f="note"><span class="ui-label">Satisfaction du client</span><div id="pv-n"></div><span class="field-error" hidden>Merci de noter l'intervention</span></div>
+              <div class="ui-field" data-f="code"><span class="ui-label">Code de validation client <span class="req">*</span></span><div id="pv-c"></div><span class="field-error" hidden>Code à 4 chiffres requis</span></div>
+              <div class="ui-field" data-f="signature"><span class="ui-label">Signature <span class="req">*</span></span><div id="pv-s"></div><span class="field-error" hidden>Signature requise</span></div>
+            </div>
+            <div class="form-actions"><span class="muted small" id="pv-st">Champs requis manquants</span><span class="spacer"></span><button type="button" class="ui-btn ui-btn--outlined" id="pv-reset">Réinitialiser</button><button type="submit" class="ui-btn"><span class="mi">task_alt</span>Valider le PV</button></div>
+            <details class="json"><summary>Valeur du formulaire</summary><pre id="pv-json"></pre></details>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/lib/markdown.js"></script>
+  <script src="../js/data/address.js"></script>
+  <script src="../js/ex-widgets.js"></script>
+  <script src="../js/map.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/forms.js"></script>
+  <script src="../js/fields.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, U = UIFields, nf = function (n) { return Number(n).toLocaleString('fr-FR'); };
+    function on(id, f) { $(id).addEventListener('change', function (e) { f(e.detail); }); }
+
+    var o1 = U.otp($('otp1'), { onComplete: function (code) { var m = $('otp-msg'); m.className = 'otp-msg'; m.innerHTML = '<span class="ui-spinner"></span>Vérification…';
+      setTimeout(function () { var ok = code === '246810'; o1.state(ok ? 'ok' : 'bad'); m.className = 'otp-msg ' + (ok ? 'ok' : 'bad'); m.innerHTML = '<span class="mi">' + (ok ? 'check_circle' : 'error') + '</span>' + (ok ? 'Numéro vérifié' : 'Code incorrect'); }, 700); } });
+    on('otp1', function () { o1.state(null); });
+    U.otp($('otp2'), { length: 4, mask: true }); on('otp2', function (v) { $('otp2-v').textContent = 'Valeur : ' + (v || '—'); });
+    U.otp($('otp3'), { numeric: false, separator: true }); on('otp3', function (v) { $('otp3-v').textContent = 'Code d’activation de balise : ' + (v || '—'); });
+
+    U.stepper($('st1'), { value: 12, min: 1, max: 500, unit: 'véh.' }); function s1(v) { $('st1-v').textContent = 'Entre 1 et 500 · valeur : ' + v; } on('st1', s1); s1(12);
+    U.stepper($('st2'), { value: 7.5, min: 0, max: 30, step: 0.5, decimals: 1, unit: '%' });
+    U.stepper($('st3'), { value: 2, min: 0, max: 99, compact: true }); function s3(v) { $('st3-v').textContent = nf(v * 45000) + ' F'; } on('st3', s3); s3(2);
+
+    U.currency($('cu1'), { value: 1250000, inWords: true }); function c1(v) { $('cu1-v').textContent = 'Valeur : ' + (v == null ? 'null' : v); } on('cu1', c1); c1(1250000);
+    U.currency($('cu2'), { value: 1990.5, currency: 'EUR', currencies: ['XOF', 'EUR', 'USD'], icon: 'shopping_cart' }); function c2(v) { $('cu2-v').textContent = 'Valeur : ' + (v == null ? 'null' : v); } on('cu2', c2); c2(1990.5);
+    U.currency($('cu3'), { max: 5000000, placeholder: 'Saisir un montant', icon: 'savings' });
+
+    var histo = [2, 4, 7, 12, 18, 26, 31, 28, 22, 19, 15, 12, 9, 7, 5, 4, 3, 2, 2, 1];
+    U.range($('rg1'), { min: 0, max: 500000, step: 5000, value: [50000, 250000], minGap: 10000, histogram: histo, unit: 'FCFA', format: function (v) { return nf(v) + ' F'; } });
+    function r1(v) { $('rg1-v').textContent = histo.length + ' tranches · sélection : ' + nf(v[0]) + ' – ' + nf(v[1]) + ' FCFA'; } on('rg1', r1); r1([50000, 250000]);
+    U.range($('rg2'), { min: 0, max: 140, step: 5, value: [30, 90], unit: 'km/h', inputs: false, format: function (v) { return v + ' km/h'; } });
+    function r2(v) { $('rg2-v').textContent = 'Alerte si la vitesse sort de ' + v[0] + ' – ' + v[1] + ' km/h'; } on('rg2', r2); r2([30, 90]);
+
+    U.rating($('ra1'), { value: 4, showValue: true }); U.rating($('ra2'), { value: 3.5, half: true, size: 'large', showValue: true });
+    U.rating($('ra3'), { value: 4, variant: 'emoji', size: 'large', showValue: true }); U.rating($('ra4'), { value: 3, variant: 'heart' });
+    U.rating($('ra5'), { value: 4.3, readonly: true, half: true });
+    $('bars').innerHTML = [[5, 62], [4, 38], [3, 15], [2, 8], [1, 5]].map(function (b) { return '<div class="bar-row"><span>' + b[0] + '</span><span class="mi">star</span><div class="bar"><i style="width:' + (b[1] / 0.62 * 0.95) + '%"></i></div><em>' + b[1] + '</em></div>'; }).join('');
+
+    var BRAND = ['#4f6bed', '#22c55e', '#f59e0b', '#ef4444', '#06b6d4', '#a855f7', '#64748b', '#0f172a'];
+    U.color($('co1'), { value: '#4f6bed' }); function cp(v) { $('co1-p').style.background = v; } on('co1', cp); cp('#4f6bed');
+    U.color($('co2'), { value: '#10b981', swatches: BRAND });
+    U.color($('co3'), { value: '#10b981', swatches: BRAND, inline: true }); function tp(v) { var t = $('tagp'); t.style.background = v + '22'; t.style.color = v; t.querySelector('i').style.background = v; } on('co3', tp); tp('#10b981');
+
+    U.richText($('rt1'), { maxLength: 1000, value: '<h3>Compte rendu d’intervention</h3><p>Installation de la balise <b>GT06</b> sur le véhicule <i>CI-4521-AB</i>.</p><ul><li>Alimentation raccordée au +APC</li><li>Coupe-moteur testé</li></ul><blockquote>Client satisfait, PV signé sur place.</blockquote>' });
+    U.richText($('rt2'), { placeholder: 'Notes pour le technicien…', minHeight: '100px' }); on('rt2', function (v) { $('rt2-out').textContent = v || '(vide)'; });
+    U.markdown($('md1'), { mode: 'split', minHeight: '300px', value: '## Procédure d’installation\n\n1. Couper le contact et débrancher la batterie\n2. Raccorder la balise au **+APC** et à la masse\n3. Tester le *coupe-moteur* depuis la plateforme\n\n- [x] Photos avant / après\n- [ ] PV signé par le client\n\n> Toujours vérifier la remontée GPS avant de quitter le site.\n\nDocumentation : [guide technique](https://example.com/guide) · code `GT06-N`' });
+
+    ExW.signature($('sig1'), { height: '160px', onChange: function (png) { $('sig-out').innerHTML = png ? '<img src="' + png + '" alt="Signature">' : '<span class="muted small">Signez à gauche pour voir l’image produite.</span>'; $('sig-size').textContent = png ? Math.round(png.length / 1024) + ' Ko · fond transparent' : ''; } });
+
+    var ZONES = [{ value: 'abj', label: 'Abidjan', icon: 'location_city', children: [
+        { value: 'abj-nord', label: 'Abidjan Nord', children: [{ value: 'abobo', label: 'Abobo' }, { value: 'adjame', label: 'Adjamé' }, { value: 'yopougon', label: 'Yopougon' }, { value: 'attecoube', label: 'Attécoubé' }] },
+        { value: 'abj-sud', label: 'Abidjan Sud', children: [{ value: 'treichville', label: 'Treichville' }, { value: 'marcory', label: 'Marcory' }, { value: 'koumassi', label: 'Koumassi' }, { value: 'port-bouet', label: 'Port-Bouët' }] },
+        { value: 'cocody', label: 'Cocody' }, { value: 'plateau', label: 'Plateau' }] },
+      { value: 'centre', label: 'Centre', icon: 'landscape', children: [{ value: 'yakro', label: 'Yamoussoukro' }, { value: 'bouake', label: 'Bouaké' }, { value: 'dimbokro', label: 'Dimbokro', disabled: true }] },
+      { value: 'ouest', label: 'Ouest', icon: 'forest', children: [{ value: 'daloa', label: 'Daloa' }, { value: 'man', label: 'Man' }, { value: 'sanpedro', label: 'San-Pédro' }] },
+      { value: 'nord', label: 'Nord', icon: 'wb_sunny', children: [{ value: 'korhogo', label: 'Korhogo' }, { value: 'odienne', label: 'Odienné' }] }];
+    U.treeSelect($('ts1'), { options: ZONES, value: 'marcory', leafOnly: true, icon: 'location_on', placeholder: 'Choisir un quartier…' }); function t1(v) { $('ts1-v').textContent = 'Valeur : ' + (v == null ? 'null' : v); } on('ts1', t1); t1('marcory');
+    U.treeSelect($('ts2'), { options: ZONES, multiple: true, value: ['abobo', 'adjame', 'bouake'], placeholder: 'Toutes les zones' }); function t2(v) { $('ts2-v').textContent = v.length + ' feuille(s) : ' + (v.join(', ') || '—'); } on('ts2', t2); t2(['abobo', 'adjame', 'bouake']);
+
+    var VEH = [['CI-4521-AB', 'Toyota Hilux', 'local_shipping'], ['CI-2210-CD', 'Renault Kangoo', 'airport_shuttle'], ['CI-3307-EF', 'Suzuki Swift', 'directions_car'], ['CI-0418-GH', 'Yamaha Crux', 'two_wheeler'], ['CI-7781-JK', 'Mercedes Actros', 'local_shipping'],
+      ['CI-1150-LM', 'Toyota Coaster', 'directions_bus'], ['CI-9902-NP', 'Isuzu D-Max', 'local_shipping'], ['CI-6630-QR', 'Peugeot Partner', 'airport_shuttle'], ['CI-5512-ST', 'Hyundai H100', 'airport_shuttle'], ['CI-8843-UV', 'Nissan Navara', 'local_shipping']]
+      .map(function (v, i) { return { value: v[0], label: v[0], description: v[1], icon: v[2], disabled: i === 7 }; });
+    U.transfer($('tr1'), { items: VEH, value: ['CI-2210-CD', 'CI-1150-LM'], sourceTitle: 'Parc disponible', targetTitle: 'Groupe « Livraisons Nord »' });
+    function tv(v) { $('tr1-v').textContent = 'Ordre de tournée : ' + (v.join(' → ') || '—'); } on('tr1', tv); tv(['CI-2210-CD', 'CI-1150-LM']);
+    U.transfer($('tr2'), { items: ['Voir les véhicules', 'Modifier les véhicules', 'Voir les trajets', 'Exporter les rapports', 'Gérer les alertes', 'Couper le moteur à distance', 'Gérer les utilisateurs', 'Facturation', 'Paramètres du compte'].map(function (l, i) { return { value: 'p' + i, label: l, icon: i === 5 ? 'warning' : 'key' }; }), value: ['p0', 'p2'], sourceTitle: 'Permissions', targetTitle: 'Rôle « Superviseur »' });
+
+    var MOTS = ['Urgent', 'Maintenance', 'Installation', 'Désinstallation', 'Garantie', 'Client VIP', 'Flotte', 'Balise', 'Carburant', 'Batterie', 'Réclamation'];
+    var isEmail = function (t) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t); };
+    U.tags($('tg1'), { value: ['Installation', 'Flotte'], suggestions: MOTS, max: 6, placeholder: 'Ajouter une étiquette…' });
+    U.tags($('tg2'), { value: ['aminata.diallo@example.com', 'koffi@'], validator: isEmail, transform: function (t) { return t.toLowerCase(); }, icon: 'mail', invalidMessage: 'Adresse e-mail invalide', placeholder: 'email@exemple.ci' });
+    function te(v) { $('tg2-e').hidden = !v.some(function (e) { return !isEmail(e); }); } on('tg2', te); te(['koffi@']);
+    U.tags($('tg3'), { value: ['Garantie'], suggestions: MOTS, allowCustom: false, icon: 'category', placeholder: 'Choisir…' });
+
+    var search = DATA.searchPlaces;
+    U.address($('ad1'), { search: search }); U.address($('ad2'), { search: search, map: true, value: DATA.DEMO_PLACES[0] });
+
+    U.password($('pw1'), { generator: true, showRulesEmpty: true }); U.password($('pw2'), { value: 'Abidjan2024' });
+
+    function key() { return 'sk_live_' + Array.from(crypto.getRandomValues(new Uint8Array(12)), function (b) { return b.toString(16).padStart(2, '0'); }).join(''); }
+    U.copy($('cp1'), { value: key(), secret: true, regenerable: true, icon: 'key', label: 'la clé API', regenerate: key });
+    U.copy($('cp2'), { value: 'https://suivi.example.com/partage/7f3a9c', icon: 'link' }); U.copy($('cp3'), { value: '358240051111110', icon: 'router' });
+    U.copy($('cp4'), { multiline: true, value: '<iframe src="https://suivi.example.com/widget/7f3a9c" width="100%" height="420" style="border:0" loading="lazy"></iframe>' });
+
+    // Formulaire complet
+    var pv = {}, w = {}, submitted = false;
+    function mount() {
+      ['pv-q', 'pv-a', 'pv-b', 'pv-m', 'pv-t', 'pv-n', 'pv-c', 'pv-s'].forEach(function (id) { $(id).innerHTML = ''; $(id).className = ''; });
+      pv = { quartier: null, adresse: null, balises: 0, montant: null, etiquettes: [], note: 0, code: '', signature: null };
+      w.q = U.treeSelect($('pv-q'), { options: ZONES, leafOnly: true, icon: 'location_on', placeholder: 'Choisir…' });
+      w.a = U.address($('pv-a'), { search: search, showCoords: false });
+      w.b = U.stepper($('pv-b'), { value: 0, min: 0, max: 50 }); w.m = U.currency($('pv-m'), {}); w.t = U.tags($('pv-t'), { suggestions: MOTS });
+      w.n = U.rating($('pv-n'), { size: 'large' }); w.c = U.otp($('pv-c'), { length: 4 });
+      ExW.signature($('pv-s'), { height: '140px', onChange: function (p) { pv.signature = p ? '(image PNG)' : null; check(); } });
+    }
+    var MAP = { 'pv-q': 'quartier', 'pv-a': 'adresse', 'pv-b': 'balises', 'pv-m': 'montant', 'pv-t': 'etiquettes', 'pv-n': 'note', 'pv-c': 'code' };
+    Object.keys(MAP).forEach(function (id) { $(id).addEventListener('change', function (e) { if (e.target !== $(id)) return; pv[MAP[id]] = e.detail; check(); }); });
+    function errs() { return { quartier: !pv.quartier, adresse: !pv.adresse, balises: !(pv.balises >= 1), montant: !(pv.montant >= 10000), note: !pv.note, code: !/^\d{4}$/.test(pv.code || ''), signature: !pv.signature }; }
+    function check() { var e = errs(), ok = !Object.keys(e).some(function (k) { return e[k]; });
+      document.querySelectorAll('#pv [data-f]').forEach(function (b) { var bad = submitted && e[b.dataset.f]; b.classList.toggle('invalid', !!bad); var er = b.querySelector('.field-error'); if (er) er.hidden = !bad; });
+      $('pv-st').textContent = ok ? 'Formulaire valide' : 'Champs requis manquants';
+      $('pv-json').textContent = JSON.stringify(Object.assign({}, pv, { adresse: pv.adresse && pv.adresse.label }), null, 2); return ok; }
+    $('pv').addEventListener('submit', function (e) { e.preventDefault(); submitted = true; if (check()) UIKit.toast('PV validé — aucune donnée envoyée (démo statique)'); });
+    $('pv-reset').addEventListener('click', function () { submitted = false; mount(); check(); });
+    mount(); check();
+  })();
+  </script>
+</body>
+</html>

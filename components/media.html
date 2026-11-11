@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Médias</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/media.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .vertical { max-width: 260px; margin: 0 auto; }
+    .yt-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; } .yt-list figcaption { margin-top: 6px; font-size: 13px; font-weight: 600; }
+    .ext-ctl { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; } .evlog { margin: 8px 0 0; padding: 8px 10px; border-radius: 8px; background: #0f172a; color: #e2e8f0; font: 11.5px/1.5 var(--font-mono); max-height: 90px; overflow: auto; }
+    .att { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; } .att button { display: flex; flex-direction: column; gap: 6px; padding: 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--card-bg); cursor: zoom-in; text-align: left; font: 12px var(--font-sans); color: var(--text-primary); }
+    .att .th { display: grid; place-items: center; height: 90px; border-radius: 8px; background: var(--hover-bg); overflow: hidden; } .att .th img { width: 100%; height: 100%; object-fit: cover; } .att .th .mi { font-size: 36px; color: var(--text-muted); } .att small { color: var(--text-muted); }
+    .multi { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; } .multi > * { flex: 0 0 min(260px, 80%); scroll-snap-align: start; padding: 14px; border-radius: 12px; background: color-mix(in srgb, var(--tone) 10%, var(--card-bg)); border: 1px solid var(--border); }
+    .multi .mi { color: var(--tone); font-size: 28px; } .multi strong { display: block; margin: 6px 0 2px; } .multi p { margin: 0; font-size: 13px; color: var(--text-secondary); }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; align-items: center; } .filters .sp { flex: 1; }
+    .just { display: flex; flex-wrap: wrap; gap: 6px; } .just::after { content: ""; flex-grow: 999; } .just figure { position: relative; margin: 0; flex-grow: var(--r); flex-basis: calc(var(--r) * 150px); height: 150px; cursor: zoom-in; border-radius: 8px; overflow: hidden; } .just img { width: 100%; height: 100%; object-fit: cover; }
+    .just .ck { position: absolute; top: 6px; left: 6px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,.4); color: #fff; opacity: 0; } .just figure:hover .ck, .just figure.sel .ck { opacity: 1; } .just figure.sel { outline: 3px solid var(--primary); outline-offset: -3px; } .just figure.sel .ck { background: var(--primary); }
+    .grid-sq { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; } .grid-sq img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; cursor: zoom-in; display: block; } .grid-169 img { aspect-ratio: 16 / 9; } .grid-169 { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    .theater { display: grid; grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr); gap: 14px; } @media (max-width: 800px) { .theater { grid-template-columns: 1fr; } }
+    .pl { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; } .pl li { display: flex; gap: 10px; padding: 8px; border-radius: 10px; cursor: pointer; } .pl li:hover, .pl li.on { background: var(--hover-bg); } .pl li.on strong { color: var(--primary); }
+    .pl .thumb { display: grid; place-items: center; width: 80px; height: 46px; flex: none; border-radius: 6px; background: linear-gradient(135deg, #0f766e, #1e293b); color: #fff; } .pl small { color: var(--text-muted); font-size: 12px; } .pl strong { font-size: 13px; }
+    .vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; } .vgrid figcaption { margin-top: 6px; font-size: 13px; }
+    .masonry { columns: 3 220px; column-gap: 12px; } .masonry > * { break-inside: avoid; margin-bottom: 12px; } .mcard { padding: 14px; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); } .mcard .mi { color: var(--primary); } .mcard p { margin: 6px 0 0; font-size: 13px; color: var(--text-secondary); }
+    .masonry img { width: 100%; display: block; border-radius: 10px; }
+    .crop { display: grid; grid-template-columns: minmax(0, 1fr) 160px; gap: 16px; align-items: start; } @media (max-width: 700px) { .crop { grid-template-columns: 1fr; } }
+    .crop-stage { position: relative; height: 280px; overflow: hidden; border-radius: 12px; background: #0f172a; cursor: grab; touch-action: none; user-select: none; } .crop-stage img { position: absolute; left: 50%; top: 50%; transform-origin: center; pointer-events: none; max-width: none; }
+    .crop-mask { position: absolute; inset: 0; pointer-events: none; } .crop-mask i { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 999px rgba(15,23,42,.6); border: 2px solid #fff; }
+    .crop-ctl { display: flex; align-items: center; gap: 8px; margin-top: 10px; } .crop-ctl input { flex: 1; accent-color: var(--primary); }
+    .crop-out { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); } .crop-out img { border: 1px solid var(--border); }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/media.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Médias" data-icon="perm_media" data-subtitle="Lecteurs vidéo, YouTube, audio et PDF, visionneuse de fichiers, carrousels, galeries, grille masonry et recadrage. Tous les médias d'exemple sont générés localement (canvas, audio, PDF minimal, MediaRecorder).">
+
+      <section class="doc-section" id="video" data-title="Lecteur vidéo" data-cols="2" data-source="Media.video()">
+        <div class="demo" data-label="Vidéo d'exemple" data-hint="générée localement"><template class="demo-code">Media.video(el, { src: 'trajet.webm', poster: 'apercu.jpg', aspectRatio: '16 / 9' });</template><div id="v1"><div class="center-state muted small">Enregistrement de la vidéo d'exemple…</div></div></div>
+        <div class="demo" data-label="Fichier local" data-nocode><label class="ui-btn ui-btn--outlined" style="margin-bottom:10px"><span class="mi">upload_file</span>Choisir une vidéo<input type="file" accept="video/*" hidden id="v2-in"></label><div id="v2"></div></div>
+        <div class="demo" data-label="États" data-nocode><div id="v3"></div></div>
+        <div class="demo" data-label="Format vertical (9:16)" data-nocode><div class="vertical" id="v4"></div></div>
+      </section>
+
+      <section class="doc-section" id="youtube" data-title="Lecteur YouTube" data-cols="2" data-source="Media.youtube()" data-desc="Façade légère : rien n'est chargé depuis YouTube avant le clic (youtube-nocookie.com).">
+        <div class="demo" data-label="Façade (par défaut)"><template class="demo-code">Media.youtube(el, { id: 'aqz-KE-bpKQ', title: 'Big Buck Bunny', duration: '10:34' });</template><div id="y1"></div></div>
+        <div class="demo" data-label="Depuis une URL saisie" data-nocode><div class="ui-field" style="margin-bottom:10px"><div class="field-box"><span class="mi">link</span><input id="yurl" value="https://www.youtube.com/watch?v=eRsGyueVLvQ" aria-label="URL YouTube"><button class="ui-btn ui-btn--text ui-btn--sm" id="yload">Charger</button></div></div><div id="y2"></div></div>
+        <div class="demo" data-label="Liste de vidéos (tutoriels)" data-nocode><div class="yt-list" id="y3"></div></div>
+      </section>
+
+      <section class="doc-section" id="audio" data-title="Lecteur audio" data-cols="2" data-source="Media.audio()">
+        <div class="demo" data-label="Par défaut"><template class="demo-code">Media.audio(el, { tracks: [{ title: 'Appel client', artist: 'Support', src: url, blob: blob }] });</template><div id="a1"></div></div>
+        <div class="demo" data-label="Note vocale (compact)" data-hint="variant: 'compact'" data-nocode><div id="a2"></div></div>
+        <div class="demo" data-label="Playlist" data-hint="variant: 'playlist'" data-nocode><div id="a3"></div></div>
+        <div class="demo" data-label="Vide" data-nocode><div id="a4"></div></div>
+      </section>
+
+      <section class="doc-section" id="pdf" data-title="Lecteur PDF" data-cols="2" data-source="Media.pdf()">
+        <div class="demo" data-label="Document multi-pages"><template class="demo-code">Media.pdf(el, { src: URL.createObjectURL(blob), name: 'contrat-cadre-2026.pdf', height: '460px' });</template><div id="p1"></div></div>
+        <div class="demo" data-label="Fichier local" data-nocode><label class="ui-btn ui-btn--outlined" style="margin-bottom:10px"><span class="mi">upload_file</span>Choisir un PDF<input type="file" accept="application/pdf" hidden id="p2-in"></label><div id="p2"><div class="center-state muted small"><span class="mi">picture_as_pdf</span>Aucun document sélectionné</div></div></div>
+      </section>
+
+      <section class="doc-section" id="viewer" data-title="Visionneuse de fichiers" data-toc="Visionneuse" data-source="Media.viewer()" data-desc="Plein écran : images (zoom), PDF, vidéo, audio, texte ; navigation au clavier ← →, téléchargement.">
+        <div class="demo" data-label="Pièces jointes" data-nocode><div class="att" id="att"></div></div>
+      </section>
+
+      <section class="doc-section" id="carousel" data-title="Carrousel" data-cols="2" data-source="Media.carousel()">
+        <div class="demo" data-label="Lecture auto + points"><template class="demo-code">Media.carousel(el, { items: [{ url, title, caption }], autoplay: 5000, indicators: 'dots' });</template><div id="cr1"></div></div>
+        <div class="demo" data-label="Galerie à vignettes" data-nocode><div id="cr2"></div></div>
+        <div class="demo" data-label="Plusieurs éléments + contenu libre" data-nocode><div class="multi" id="cr3"></div></div>
+        <div class="demo" data-label="Bannière (format large)" data-nocode><div id="cr4"></div></div>
+      </section>
+
+      <section class="doc-section" id="image-gallery" data-title="Galerie d'images" data-toc="Galerie" data-cols="2">
+        <div class="demo" data-label="Lignes justifiées + filtres + sélection" data-nocode><div class="filters" id="gf"></div><div class="just" id="g1"></div></div>
+        <div class="demo" data-label="Grille carrée" data-nocode><div class="grid-sq" id="g2"></div></div>
+        <div class="demo" data-label="Grille 16:9" data-nocode><div class="grid-sq grid-169" id="g3"></div></div>
+      </section>
+
+      <section class="doc-section" id="video-gallery" data-title="Galerie vidéo" data-cols="2">
+        <div class="demo" data-label="Mode cinéma + playlist" data-nocode><div class="theater"><div id="vt"></div><ol class="pl" id="vt-pl"></ol></div></div>
+        <div class="demo" data-label="Mode grille" data-nocode><div class="vgrid" id="vg"></div></div>
+      </section>
+
+      <section class="doc-section" id="masonry" data-title="Grille masonry" data-cols="2" data-source="columns CSS">
+        <div class="demo" data-label="Cartes d'activité" data-nocode><div class="masonry" id="ms1"></div></div>
+        <div class="demo" data-label="Images (proportions d'origine)" data-nocode><div class="masonry" id="ms2" style="columns:3 120px"></div></div>
+      </section>
+
+      <section class="doc-section" id="cropper" data-title="Recadrage d'image / avatar" data-toc="Recadrage" data-cols="2" data-desc="Glisser pour déplacer, molette ou curseur pour zoomer ; export en PNG.">
+        <div class="demo" data-label="Avatar (cadre rond)" data-nocode><div data-crop="1" data-round></div></div>
+        <div class="demo" data-label="Bannière 16:9" data-nocode><div data-crop="1.7778"></div></div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/data/media.js"></script>
+  <script src="../js/media.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, D = DATA, Me = Media;
+    var imgs = D.buildSampleImages(), set = D.buildSampleImageSet(14);
+    function wav(sec, seed) { var b = D.buildSampleWav(sec, seed); return { blob: b, src: URL.createObjectURL(b) }; }
+
+    D.recordSampleVideo(6).then(function (b) { var u = b ? URL.createObjectURL(b) : null;
+      Me.video($('v1'), { src: u, poster: imgs[0].url, emptyLabel: 'MediaRecorder indisponible dans ce navigateur.' });
+      Me.video($('v4'), { src: u, aspectRatio: '9 / 16', poster: imgs[2].url });
+      videoGalleries(u); });
+    Me.video($('v2'), { emptyLabel: 'Choisissez un fichier vidéo sur votre poste.' });
+    $('v2-in').onchange = function () { if (this.files[0]) Me.video($('v2'), { src: URL.createObjectURL(this.files[0]) }); };
+    Me.video($('v3'), { emptyLabel: 'La vidéo n’est plus disponible (lien expiré).' });
+
+    Me.youtube($('y1'), { id: 'aqz-KE-bpKQ', title: 'Big Buck Bunny', duration: '10:34' });
+    function yt() { var m = $('yurl').value.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/); if (m) Me.youtube($('y2'), { id: m[1], title: 'Vidéo YouTube' }); else UIKit.toast('URL YouTube non reconnue'); }
+    $('yload').onclick = yt; yt();
+    $('y3').innerHTML = [['eRsGyueVLvQ', 'Sintel', '14:48'], ['aqz-KE-bpKQ', 'Big Buck Bunny', '10:34']].map(function (v, i) { return '<figure style="margin:0"><div id="yl' + i + '"></div><figcaption>' + v[1] + '</figcaption></figure>'; }).join('');
+    [['eRsGyueVLvQ', 'Sintel', '14:48'], ['aqz-KE-bpKQ', 'Big Buck Bunny', '10:34']].forEach(function (v, i) { Me.youtube($('yl' + i), { id: v[0], title: v[1], duration: v[2] }); });
+
+    var t1 = wav(12, 1), t2 = wav(6, 2), t3 = wav(9, 3), t4 = wav(7, 4);
+    Me.audio($('a1'), { tracks: [Object.assign({ title: 'Appel client — Transports Yao', artist: 'Support · 14/10/2026', icon: 'support_agent' }, t1)] });
+    Me.audio($('a2'), { variant: 'compact', tracks: [Object.assign({ title: 'Note vocale', artist: 'Koffi N’Guessan' }, t2)] });
+    Me.audio($('a3'), { variant: 'playlist', tracks: [Object.assign({ title: 'Briefing équipe', artist: 'Lundi 9 h' }, t3), Object.assign({ title: 'Compte rendu intervention', artist: 'Aminata Diallo' }, t4), Object.assign({ title: 'Appel client', artist: 'Support' }, t1)] });
+    Me.audio($('a4'), { tracks: [] });
+
+    var pdfBlob = D.buildSamplePdf('Contrat cadre 2026', 4), pdfUrl = URL.createObjectURL(pdfBlob);
+    Me.pdf($('p1'), { src: pdfUrl, name: 'contrat-cadre-2026.pdf', height: '460px' });
+    $('p2-in').onchange = function () { var f = this.files[0]; if (f) Me.pdf($('p2'), { src: URL.createObjectURL(f), name: f.name, height: '420px' }); };
+
+    var csv = new Blob(['code;client;montant\nFAC-0981;Transports Yao;1250000\nFAC-0982;Bolloré;890000\n'], { type: 'text/csv' });
+    var files = [{ name: imgs[0].name, url: imgs[0].url, type: 'image/jpeg', size: 182000 }, { name: imgs[1].name, url: imgs[1].url, type: 'image/jpeg', size: 164000 },
+      { name: 'contrat-cadre-2026.pdf', url: pdfUrl, type: 'application/pdf', size: pdfBlob.size, blob: pdfBlob }, { name: 'appel-client.wav', url: t1.src, type: 'audio/wav', size: t1.blob.size, blob: t1.blob },
+      { name: 'factures.csv', url: URL.createObjectURL(csv), type: 'text/csv', size: csv.size, blob: csv }];
+    $('att').innerHTML = files.map(function (f, i) { var img = f.type.indexOf('image') === 0; return '<button type="button" data-i="' + i + '"><span class="th">' + (img ? '<img src="' + f.url + '" alt="">' : '<span class="mi">' + (Me.ICON && Me.ICON[Me.kind(f.name, f.type)] || 'description') + '</span>') + '</span><strong>' + f.name + '</strong><small>' + Me.fmt(f.size) + '</small></button>'; }).join('');
+    $('att').onclick = function (e) { var b = e.target.closest('[data-i]'); if (b) Me.viewer(files, +b.dataset.i); };
+
+    var slides = imgs.map(function (s) { return { url: s.url, title: s.name, caption: s.caption }; });
+    Me.carousel($('cr1'), { items: slides, autoplay: 5000 });
+    Me.carousel($('cr2'), { items: slides, indicators: 'thumbs', aspectRatio: '16 / 10' });
+    $('cr3').innerHTML = [['bolt', 'primary', 'Installation rapide', 'Une balise posée en 45 minutes, sans immobiliser le véhicule.'], ['notifications_active', 'warning', 'Alertes en temps réel', 'Sortie de zone, excès de vitesse, coupure d’alimentation.'], ['insights', 'success', 'Rapports mensuels', 'Kilométrage, consommation et temps d’arrêt par véhicule.'], ['support_agent', 'info', 'Support 7j/7', 'Une équipe technique à Abidjan, Bouaké et San-Pédro.']]
+      .map(function (c) { return '<article style="--tone:var(--' + c[1] + ')"><span class="mi">' + c[0] + '</span><strong>' + c[2] + '</strong><p>' + c[3] + '</p></article>'; }).join('');
+    Me.carousel($('cr4'), { items: slides.slice(0, 3), aspectRatio: '3 / 1', autoplay: 6000 });
+
+    var cat = 'Tous', sel = new Set();
+    function gallery() { var cats = ['Tous'].concat(set.map(function (s) { return s.category; }).filter(function (c, i, a) { return a.indexOf(c) === i; }));
+      $('gf').innerHTML = cats.map(function (c) { return '<button class="ui-filter-chip' + (c === cat ? ' on' : '') + '" data-c="' + c + '">' + c + '</button>'; }).join('') + '<span class="sp"></span><span class="muted small">' + sel.size + ' sélectionnée(s)</span>';
+      var vis = set.filter(function (s) { return cat === 'Tous' || s.category === cat; });
+      $('g1').innerHTML = vis.map(function (s) { var k = set.indexOf(s); return '<figure data-k="' + k + '" class="' + (sel.has(k) ? 'sel' : '') + '" style="--r:' + (s.width / s.height).toFixed(2) + '"><img src="' + s.url + '" alt="' + s.name + '"><button class="ck" data-sel="' + k + '" aria-label="Sélectionner"><span class="mi" style="font-size:16px">check</span></button></figure>'; }).join(''); }
+    $('gf').onclick = function (e) { var b = e.target.closest('[data-c]'); if (b) { cat = b.dataset.c; gallery(); } };
+    $('g1').onclick = function (e) { var s = e.target.closest('[data-sel]'); if (s) { var k = +s.dataset.sel; sel.has(k) ? sel.delete(k) : sel.add(k); gallery(); return; } var f = e.target.closest('[data-k]'); if (f) Me.viewer(set.map(function (s) { return { name: s.name, url: s.url, type: 'image/png' }; }), +f.dataset.k); };
+    gallery();
+    function grid(id, list) { $(id).innerHTML = list.map(function (s, i) { return '<img src="' + s.url + '" alt="' + s.name + '" data-i="' + i + '">'; }).join(''); $(id).onclick = function (e) { var im = e.target.closest('img'); if (im) Me.viewer(list.map(function (s) { return { name: s.name, url: s.url, type: 'image/png' }; }), +im.dataset.i); }; }
+    grid('g2', set.slice(0, 9)); grid('g3', imgs);
+
+    function videoGalleries(u) {
+      var V = [['Trajet CI-4521-AB', '0:06', 'Caméra embarquée'], ['Freinage brusque · CI-9902-NP', '0:06', 'Alerte conduite'], ['Sortie de zone · Port-Bouët', '0:06', 'Géofence'], ['Livraison Yopougon', '0:06', 'Tournée du matin']], cur = 0;
+      function th() { Me.video($('vt'), { src: u, poster: imgs[cur % imgs.length].url }); $('vt-pl').innerHTML = V.map(function (v, i) { return '<li class="' + (i === cur ? 'on' : '') + '" data-i="' + i + '"><span class="thumb"><span class="mi">play_arrow</span></span><span><strong>' + v[0] + '</strong><br><small>' + v[2] + ' · ' + v[1] + '</small></span></li>'; }).join(''); }
+      $('vt-pl').onclick = function (e) { var l = e.target.closest('[data-i]'); if (l) { cur = +l.dataset.i; th(); } }; th();
+      $('vg').innerHTML = V.slice(0, 3).map(function (v, i) { return '<figure style="margin:0"><div id="vg' + i + '"></div><figcaption><strong>' + v[0] + '</strong><br><span class="muted small">' + v[2] + '</span></figcaption></figure>'; }).join('');
+      V.slice(0, 3).forEach(function (v, i) { Me.video($('vg' + i), { src: u, poster: imgs[i].url }); });
+    }
+
+    $('ms1').innerHTML = [['local_shipping', 'Nouvelle balise', 'CI-4521-AB équipé d’une balise GT06 par Koffi N’Guessan.'], ['receipt_long', 'Facture payée', 'FAC-2026-0981 · 1 250 000 FCFA réglée par Orange Money. Le reçu a été envoyé automatiquement au client, avec copie au gestionnaire.'], ['warning', 'Alerte', '3 balises hors ligne depuis 24 h.'],
+      ['groups', 'Nouveau client', 'Coulibaly Frères Transit rejoint la plateforme avec 18 véhicules.'], ['build', 'Intervention clôturée', 'Remplacement d’antenne GPS, client satisfait (5/5). Prochaine visite de contrôle planifiée dans six mois.'], ['insights', 'Rapport', 'Rapport mensuel d’octobre disponible.']]
+      .map(function (c) { return '<div class="mcard"><span class="mi">' + c[0] + '</span> <strong>' + c[1] + '</strong><p>' + c[2] + '</p></div>'; }).join('');
+    $('ms2').innerHTML = set.slice(0, 9).map(function (s) { return '<img src="' + s.url + '" alt="' + s.name + '">'; }).join('');
+
+    document.querySelectorAll('[data-crop]').forEach(function (host, n) {
+      var ratio = +host.dataset.crop, round = host.hasAttribute('data-round'), src = imgs[n + 1].url;
+      host.innerHTML = '<div class="crop"><div><div class="crop-stage"><img alt="" draggable="false"><div class="crop-mask"><i></i></div></div><div class="crop-ctl"><span class="mi">zoom_out</span><input type="range" min="1" max="3" step="0.01" value="1" aria-label="Zoom"><span class="mi">zoom_in</span><label class="ui-btn ui-btn--text ui-btn--sm"><span class="mi">upload</span>Autre image<input type="file" accept="image/*" hidden></label></div></div><div class="crop-out"><canvas></canvas><button class="ui-btn ui-btn--sm"><span class="mi">crop</span>Exporter</button><span></span></div></div>';
+      var stage = host.querySelector('.crop-stage'), img = host.querySelector('img'), frame = host.querySelector('.crop-mask i'), zoom = host.querySelector('input[type=range]'), cv = host.querySelector('canvas'), st = { x: 0, y: 0, z: 1, base: 1 };
+      function size() { var W = stage.clientWidth, H = stage.clientHeight, fh = Math.min(H - 40, (W - 40) / ratio), fw = fh * ratio; frame.style.width = fw + 'px'; frame.style.height = fh + 'px'; frame.style.borderRadius = round ? '50%' : '8px'; return { fw: fw, fh: fh }; }
+      function fit() { var f = size(); st.base = Math.max(f.fw / img.naturalWidth, f.fh / img.naturalHeight); st.x = st.y = 0; st.z = 1; zoom.value = 1; apply(); }
+      function clamp() { var f = size(), s = st.base * st.z, mx = Math.max(0, (img.naturalWidth * s - f.fw) / 2), my = Math.max(0, (img.naturalHeight * s - f.fh) / 2); st.x = Math.max(-mx, Math.min(mx, st.x)); st.y = Math.max(-my, Math.min(my, st.y)); }
+      function apply() { clamp(); var s = st.base * st.z; img.style.width = img.naturalWidth + 'px'; img.style.transform = 'translate(calc(-50% + ' + st.x + 'px), calc(-50% + ' + st.y + 'px)) scale(' + s + ')'; }
+      function exp() { var f = size(), s = st.base * st.z, outW = round ? 128 : 256, outH = Math.round(outW / ratio); cv.width = outW; cv.height = outH; cv.style.width = (round ? 96 : 150) + 'px'; cv.style.borderRadius = round ? '50%' : '6px'; var g = cv.getContext('2d');
+        var sx = img.naturalWidth / 2 - (f.fw / 2 + st.x) / s, sy = img.naturalHeight / 2 - (f.fh / 2 + st.y) / s; g.clearRect(0, 0, outW, outH); g.drawImage(img, sx, sy, f.fw / s, f.fh / s, 0, 0, outW, outH);
+        host.querySelector('.crop-out span').textContent = outW + ' × ' + outH + ' px · PNG'; }
+      img.onload = function () { fit(); exp(); }; img.src = src;
+      zoom.oninput = function () { st.z = +zoom.value; apply(); };
+      stage.addEventListener('wheel', function (e) { e.preventDefault(); st.z = Math.max(1, Math.min(3, st.z - e.deltaY * 0.0015)); zoom.value = st.z; apply(); }, { passive: false });
+      stage.addEventListener('pointerdown', function (e) { stage.setPointerCapture(e.pointerId); var sx = e.clientX - st.x, sy = e.clientY - st.y; stage.onpointermove = function (ev) { st.x = ev.clientX - sx; st.y = ev.clientY - sy; apply(); }; stage.onpointerup = function () { stage.onpointermove = null; exp(); }; });
+      host.querySelector('.crop-out button').onclick = function () { exp(); cv.toBlob(function (b) { var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = round ? 'avatar.png' : 'banniere.png'; a.click(); }); };
+      host.querySelector('input[type=file]').onchange = function () { if (this.files[0]) img.src = URL.createObjectURL(this.files[0]); };
+      new ResizeObserver(function () { if (img.naturalWidth) { apply(); } }).observe(stage);
+    });
+  })();
+  </script>
+</body>
+</html>

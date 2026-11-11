@@ -46,7 +46,7 @@
 .palette-btn .mi { font-size: 19px; } .palette-btn .pb-label { flex: 1; text-align: left; } .palette-btn:hover { background: var(--surface-container-highest, var(--hover-bg)); color: var(--text-secondary); }
 .pb-kbd { display: inline-flex; gap: 3px; } .pb-kbd kbd, .kc-in kbd { min-width: 18px; padding: 1px 5px; border-radius: 5px; background: var(--card-bg); box-shadow: inset 0 -1px 0 var(--border), 0 0 0 1px var(--border); font: 600 10.5px var(--font-sans); color: var(--text-secondary); text-align: center; }
 .kit-content { flex: 1; min-height: 0; overflow: auto; }
-.kit-content:not(:has(> .doc-page)) { padding: 24px 32px 64px; }
+.kit-content:not(:has(> .doc-page, kit-doc-page)) { padding: 24px 32px 64px; }
 .kit-theme-panel { right: 0; left: auto; width: 268px; padding: 12px; } .ktp-title { margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
 .kit-themes { display: grid; grid-template-columns: repeat(8, 24px); gap: 6px; } .kit-themes button { width: 24px; height: 24px; padding: 0; border: 2px solid var(--card-bg); border-radius: 50%; box-shadow: 0 0 0 1px var(--border); cursor: pointer; }
 .kit-themes button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--text-primary); }
@@ -68,9 +68,9 @@
   .kit-toolbar .spacer { flex: 1 1 0; min-width: 0; }
   .palette-btn { min-width: 0; width: 40px; padding: 0; justify-content: center; } .palette-btn .pb-label, .palette-btn .pb-kbd { display: none; }
   .kit-toolbar .app-link { min-width: 40px; padding: 0 8px; } .kit-toolbar .app-link span:not(.mi) { display: none; }
-  .kit-content:not(:has(> .doc-page)) { padding: 16px; }
+  .kit-content:not(:has(> .doc-page, kit-doc-page)) { padding: 16px; }
 }
 .kit-container .kit-content.ui-content { max-width: none; }
-.kit-container .kit-content.ui-content:has(> .doc-page) { padding: 0; }
+.kit-container .kit-content.ui-content:has(> .doc-page, kit-doc-page) { padding: 0; }
 .kit-theme { position: relative; } .kit-theme > summary { list-style: none; } .kit-theme > summary::-webkit-details-marker { display: none; }
 .kit-theme-pop { position: absolute; z-index: 60; top: calc(100% + 8px); right: 0; }

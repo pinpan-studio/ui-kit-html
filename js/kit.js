@@ -47,7 +47,7 @@
   function section(title, icon, items) {
     return '<div class="menu-section"><div class="section-header"><span class="mi section-icon">' + icon + '</span><span class="section-title">' + title + '</span></div><div class="section-items">' + items.map(function (i) { return item(i); }).join('') + '</div></div>';
   }
-  var pagesOpen = ACTIVE === 'pages.html';
+  var pagesOpen = true; // ouverte par défaut, comme dans ui-kit
   function pagesSection() {
     var reg = window.PAGE_REGISTRY || [];
     return '<div class="menu-section" id="kit-pages"><button type="button" class="section-header clickable" data-pages-toggle aria-expanded="' + pagesOpen + '"><span class="mi section-icon">view_quilt</span><span class="section-title">Pages</span><span class="spacer"></span><span class="mi chevron' + (pagesOpen ? ' open' : '') + '">expand_more</span></button>' +

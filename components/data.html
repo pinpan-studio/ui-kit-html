@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr" data-mode="system" class="theme-cyan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data display</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/doc.css">
+  <script src="../js/themes.js"></script>
+  <script src="../js/ui-kit.js"></script>
+  <style>
+    .tbl { width: 100%; border-collapse: collapse; font-size: 13px; } .tbl-wrap { overflow-x: auto; }
+    .tbl th { padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); background: var(--hover-bg); white-space: nowrap; }
+    .tbl td { padding: 10px 12px; border-top: 1px solid var(--border); white-space: nowrap; } .tbl tbody tr:hover { background: var(--hover-bg); } .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .tbl th.sort { cursor: pointer; user-select: none; } .tbl th.sort .mi { font-size: 14px; vertical-align: -2px; opacity: .4; } .tbl th.sort.on .mi { opacity: 1; color: var(--primary); }
+    .code { font: 12px var(--font-mono); padding: 2px 6px; border-radius: 6px; background: var(--hover-bg); }
+    .who { display: flex; align-items: center; gap: 8px; } .ava { display: grid; place-items: center; width: 30px; height: 30px; flex: none; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 700; }
+    .center-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 160px; text-align: center; color: var(--text-muted); } .center-state .mi { font-size: 36px; }
+    .center-state.err .mi { color: var(--error); } .spin-lg { width: 32px; height: 32px; border-width: 3px; color: var(--primary); }
+    .skel-row { display: grid; grid-template-columns: 30px 1.4fr 1fr .8fr .6fr; gap: 16px; align-items: center; padding: 12px; border-top: 1px solid var(--border); } .skel-row span { height: 12px; }
+    .skel-row span:first-child { height: 30px; border-radius: 50%; }
+    .ecard { display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); }
+    .ecard-head { display: flex; align-items: center; gap: 12px; } .ecard-head .t { flex: 1; min-width: 0; } .ecard-head strong { display: block; } .ecard-head small { color: var(--text-muted); font-size: 12px; }
+    .ecard-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-secondary); } .ecard-meta span { display: inline-flex; align-items: center; gap: 4px; } .ecard-meta .mi { font-size: 15px; }
+    .ecard-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); font-size: 13px; }
+    .metric { padding: 16px; border-radius: var(--radius-lg); background: var(--card-bg); border: 1px solid var(--border); } .metric small { font-size: 12px; color: var(--text-muted); } .metric b { display: block; margin: 4px 0; font-size: 26px; }
+    .delta { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; } .delta.up { color: var(--success-text); } .delta.down { color: var(--error-text); } .delta .mi { font-size: 16px; }
+    .sel-card { position: relative; display: flex; gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card-bg); cursor: pointer; text-align: left; font: inherit; color: inherit; width: 100%; }
+    .sel-card.on { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); background: var(--primary-soft); } .sel-card .chk { position: absolute; top: 10px; right: 10px; color: var(--primary); }
+    .mini-list { margin: 0; padding: 0; list-style: none; } .mini-list li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; font-size: 13px; } .mini-list li + li { border-top: 1px solid var(--border); } .mini-list span { color: var(--text-muted); }
+    .list { margin: 0; padding: 0; list-style: none; } .list li { display: flex; align-items: center; gap: 12px; padding: 10px 6px; border-radius: 8px; } .list li:hover { background: var(--hover-bg); } .list .t { flex: 1; display: flex; flex-direction: column; font-size: 14px; } .list small { font-size: 12px; color: var(--text-muted); }
+    .alert-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--tone) 8%, transparent); font-size: 13px; } .alert-row + .alert-row { margin-top: 6px; } .alert-row .mi { color: var(--tone); } .alert-row .t { flex: 1; }
+    .tl { margin: 0; padding: 0; list-style: none; } .tl li { position: relative; display: flex; gap: 12px; padding-bottom: 18px; } .tl li:not(:last-child)::before { content: ''; position: absolute; left: 15px; top: 32px; bottom: 0; width: 2px; background: var(--border); }
+    .tl .dot { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone); } .tl .dot .mi { font-size: 17px; }
+    .tl .c { flex: 1; } .tl strong { font-size: 14px; } .tl p { margin: 2px 0; font-size: 13px; color: var(--text-secondary); } .tl time { font-size: 12px; color: var(--text-muted); }
+    .stick { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; } .row-legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; }
+    .ava-stack { display: flex; } .ava-stack .ava { margin-left: -8px; border: 2px solid var(--card-bg); } .ava-stack .ava:first-child { margin-left: 0; } .ava-stack .more { background: var(--hover-bg); color: var(--text-secondary); }
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; } @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .kpi { padding: 16px; border-radius: var(--radius-lg); background: var(--card-bg); border: 1px solid var(--border); } .kpi .h { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+    .kpi .ic { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone); } .kpi b { display: block; margin: 8px 0 4px; font-size: 24px; }
+    .chart-box { height: 240px; } .chart-box.sm { height: 200px; }
+    .gauge { display: flex; flex-direction: column; align-items: center; } .gauge svg { width: 220px; } .gauge b { margin-top: -40px; font-size: 28px; } .gauge small { color: var(--text-muted); }
+    .bars { display: flex; flex-direction: column; gap: 14px; } .bars .top { display: flex; justify-content: space-between; font-size: 13px; } .bars .ui-progress { margin-top: 6px; }
+    .empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; text-align: center; } .empty .ic { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--hover-bg); color: var(--text-muted); } .empty .ic .mi { font-size: 32px; }
+    .empty h4 { margin: 4px 0 0; } .empty p { margin: 0; max-width: 360px; font-size: 13px; color: var(--text-secondary); }
+    .counter-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; } @media (max-width: 900px) { .counter-grid { grid-template-columns: repeat(2, 1fr); } }
+    .diff { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; font: 12.5px/1.65 var(--font-mono); }
+    .diff-head { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; background: var(--hover-bg); font-family: var(--font-sans); font-size: 12px; } .diff-head .add { color: var(--success-text); } .diff-head .del { color: var(--error-text); }
+    .diff-line { display: grid; grid-template-columns: 40px 40px 18px 1fr; } .diff-line span { padding: 0 6px; } .diff-line .no { text-align: right; color: var(--text-muted); user-select: none; } .diff-line .tx { white-space: pre-wrap; word-break: break-word; }
+    .diff-line.add { background: color-mix(in srgb, var(--success) 10%, transparent); } .diff-line.del { background: color-mix(in srgb, var(--error) 10%, transparent); } .diff-line ins { background: color-mix(in srgb, var(--success) 30%, transparent); text-decoration: none; } .diff-line del { background: color-mix(in srgb, var(--error) 28%, transparent); }
+    .diff.split .diff-line { grid-template-columns: 34px 1fr 34px 1fr; } .diff-ctl { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+    .qr-grid { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px; }
+    .label-card { display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px dashed var(--border); border-radius: var(--radius-md); }
+  </style>
+</head>
+<body data-kit data-root="../" data-active="components/data.html">
+  <main id="kit-content">
+    <div class="doc-page" data-title="Data display" data-icon="table_chart" data-subtitle="Tables (dont table avancée), cartes, listes, liste descriptive, chronologie, badges, avatars, compteurs, graphiques, diff, historique des modifications, QR code.">
+
+      <section class="doc-section" id="table" data-title="Table" data-source="table.tbl">
+        <div class="demo" data-label="Table complète" data-hint="cliquez un en-tête pour trier" data-flush data-nocode><div class="tbl-wrap"><table class="tbl" id="t1"></table></div></div>
+      </section>
+
+      <section class="doc-section" id="table-states" data-title="États de table" data-cols="2">
+        <div class="demo" data-label="Loading — spinner"><div class="center-state"><span class="ui-spinner spin-lg"></span>Chargement des clients…</div></div>
+        <div class="demo" data-label="Loading — skeleton" data-flush data-nocode><div id="skel"></div></div>
+        <div class="demo" data-label="Empty"><div class="center-state"><span class="mi">search_off</span><strong>Aucun client trouvé</strong><span class="small">Modifiez les filtres ou la recherche.</span></div></div>
+        <div class="demo" data-label="Error"><div class="center-state err"><span class="mi">cloud_off</span><strong>Impossible de charger les données</strong><button class="ui-btn ui-btn--outlined ui-btn--sm"><span class="mi">refresh</span>Réessayer</button></div></div>
+      </section>
+
+      <section class="doc-section" id="data-table" data-title="Data table" data-source="DataTable.mount()" data-desc="Table de données complète : recherche, tri, pagination, sélection, colonnes masquables, densité, export.">
+        <div class="demo" data-label="Table triable et paginée" data-flush><template class="demo-code">DataTable.mount(el, { rows: CLIENTS, pageSize: 8, columns: [
+  { key: 'code', label: 'Code', type: 'mono' },
+  { key: 'statut', label: 'Statut', type: 'badge', tone: function (r) { return STATUT_COLOR[r.statut]; } },
+  { key: 'ca_mensuel', label: 'CA mensuel', type: 'number', format: function (r) { return fcfa(r.ca_mensuel); } }] });</template><div id="dt"></div></div>
+      </section>
+
+      <section class="doc-section" id="cards" data-title="Cards" data-cols="3">
+        <div class="demo" data-label="Carte entité (registre)" data-muted>
+          <article class="ecard"><div class="ecard-head"><span class="ava" style="background:#0f766e">TY</span><div class="t"><strong>Transports Yao &amp; Fils</strong><small>CLI-1040 · Transport</small></div><span class="ui-badge ui-badge--success">Actif</span></div>
+            <div class="ecard-meta"><span><span class="mi">location_on</span>Abidjan</span><span><span class="mi">directions_car</span>48 véhicules</span><span><span class="mi">person</span>Jean Kouassi</span></div>
+            <div class="ecard-foot"><span class="muted">CA mensuel</span><strong>2 150 000 F</strong></div></article>
+        </div>
+        <div class="demo" data-label="Carte simple" data-muted><div class="ui-card"><h3 style="margin:0 0 6px">Abonnement Premium</h3><p class="muted small" style="margin:0 0 12px">Géolocalisation temps réel, alertes, rapports mensuels.</p><button class="ui-btn ui-btn--sm">Choisir</button></div></div>
+        <div class="demo" data-label="Carte panneau (fiche détail)" data-muted><div class="ui-card"><div class="row" style="justify-content:space-between;margin-bottom:8px"><strong>Contrat</strong><button class="ui-btn ui-btn--icon" aria-label="Modifier"><span class="mi">edit</span></button></div><ul class="mini-list"><li><span>Offre</span>Premium Flotte</li><li><span>Début</span>01/03/2024</li><li><span>Échéance</span>28/02/2027</li></ul></div></div>
+        <div class="demo" data-label="Carte métrique" data-muted><div class="metric"><small>Encaissements du mois</small><b>48,7 M</b><span class="delta up"><span class="mi">trending_up</span>+12,4 %</span> <span class="muted small">vs septembre</span></div></div>
+        <div class="demo" data-label="Carte avec graphique (sparkline)" data-muted data-nocode><div class="metric"><small>Véhicules en ligne</small><b>1 186</b><div id="spark" style="height:48px"></div></div></div>
+        <div class="demo" data-label="Carte sélectionnable" data-muted>
+          <div class="stack" data-selgroup><button type="button" class="sel-card on"><span class="mi">bolt</span><span><strong>Standard</strong><br><small class="muted">15 000 F / véhicule</small></span><span class="mi chk">check_circle</span></button><button type="button" class="sel-card"><span class="mi">workspace_premium</span><span><strong>Premium</strong><br><small class="muted">25 000 F / véhicule</small></span><span class="mi chk" hidden>check_circle</span></button></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="list" data-title="List" data-cols="3">
+        <div class="demo" data-label="Mini-liste (fiche détail)"><ul class="mini-list"><li><span>Raison sociale</span>Bolloré Logistics CI</li><li><span>Ville</span>Abidjan</li><li><span>Secteur</span>Logistique</li><li><span>Véhicules</span>124</li></ul></div>
+        <div class="demo" data-label="Liste avec avatars" data-nocode><ul class="list" id="l-ava"></ul></div>
+        <div class="demo" data-label="Liste de sélection"><div class="stack"><label class="ui-check"><input type="checkbox" checked>Rapport hebdomadaire</label><label class="ui-check"><input type="checkbox">Alertes de vitesse</label><label class="ui-check"><input type="checkbox" checked>Sorties de zone</label><label class="ui-check"><input type="checkbox">Niveau de carburant</label></div></div>
+        <div class="demo" data-label="Alertes (tableau de bord)">
+          <div class="alert-row" style="--tone:var(--error)"><span class="mi">error</span><span class="t">3 balises hors ligne depuis 24 h</span><button class="ui-btn ui-btn--text ui-btn--sm">Voir</button></div>
+          <div class="alert-row" style="--tone:var(--warning)"><span class="mi">warning</span><span class="t">12 factures échues</span><button class="ui-btn ui-btn--text ui-btn--sm">Relancer</button></div>
+          <div class="alert-row" style="--tone:var(--info)"><span class="mi">info</span><span class="t">Synchronisation Wialon terminée</span></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="timeline" data-title="Timeline"><div class="demo" data-label="Historique vertical" data-nocode><ol class="tl" id="tl"></ol></div></section>
+
+      <section class="doc-section" id="badge" data-title="Badge" data-cols="2" data-source=".ui-badge">
+        <div class="demo" data-label="Badges de statut — couleurs"><div class="row"><span class="ui-badge ui-badge--success">Actif</span><span class="ui-badge ui-badge--warning">Suspendu</span><span class="ui-badge ui-badge--error">Résilié</span><span class="ui-badge ui-badge--info">En cours</span><span class="ui-badge ui-badge--neutral">Inactif</span><span class="ui-badge">Primaire</span></div></div>
+        <div class="demo" data-label="Avec icône"><div class="row"><span class="ui-badge ui-badge--success"><span class="mi" style="font-size:14px">check_circle</span>Payée</span><span class="ui-badge ui-badge--error"><span class="mi" style="font-size:14px">schedule</span>En retard</span><span class="ui-badge ui-badge--info"><span class="mi" style="font-size:14px">sync</span>Synchronisé</span></div></div>
+        <div class="demo" data-label="Badge de notification"><div class="row"><button class="ui-btn ui-btn--icon ui-badge-dot" aria-label="Notifications"><span class="mi">notifications</span><b>3</b></button><button class="ui-btn ui-btn--icon ui-badge-dot" aria-label="Messages"><span class="mi">mail</span><b class="primary">12</b></button><button class="ui-btn ui-btn--icon ui-badge-dot" aria-label="Tâches"><span class="mi">checklist</span><b>99+</b></button></div></div>
+        <div class="demo" data-label="Pastilles"><div class="row-legend"><span><i class="stick" style="background:var(--success)"></i>En ligne</span><span><i class="stick" style="background:var(--warning)"></i>Signal faible</span><span><i class="stick" style="background:var(--error)"></i>Hors ligne</span><span><i class="stick" style="background:var(--text-muted)"></i>Inconnu</span></div></div>
+      </section>
+
+      <section class="doc-section" id="chip" data-title="Chip" data-cols="2" data-source=".ui-chip">
+        <div class="demo" data-label="Chips"><div class="row"><span class="ui-chip">Transport</span><span class="ui-chip">Logistique</span><span class="ui-chip"><span class="mi" style="font-size:16px">location_on</span>Abidjan</span><button class="ui-chip" aria-label="Retirer Urgent">Urgent <span class="mi" style="font-size:16px">close</span></button></div></div>
+        <div class="demo" data-label="Tags de code / référence"><div class="row"><span class="code">CLI-1040</span><span class="code">FAC-2026-0981</span><span class="code">IMEI 358240051111110</span><span class="code">CI-4521-AB</span></div></div>
+      </section>
+
+      <section class="doc-section" id="avatar" data-title="Avatar" data-cols="3">
+        <div class="demo" data-label="Tailles"><div class="row"><span class="ava" style="background:#0f766e;width:24px;height:24px;font-size:9px">JK</span><span class="ava" style="background:#0f766e">JK</span><span class="ava" style="background:#0f766e;width:40px;height:40px;font-size:14px">JK</span><span class="ava" style="background:#0f766e;width:56px;height:56px;font-size:18px">JK</span></div></div>
+        <div class="demo" data-label="Couleurs de rôle"><div class="row"><span class="ava" style="background:#7c3aed" title="Administrateur">AD</span><span class="ava" style="background:#0284c7" title="Commercial">KN</span><span class="ava" style="background:#ea580c" title="Technicien">SK</span><span class="ava" style="background:#16a34a" title="Finance">FD</span></div></div>
+        <div class="demo" data-label="Groupe (assignés)"><div class="ava-stack"><span class="ava" style="background:#7c3aed">AD</span><span class="ava" style="background:#0284c7">KN</span><span class="ava" style="background:#ea580c">SK</span><span class="ava more">+4</span></div></div>
+      </section>
+
+      <section class="doc-section" id="stats" data-title="Statistics cards" data-toc="Statistiques">
+        <div class="demo" data-label="Grille KPI" data-muted data-nocode><div class="kpis" id="kpis"></div></div>
+        <div class="demo" data-label="KPI — chargement" data-muted><div class="kpis"><div class="kpi"><span class="ui-skeleton" style="width:60%;height:12px;display:block"></span><span class="ui-skeleton" style="width:40%;height:24px;display:block;margin:12px 0 8px"></span><span class="ui-skeleton" style="width:70%;height:10px;display:block"></span></div><div class="kpi"><span class="ui-skeleton" style="width:60%;height:12px;display:block"></span><span class="ui-skeleton" style="width:40%;height:24px;display:block;margin:12px 0 8px"></span><span class="ui-skeleton" style="width:70%;height:10px;display:block"></span></div></div></div>
+      </section>
+
+      <section class="doc-section" id="charts" data-title="Graphiques" data-cols="2" data-source="Charts.render() · SVG natif">
+        <div class="demo" data-label="Courbe (évolution du CA)" data-nocode><div class="chart-box" id="c1"></div></div>
+        <div class="demo" data-label="Aires empilées (contrats par offre)" data-nocode><div class="chart-box" id="c2"></div></div>
+        <div class="demo" data-label="Barres (activité)" data-nocode><div class="chart-box" id="c3"></div></div>
+        <div class="demo" data-label="Barres horizontales (interventions par zone)" data-nocode><div class="chart-box" id="c4"></div></div>
+        <div class="demo" data-label="Barres groupées (facturé / encaissé, M FCFA)" data-nocode><div class="chart-box" id="c5"></div></div>
+        <div class="demo" data-label="Barres empilées (activité par type)" data-nocode><div class="chart-box" id="c6"></div></div>
+        <div class="demo" data-label="Mixte barres + courbe (2 axes)" data-nocode><div class="chart-box" id="c7"></div></div>
+        <div class="demo" data-label="Escalier (balises en ligne sur 24 h)" data-nocode><div class="chart-box" id="c8"></div></div>
+        <div class="demo" data-label="Anneau (statuts clients)" data-nocode><div class="chart-box" id="c9"></div></div>
+        <div class="demo" data-label="Jauge (demi-anneau)" data-nocode><div class="gauge" id="g1"></div></div>
+        <div class="demo" data-label="Camembert (marques de balises)" data-nocode><div class="chart-box" id="c10"></div></div>
+        <div class="demo" data-label="Aire polaire (véhicules par ville)" data-nocode><div class="chart-box" id="c11"></div></div>
+        <div class="demo" data-label="Radar (performance équipes)" data-nocode><div class="chart-box" id="c12"></div></div>
+        <div class="demo" data-label="Nuage de points (vitesse / consommation)" data-nocode><div class="chart-box" id="c13"></div></div>
+        <div class="demo" data-label="Bulles (véhicules × disponibilité × CA)" data-nocode><div class="chart-box" id="c14"></div></div>
+        <div class="demo" data-label="Barres de progression"><div class="bars"><div><div class="top"><span>Objectif d'installations</span><strong>78 %</strong></div><div class="ui-progress"><span style="width:78%"></span></div></div><div><div class="top"><span>Recouvrement</span><strong>64 %</strong></div><div class="ui-progress"><span style="width:64%"></span></div></div><div><div class="top"><span>Satisfaction</span><strong>92 %</strong></div><div class="ui-progress"><span style="width:92%"></span></div></div></div></div>
+      </section>
+
+      <section class="doc-section" id="empty" data-title="Empty state" data-cols="3">
+        <div class="demo" data-label="Par défaut"><div class="empty"><span class="ic"><span class="mi">inbox</span></span><h4>Aucune donnée</h4><p>Les éléments apparaîtront ici dès qu'ils seront créés.</p></div></div>
+        <div class="demo" data-label="Avec action"><div class="empty"><span class="ic"><span class="mi">group_add</span></span><h4>Aucun client</h4><p>Commencez par ajouter votre premier client au référentiel.</p><button class="ui-btn"><span class="mi">add</span>Nouveau client</button></div></div>
+        <div class="demo" data-label="Section vide (fiche détail)"><div class="empty" style="padding:12px"><span class="mi muted" style="font-size:28px">receipt_long</span><p>Aucune facture pour ce client.</p><button class="ui-btn ui-btn--text ui-btn--sm">Créer une facture</button></div></div>
+      </section>
+
+      <section class="doc-section" id="advanced-table" data-title="Table avancée" data-source="DataTable.mount() · options étendues" data-desc="Colonnes figées et redimensionnables, sélection multiple avec actions groupées, totaux, densité, colonnes masquables, export CSV.">
+        <div class="demo" data-label="Clients" data-flush data-nocode><div id="adv"></div></div>
+      </section>
+
+      <section class="doc-section" id="description-list" data-title="Liste descriptive (clé / valeur)" data-toc="Liste descriptive" data-cols="3" data-source="UIComp.descList()">
+        <div class="demo" data-label="Verticale, 3 colonnes" data-nocode><div id="dl1"></div></div>
+        <div class="demo" data-label="Horizontale" data-nocode><div id="dl2"></div></div>
+        <div class="demo" data-label="Bordée" data-nocode><div id="dl3" class="ui-card" style="padding:12px"></div></div>
+      </section>
+
+      <section class="doc-section" id="counters" data-title="Compteurs animés & tendances" data-toc="Compteurs" data-source="[data-count] · ExW.counters()">
+        <div class="demo" data-label="KPI animés" data-hint="rejouer : cliquez"><div class="counter-grid" id="cnt">
+          <div class="kpi" style="--tone:var(--primary)"><div class="h">Véhicules suivis<span class="ic"><span class="mi">local_shipping</span></span></div><b data-count="1248">0</b><span class="delta up"><span class="mi">trending_up</span>+4,2 %</span></div>
+          <div class="kpi" style="--tone:var(--success)"><div class="h">CA du mois (F)<span class="ic"><span class="mi">payments</span></span></div><b data-count="55800000">0</b><span class="delta up"><span class="mi">trending_up</span>+9,2 %</span></div>
+          <div class="kpi" style="--tone:var(--warning)"><div class="h">Taux de recouvrement<span class="ic"><span class="mi">percent</span></span></div><b data-count="87.4" data-decimals="1">0</b><span class="delta down"><span class="mi">trending_down</span>−1,1 pt</span></div>
+          <div class="kpi" style="--tone:var(--error)"><div class="h">Balises hors ligne<span class="ic"><span class="mi">signal_wifi_off</span></span></div><b data-count="37">0</b><span class="delta up"><span class="mi">trending_down</span>−12</span></div>
+        </div></div>
+      </section>
+
+      <section class="doc-section" id="diff" data-title="Comparaison de versions (diff)" data-toc="Diff" data-cols="2" data-source="UIKitUtils.diffLines()">
+        <div class="demo" data-label="Contrat — v1 → v2" data-nocode><div class="diff-ctl"><div class="ui-segmented" id="dmode"><button class="on" data-m="unified">Unifié</button><button data-m="split">Côte à côte</button></div></div><div id="d1"></div></div>
+        <div class="demo" data-label="Configuration de balise" data-nocode><div id="d2"></div></div>
+      </section>
+
+      <section class="doc-section" id="audit" data-title="Historique des modifications (audit log)" data-toc="Audit log" data-source="UIComp.auditLog()">
+        <div class="demo" data-label="Activité du compte" data-nocode><div id="audit-log"></div></div>
+      </section>
+
+      <section class="doc-section" id="qr" data-title="QR code & code-barres" data-toc="QR code" data-cols="3" data-source="ExW.qr() · UIKitUtils.encodeQr()">
+        <div class="demo" data-label="Lien de suivi" data-nocode><div class="qr-grid" id="q1"></div></div>
+        <div class="demo" data-label="Wi-Fi & carte de visite" data-nocode><div class="qr-grid" id="q2"></div></div>
+        <div class="demo" data-label="Étiquette de balise" data-nocode><div class="label-card" id="q3"></div></div>
+      </section>
+    </div>
+  </main>
+  <script src="../js/lib/qr-code.js"></script>
+  <script src="../js/lib/diff.js"></script>
+  <script src="../js/data/showcase.js"></script>
+  <script src="../js/ex-widgets.js"></script>
+  <script src="../js/charts.js"></script>
+  <script src="../js/data-table.js"></script>
+  <script src="../js/components.js"></script>
+  <script src="../js/doc.js"></script>
+  <script src="../js/kit.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, D = DATA, esc = UIComp.esc, nf = function (n) { return Number(n).toLocaleString('fr-FR'); };
+    var CL = D.DEMO_CLIENTS, ST = D.STATUT_COLOR, STL = { ACTIF: 'Actif', INACTIF: 'Inactif', SUSPENDU: 'Suspendu', RESILIE: 'Résilié' };
+    var HUES = ['#0f766e', '#0284c7', '#7c3aed', '#ea580c', '#16a34a', '#db2777', '#4f46e5'];
+    function hue(s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return HUES[h % HUES.length]; }
+    function badge(s) { return '<span class="ui-badge ui-badge--' + ST[s] + '">' + STL[s] + '</span>'; }
+
+    var sort = { k: 'raison_sociale', dir: 1 }, COLS = [['code', 'Code'], ['raison_sociale', 'Raison sociale'], ['ville', 'Ville'], ['secteur', 'Secteur'], ['vehicules', 'Véhicules', 1], ['ca_mensuel', 'CA mensuel', 1], ['statut', 'Statut']];
+    function t1() { var rows = CL.slice().sort(function (a, b) { return (a[sort.k] > b[sort.k] ? 1 : a[sort.k] < b[sort.k] ? -1 : 0) * sort.dir; }).slice(0, 8);
+      $('t1').innerHTML = '<thead><tr>' + COLS.map(function (c) { return '<th class="sort' + (sort.k === c[0] ? ' on' : '') + (c[2] ? ' num' : '') + '" data-k="' + c[0] + '" aria-sort="' + (sort.k === c[0] ? (sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '">' + c[1] + ' <span class="mi">' + (sort.k === c[0] && sort.dir < 0 ? 'arrow_downward' : 'arrow_upward') + '</span></th>'; }).join('') + '</tr></thead><tbody>' +
+        rows.map(function (r) { return '<tr><td><span class="code">' + r.code + '</span></td><td><span class="who"><span class="ava" style="background:' + hue(r.raison_sociale) + '">' + UIComp.initials(r.raison_sociale) + '</span>' + esc(r.raison_sociale) + '</span></td><td>' + r.ville + '</td><td>' + r.secteur + '</td><td class="num">' + r.vehicules + '</td><td class="num">' + nf(r.ca_mensuel) + ' F</td><td>' + badge(r.statut) + '</td></tr>'; }).join('') + '</tbody>'; }
+    $('t1').addEventListener('click', function (e) { var th = e.target.closest('th[data-k]'); if (!th) return; sort.dir = sort.k === th.dataset.k ? -sort.dir : 1; sort.k = th.dataset.k; t1(); }); t1();
+    $('skel').innerHTML = [1, 2, 3, 4].map(function () { return '<div class="skel-row"><span class="ui-skeleton"></span><span class="ui-skeleton"></span><span class="ui-skeleton"></span><span class="ui-skeleton"></span><span class="ui-skeleton"></span></div>'; }).join('');
+
+    var cols = [{ key: 'code', label: 'Code', width: 110, type: 'mono', required: true }, { key: 'raison_sociale', label: 'Raison sociale', width: 230 }, { key: 'ville', label: 'Ville', width: 120 }, { key: 'secteur', label: 'Secteur', width: 130 },
+      { key: 'vehicules', label: 'Véhicules', width: 100, type: 'number' }, { key: 'ca_mensuel', label: 'CA mensuel', width: 140, type: 'currency', format: function (r) { return nf(r.ca_mensuel) + ' F'; } },
+      { key: 'statut', label: 'Statut', width: 120, type: 'badge', format: function (r) { return STL[r.statut]; }, tone: function (r) { return ST[r.statut]; } }];
+    DataTable.mount($('dt'), { rows: CL, rowKey: '_id', pageSize: 8, maxHeight: 'none', columns: cols });
+    DataTable.mount($('adv'), { title: 'Clients', rows: CL, rowKey: '_id', pageSize: 10, maxHeight: '520px', selectable: true, bulkActions: [{ label: 'Exporter', icon: 'download' }, { label: 'Suspendre', icon: 'pause_circle' }],
+      columns: cols.map(function (c, i) { var x = Object.assign({}, c); if (i === 0) x.sticky = 'start'; if (c.key === 'ca_mensuel') { x.total = true; x.totalFormat = function (t) { return nf(t) + ' F'; }; } if (c.key === 'vehicules') x.total = true; return x; })
+        .concat([{ key: 'contact', label: 'Contact', width: 160, hidden: true }, { key: 'email', label: 'E-mail', width: 220, hidden: true }]) });
+
+    Charts.render($('spark'), { type: 'spark', data: [1120, 1134, 1150, 1142, 1160, 1171, 1168, 1180, 1186] });
+    $('l-ava').innerHTML = CL.slice(0, 4).map(function (c) { return '<li><span class="ava" style="background:' + hue(c.contact) + '">' + UIComp.initials(c.contact) + '</span><span class="t">' + esc(c.contact) + '<small>' + esc(c.raison_sociale) + '</small></span><span class="mi muted">chevron_right</span></li>'; }).join('');
+    document.querySelectorAll('[data-selgroup]').forEach(function (g) { g.addEventListener('click', function (e) { var b = e.target.closest('.sel-card'); if (!b) return; g.querySelectorAll('.sel-card').forEach(function (x) { x.classList.toggle('on', x === b); x.querySelector('.chk').hidden = x !== b; }); }); });
+    $('tl').innerHTML = D.TIMELINE_EVENTS.map(function (t) { var d = new Date(t.date); return '<li style="--tone:var(--' + t.color + ')"><span class="dot"><span class="mi">' + t.icon + '</span></span><div class="c"><strong>' + esc(t.titre) + '</strong><p>' + esc(t.texte) + '</p><time>' + d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</time></div></li>'; }).join('');
+
+    $('kpis').innerHTML = [['Clients actifs', '312', 'groups', 'primary', '+8', 'up'], ['CA mensuel', '55,8 M', 'payments', 'success', '+9,2 %', 'up'], ['Factures échues', '12', 'receipt_long', 'warning', '+3', 'down'], ['Balises hors ligne', '37', 'signal_wifi_off', 'error', '−12', 'up']]
+      .map(function (k) { return '<div class="kpi" style="--tone:var(--' + k[3] + ')"><div class="h">' + k[0] + '<span class="ic"><span class="mi">' + k[2] + '</span></span></div><b>' + k[1] + '</b><span class="delta ' + k[5] + '"><span class="mi">' + (k[5] === 'up' ? 'trending_up' : 'trending_down') + '</span>' + k[4] + '</span> <span class="muted small">vs mois dernier</span></div>'; }).join('');
+
+    var M = D.MOIS, m10 = M.slice(0, 10), C = function (v) { return Charts.cssVar('--' + v); }, M1 = function (v) { return v / 1e6; };
+    Charts.render($('c1'), { type: 'line', labels: M, yFormat: function (v) { return v + ' M'; }, series: [{ label: '2026', data: D.CA_MENSUEL_2026.slice(0, 10).map(M1), fill: true }, { label: '2025', data: D.CA_MENSUEL_2025.map(M1), dash: true }] });
+    Charts.render($('c2'), { type: 'line', stacked: true, labels: m10, series: [{ label: 'Standard', data: [120, 124, 130, 133, 140, 142, 150, 155, 158, 162], fill: true }, { label: 'Premium', data: [60, 64, 66, 72, 75, 80, 84, 90, 96, 101], fill: true }, { label: 'Entreprise', data: [12, 12, 14, 15, 15, 17, 18, 18, 20, 22], fill: true }] });
+    Charts.render($('c3'), { type: 'bar', legend: false, labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], series: [{ label: 'Interventions', data: [18, 24, 21, 27, 30, 12, 4] }] });
+    Charts.render($('c4'), { type: 'bar', horizontal: true, legend: false, labels: ['Yopougon', 'Cocody', 'Plateau', 'Abobo', 'Marcory', 'Treichville'], series: [{ label: 'Interventions', data: [42, 35, 28, 24, 19, 12] }] });
+    Charts.render($('c5'), { type: 'bar', labels: M.slice(4, 10), series: [{ label: 'Facturé', data: [47.6, 46.2, 49.9, 52.4, 51.1, 55.8] }, { label: 'Encaissé', data: [41.2, 42.8, 44.1, 46.9, 47.3, 48.7] }] });
+    Charts.render($('c6'), { type: 'bar', stacked: true, labels: M.slice(4, 10), series: [{ label: 'Installation', data: [40, 44, 38, 52, 48, 55] }, { label: 'Maintenance', data: [22, 25, 28, 24, 30, 27] }, { label: 'Désinstallation', data: [6, 4, 8, 5, 7, 6] }] });
+    Charts.render($('c7'), { type: 'bar', labels: M.slice(4, 10), y2Format: function (v) { return v + ' %'; }, series: [{ label: 'Factures émises', data: [290, 301, 296, 312, 308, 320] }, { label: 'Taux de recouvrement', type: 'line', axis: 'y2', data: [84, 86, 85, 88, 89, 87.4] }] });
+    Charts.render($('c8'), { type: 'line', legend: false, labels: Array.from({ length: 24 }, function (_, h) { return h + 'h'; }), series: [{ label: 'En ligne', step: true, fill: true, data: [1140, 1140, 1138, 1138, 1135, 1150, 1170, 1182, 1186, 1186, 1184, 1180, 1179, 1183, 1186, 1186, 1185, 1181, 1176, 1168, 1160, 1152, 1148, 1145] }] });
+    Charts.render($('c9'), { type: 'doughnut', labels: ['Actifs', 'Suspendus', 'Inactifs', 'Résiliés'], data: [22, 5, 8, 5], colors: [C('success'), C('warning'), C('neutral') || '#94a3b8', C('error')] });
+    var g = 0.78, a = Math.PI * (1 - g);
+    $('g1').innerHTML = '<svg viewBox="0 0 200 110" aria-hidden="true"><path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="var(--hover-bg)" stroke-width="18" stroke-linecap="round"/><path d="M 20 100 A 80 80 0 0 1 ' + (100 + 80 * Math.cos(a)).toFixed(1) + ' ' + (100 - 80 * Math.sin(a)).toFixed(1) + '" fill="none" stroke="var(--primary)" stroke-width="18" stroke-linecap="round"/></svg><b>78 %</b><small>Objectif d’installations (312 / 400)</small>';
+    Charts.render($('c10'), { type: 'pie', labels: ['Teltonika', 'Concox', 'Queclink', 'Autres'], data: [46, 28, 18, 8] });
+    Charts.render($('c11'), { type: 'polar', labels: ['Abidjan', 'Bouaké', 'San-Pédro', 'Yamoussoukro', 'Korhogo'], data: [820, 160, 120, 90, 58] });
+    Charts.render($('c12'), { type: 'radar', max: 100, labels: ['Délai', 'Qualité', 'Satisfaction', 'Volume', 'Sécurité'], series: [{ label: 'Équipe Nord', data: [82, 90, 88, 70, 95] }, { label: 'Équipe Sud', data: [74, 85, 92, 88, 80] }] });
+    function rnd(seed) { return function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }; } var r = rnd(7);
+    Charts.render($('c13'), { type: 'scatter', xLabel: 'Vitesse moyenne (km/h)', series: [{ label: 'Véhicules', data: Array.from({ length: 40 }, function () { var x = 30 + r() * 70; return { x: Math.round(x), y: +(6 + x * 0.06 + r() * 3).toFixed(1) }; }) }] });
+    Charts.render($('c14'), { type: 'bubble', xLabel: 'Véhicules', series: [{ label: 'Clients', data: CL.slice(0, 12).map(function (c, i) { return { x: c.vehicules, y: 80 + (i * 7) % 20, r: 4 + c.ca_mensuel / 150000 }; }) }] });
+
+    $('dl1').innerHTML = UIComp.descList([{ label: 'Raison sociale', value: 'Bolloré Logistics CI' }, { label: 'Code', value: 'CLI-1043', type: 'mono', copy: true }, { label: 'Ville', value: 'Abidjan' }, { label: 'Secteur', value: 'Logistique' }, { label: 'Véhicules', value: '124' }, { label: 'Statut', value: 'Actif', type: 'badge', tone: 'success' }], 3, 'vertical');
+    $('dl2').innerHTML = UIComp.descList([{ label: 'Offre', value: 'Premium Flotte' }, { label: 'Début', value: '01/03/2024' }, { label: 'Échéance', value: '28/02/2027' }, { label: 'IMEI', value: '358240051111110', type: 'mono', copy: true }], 1, 'horizontal');
+    $('dl3').innerHTML = UIComp.descList([{ label: 'Gestionnaire', value: 'Aminata Diallo' }, { label: 'Téléphone', value: '+225 07 10 20 30' }, { label: 'E-mail', value: 'contact@bollore.ci', copy: true }], 1, 'horizontal');
+
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { ExW.counters($('cnt')); io.disconnect(); } }); }); io.observe($('cnt'));
+    $('cnt').addEventListener('click', function () { ExW.counters($('cnt')); });
+
+    function diff(el, a, b, mode, title) {
+      var lines = UIKitUtils.diffLines(a, b), add = lines.filter(function (l) { return l.op === 'add'; }).length, del = lines.filter(function (l) { return l.op === 'del'; }).length;
+      function txt(l) { return l.parts ? l.parts.map(function (p) { return p.changed ? (l.op === 'add' ? '<ins>' : '<del>') + esc(p.text) + (l.op === 'add' ? '</ins>' : '</del>') : esc(p.text); }).join('') : esc(l.text); }
+      var body;
+      if (mode === 'split') { var L = [], R = [];
+        lines.forEach(function (l) { if (l.op === 'equal') { while (L.length < R.length) L.push(null); while (R.length < L.length) R.push(null); L.push(l); R.push(l); } else if (l.op === 'del') L.push(l); else R.push(l); });
+        while (L.length < R.length) L.push(null); while (R.length < L.length) R.push(null);
+        body = L.map(function (l, i) { var rr = R[i]; return '<div class="diff-line"><span class="no">' + (l ? l.oldNo : '') + '</span><span class="tx" style="' + (l && l.op === 'del' ? 'background:color-mix(in srgb,var(--error) 10%,transparent)' : '') + '">' + (l ? txt(l) : '') + '</span><span class="no">' + (rr ? rr.newNo : '') + '</span><span class="tx" style="' + (rr && rr.op === 'add' ? 'background:color-mix(in srgb,var(--success) 10%,transparent)' : '') + '">' + (rr ? txt(rr) : '') + '</span></div>'; }).join('');
+      } else body = lines.map(function (l) { return '<div class="diff-line ' + (l.op === 'equal' ? '' : l.op) + '"><span class="no">' + (l.oldNo || '') + '</span><span class="no">' + (l.newNo || '') + '</span><span>' + (l.op === 'add' ? '+' : l.op === 'del' ? '−' : '') + '</span><span class="tx">' + txt(l) + '</span></div>'; }).join('');
+      el.innerHTML = '<div class="diff' + (mode === 'split' ? ' split' : '') + '"><div class="diff-head"><span>' + title + '</span><span><span class="add">+' + add + '</span> <span class="del">−' + del + '</span></span></div>' + body + '</div>';
+    }
+    var V1 = 'Article 3 — Durée\nLe contrat est conclu pour 12 mois.\nIl est renouvelable par tacite reconduction.\n\nArticle 4 — Tarifs\nAbonnement : 15 000 FCFA par véhicule et par mois.\nInstallation : 35 000 FCFA par balise.',
+        V2 = 'Article 3 — Durée\nLe contrat est conclu pour 24 mois.\nIl est renouvelable par tacite reconduction.\nPréavis de résiliation : 3 mois.\n\nArticle 4 — Tarifs\nAbonnement : 13 500 FCFA par véhicule et par mois.\nInstallation offerte.';
+    var dm = 'unified'; function d1() { diff($('d1'), V1, V2, dm, 'contrat-CTR-2026-0042 · v1 → v2'); } d1();
+    $('dmode').addEventListener('click', function (e) { var b = e.target.closest('[data-m]'); if (!b) return; dm = b.dataset.m; this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); d1(); });
+    diff($('d2'), '{\n  "intervalle": 60,\n  "apn": "orange.ci",\n  "vitesse_max": 90,\n  "coupe_moteur": false\n}', '{\n  "intervalle": 30,\n  "apn": "orange.ci",\n  "vitesse_max": 110,\n  "coupe_moteur": true,\n  "geofence": "zone-plateau"\n}', 'unified', 'balise-GT06.json');
+
+    var u = function (n) { return { name: n, initials: UIComp.initials(n), color: hue(n) }; }, dd = function (d, h) { return new Date(2026, 10, 10 - d, h, 12); };
+    UIComp.auditLog($('audit-log'), [
+      { id: 'h1', at: dd(0, 10), user: u('Jean Kouassi'), action: 'update', target: 'Bolloré Logistics CI', changes: [{ field: 'conditions', label: 'Conditions', before: '45 jours', after: '30 jours fin de mois' }, { field: 'statut', label: 'Statut', before: 'Prospect', after: 'Actif' }] },
+      { id: 'h2', at: dd(0, 9), user: u('Fatou Diabaté'), action: 'comment', target: 'Facture FAC-0911', comment: 'Relance envoyée par e-mail.' },
+      { id: 'h3', at: dd(2, 15), user: u('Marc Yao'), action: 'create', target: 'Facture FAC-2026-0981' },
+      { id: 'h4', at: dd(3, 11), user: u('Aïcha Diallo'), action: 'export', target: 'Rapport T3 (PDF)', meta: 'Chrome · Abidjan' },
+      { id: 'h5', at: dd(6, 8), user: u('Jean Kouassi'), action: 'delete', target: 'Contact doublon' }]);
+
+    $('q1').innerHTML = ExW.qr('https://suivi.example.com/v/CI-4521-AB', 160, 'suivi.example.com/v/CI-4521-AB');
+    $('q2').innerHTML = ExW.qr('WIFI:T:WPA;S:SC-Storage-Invites;P:bienvenue2026;;', 128, 'Wi-Fi invités') + ExW.qr('BEGIN:VCARD\nVERSION:3.0\nN:Kouassi;Jean\nTEL:+2250710203040\nEND:VCARD', 128, 'Carte de visite');
+    $('q3').innerHTML = ExW.qr('IMEI:358240051111110', 96) + '<div><strong>Balise GT06-N</strong><div class="code" style="display:inline-block;margin:4px 0">358240051111110</div><div class="muted small">Installée le 14/10/2026 · CI-4521-AB</div></div>';
+  })();
+  </script>
+</body>
+</html>

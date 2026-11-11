@@ -17,9 +17,8 @@ body {
   background: var(--bg);
 }
 h1, h2, h3, h4 { margin: 0 0 var(--space-3); font-family: var(--font-heading); line-height: 1.25; font-weight: 600; }
-/* ui-kit (styles.scss) impose ces tailles avec !important sur tous les titres */
-h1 { font-size: 32px !important; font-weight: 700 !important; letter-spacing: -.02em !important; } h2 { font-size: 24px !important; font-weight: 600 !important; letter-spacing: -.01em !important; }
-h3 { font-size: 20px !important; font-weight: 600 !important; } h4 { font-size: 16px !important; font-weight: 600 !important; }
+h1 { font-size: 32px; font-weight: 700; letter-spacing: -.02em; } h2 { font-size: 24px; letter-spacing: -.01em; }
+h3 { font-size: 20px; } h4 { font-size: 16px; }
 p { margin: 0 0 var(--space-3); }
 a { color: var(--primary); }
 code, pre { font-family: var(--font-mono); font-size: .92em; }

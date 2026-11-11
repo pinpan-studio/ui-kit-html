@@ -44,7 +44,7 @@ kbd { padding: 1px 6px; border: 1px solid var(--border); border-radius: 4px; fon
 .hz-center { flex: 1; min-width: 0; display: flex; flex-direction: column; order: 2; }
 .hz-top { display: flex; align-items: center; gap: 4px; height: 56px; padding: 0 12px; flex: none; }
 .hz-conv-title { min-width: 0; display: flex; align-items: center; gap: 10px; padding-left: 6px; }
-.hz-conv-title h1 { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 15px; font-weight: 600; }
+.hz-conv-title h1 { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: 'Outfit', sans-serif; font-size: 13px !important; color: var(--text-primary); }
 .hz-project { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; background: var(--hover-bg); font-size: 12px; color: var(--text-secondary); white-space: nowrap; } .hz-project .mi { font-size: 14px; }
 .hz-top .spacer { flex: 1; } .hz-sep { width: 1px; height: 20px; margin: 0 4px; background: var(--border); }
 @media (max-width: 600px) { .hz-project, #hz-share span:last-child { display: none; } }
@@ -54,8 +54,9 @@ kbd { padding: 1px 6px; border: 1px solid var(--border); border-radius: 4px; fon
 .hz-dock { flex: none; padding: 0 0 12px; background: linear-gradient(transparent, var(--bg) 24px); }
 .hz-disclaimer { margin: 8px 0 0; text-align: center; font-size: 11px; color: var(--text-muted); }
 .hz-welcome { flex: 1; overflow-y: auto; display: flex; align-items: center; padding: 32px 0; }
-.hz-hello { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px; } .hz-hello h2 { margin: 0; font-size: clamp(24px, 4vw, 34px); font-weight: 500; }
-.hz-spark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), var(--purple)); color: #fff; } .hz-spark .mi { font-size: 26px; }
+.hz-hello { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px; } .hz-hello h2 { margin: 0; font-family: 'Outfit', sans-serif; font-size: var(--hz-display, clamp(22px, 2.4vw, 28px)) !important; letter-spacing: -.01em; color: var(--text-primary); }
+.hz-hello-spark { display: flex; color: var(--tertiary-color, var(--tertiary)); } .hz-hello-spark .mi { font-size: 36px; animation: hz-spark-in .6s cubic-bezier(.2, .9, .3, 1.3) both; }
+@keyframes hz-spark-in { from { transform: scale(.4) rotate(-60deg); opacity: 0; } }
 .hz-suggestions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
 .hz-suggestion { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid var(--border); border-radius: 17px; background: var(--card-bg); font: 500 13px var(--font-sans); color: var(--text-secondary); cursor: pointer; }
 .hz-suggestion:hover { color: var(--text-primary); border-color: var(--text-muted); } .hz-suggestion .mi { font-size: 17px; color: var(--primary); }

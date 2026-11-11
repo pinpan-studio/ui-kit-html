@@ -1,4 +1,7 @@
 /* Réglages Material globaux de ui-kit (styles.scss) */
+/* ui-kit impose ces tailles de titres avec !important (pages reprises du rendu d'origine) */
+h1 { font-size: 32px !important; font-weight: 700 !important; letter-spacing: -.02em !important; } h2 { font-size: 24px !important; font-weight: 600 !important; letter-spacing: -.01em !important; }
+h3 { font-size: 20px !important; font-weight: 600 !important; } h4 { font-size: 16px !important; font-weight: 600 !important; }
 @charset "UTF-8";
 @-webkit-keyframes bounce {
   0%, 20%, 53%, to {

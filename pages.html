@@ -7,52 +7,43 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/orig/material.css">
+  <link rel="stylesheet" href="css/orig/material-global.css">
   <link rel="stylesheet" href="css/doc.css">
+  <link rel="stylesheet" href="css/ng/pages.css">
   <script src="js/themes.js"></script>
   <script src="js/ui-kit.js"></script>
-  <style>
-    .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 24px; } .filters .search { flex: 1 1 260px; display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 14px; border-radius: 21px; background: var(--card-bg); }
-    .filters .search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: 14px var(--font-sans); color: var(--text-primary); } .filters select { height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 21px; background: var(--card-bg); color: var(--text-primary); font: 14px var(--font-sans); }
-    .kinds { display: flex; flex-wrap: wrap; gap: 6px; } .count { margin-left: auto; font-size: 13px; color: var(--text-muted); }
-    .group { margin-bottom: 36px; scroll-margin-top: 72px; } .ghead { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; } .ghead h2 { margin: 0; font-size: 20px; } .ghead p { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); } .ghead .t { flex: 1; }
-    .gcount { min-width: 30px; height: 30px; padding: 0 10px; border-radius: 15px; display: grid; place-items: center; background: var(--hover-bg); font-weight: 600; }
-    .pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 12px; }
-    .pcard { display: flex; flex-direction: column; border-radius: 16px; background: var(--card-bg); box-shadow: inset 0 0 0 1px var(--border); overflow: hidden; transition: box-shadow .15s, transform .15s; } .pcard:hover { box-shadow: var(--shadow-2), inset 0 0 0 1px var(--border); transform: translateY(-2px); }
-    .pcard a.main { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 16px; color: inherit; text-decoration: none; } .pcard .top { display: flex; justify-content: space-between; align-items: center; }
-    .pcard .kind { padding: 2px 8px; border-radius: 6px; background: var(--hover-bg); font-size: 11px; font-weight: 600; color: var(--text-secondary); } .pcard .desc { font-size: 13px; color: var(--text-secondary); } .pcard code { font-size: 11px; color: var(--text-muted); word-break: break-all; }
-    .vars { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px 14px; border-top: 1px solid var(--border); } .vars a { padding: 3px 10px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 600; text-decoration: none; }
-    .none { padding: 40px; text-align: center; color: var(--text-muted); }
-  </style>
 </head>
 <body data-kit data-root="" data-active="pages.html">
   <main id="kit-content">
-    <div class="doc-page" data-title="Pages" data-icon="view_quilt" data-eyebrow="Catalogue" data-subtitle="Toutes les pages statiques du kit, par catégorie. Cliquez une carte pour ouvrir la page ; les puces ouvrent ses variantes.">
-      <div class="filters"><label class="search"><span class="mi muted">search</span><input id="q" placeholder="Rechercher une page, une URL…" aria-label="Rechercher une page"></label><select id="grp" aria-label="Catégorie"><option value="">Toutes les catégories</option></select><div class="kinds" id="kinds"></div><span class="count" id="count"></span></div>
-      <div id="groups"></div>
-    </div>
+<app-pages-gallery _nghost-ng-c482717444=""><kit-doc-page _ngcontent-ng-c482717444="" title="Pages" icon="view_quilt" eyebrow="Catalogue" subtitle="Toutes les pages de l'application d'origine, converties en version 100 % statique. Cliquez une carte pour ouvrir la page dans son shell ; les puces ouvrent ses variantes d'état (vide, chargement, erreur…)." _nghost-ng-c4056330408=""><div _ngcontent-ng-c4056330408="" class="doc-page"><header _ngcontent-ng-c4056330408="" class="doc-hero"><div _ngcontent-ng-c4056330408="" class="hero-icon"><mat-icon _ngcontent-ng-c4056330408="" aria-hidden="true">view_quilt</mat-icon></div><div _ngcontent-ng-c4056330408="" class="hero-text"><span _ngcontent-ng-c4056330408="" class="eyebrow">Catalogue</span><h1 _ngcontent-ng-c4056330408="">Pages</h1><p _ngcontent-ng-c4056330408="">Toutes les pages de l'application d'origine, converties en version 100 % statique. Cliquez une carte pour ouvrir la page dans son shell ; les puces ouvrent ses variantes d'état (vide, chargement, erreur…).</p></div></header><nav _ngcontent-ng-c4056330408="" aria-label="Sommaire" class="doc-toc"><a _ngcontent-ng-c4056330408="" class="toc-chip" href="#harnais">Harnais (2)</a></nav><div _ngcontent-ng-c482717444="" class="filters"><div _ngcontent-ng-c482717444="" class="search"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">search</mat-icon><input _ngcontent-ng-c482717444="" type="text" placeholder="Rechercher une page, une URL…"></div><div _ngcontent-ng-c482717444="" class="field-box select-box small"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">apps</mat-icon><mat-select _ngcontent-ng-c482717444="" role="combobox" aria-haspopup="listbox" placeholder="Tous les modules" panelclass="m3-dropdown-menu" class="mat-mdc-select" aria-labelledby="mat-select-value-0" id="mat-select-0" tabindex="0" aria-expanded="false" aria-required="false" aria-disabled="false" aria-invalid="false"><div class="mat-mdc-select-trigger"><div class="mat-mdc-select-value" id="mat-select-value-0"><span class="mat-mdc-select-value-text"><span class="mat-mdc-select-min-line">Tous les modules</span></span></div><div class="mat-mdc-select-arrow-wrapper"><div class="mat-mdc-select-arrow"><svg viewBox="0 0 24 24" width="24px" height="24px" focusable="false" aria-hidden="true"><path d="M7 10l5 5 5-5z"></path></svg></div></div></div></mat-select></div><div _ngcontent-ng-c482717444="" class="kind-chips"><button _ngcontent-ng-c482717444="" type="button" class="active">Tous types</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">dashboard</mat-icon>Tableau de bord</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">view_list</mat-icon>Liste</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">article</mat-icon>Détail</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">edit_note</mat-icon>Formulaire</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">linear_scale</mat-icon>Assistant</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">calendar_month</mat-icon>Calendrier</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">view_kanban</mat-icon>Kanban</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">settings</mat-icon>Paramètres</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">lock</mat-icon>Authentification</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">public</mat-icon>Publique</button><button _ngcontent-ng-c482717444="" type="button"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">web</mat-icon>Autre</button></div><span _ngcontent-ng-c482717444="" class="count">2 page(s)</span></div><section _ngcontent-ng-c482717444="" class="group" id="harnais"><div _ngcontent-ng-c482717444="" class="group-head"><div _ngcontent-ng-c482717444="" class="g-icon"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">auto_awesome</mat-icon></div><div _ngcontent-ng-c482717444="" class="g-text"><h2 _ngcontent-ng-c482717444="">Harnais</h2><p _ngcontent-ng-c482717444="">Interface conversationnelle façon assistant IA : historique, fil avec réflexion et outils, saisie riche, panneau d’artefacts.</p></div><span _ngcontent-ng-c482717444="" class="g-count">2</span></div><div _ngcontent-ng-c482717444="" class="page-grid"><div _ngcontent-ng-c482717444="" class="page-card"><a _ngcontent-ng-c482717444="" class="pc-main" href="harnais/index.html"><div _ngcontent-ng-c482717444="" class="pc-top"><span _ngcontent-ng-c482717444="" class="pc-icon"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">auto_awesome</mat-icon></span><span _ngcontent-ng-c482717444="" class="pc-kind">Autre</span></div><strong _ngcontent-ng-c482717444="">Accueil</strong><span _ngcontent-ng-c482717444="" class="pc-desc">Salutation, saisie centrée et suggestions.</span><code _ngcontent-ng-c482717444="">/harnais</code></a></div><div _ngcontent-ng-c482717444="" class="page-card"><a _ngcontent-ng-c482717444="" class="pc-main" href="harnais/index.html?c=c-sidecar"><div _ngcontent-ng-c482717444="" class="pc-top"><span _ngcontent-ng-c482717444="" class="pc-icon"><mat-icon _ngcontent-ng-c482717444="" aria-hidden="true">forum</mat-icon></span><span _ngcontent-ng-c482717444="" class="pc-kind">Détail</span></div><strong _ngcontent-ng-c482717444="">Conversation</strong><span _ngcontent-ng-c482717444="" class="pc-desc">Fil complet : pièce jointe, réflexion, étapes d’outils, code, artefact.</span><code _ngcontent-ng-c482717444="">/harnais/c-sidecar</code></a><div _ngcontent-ng-c482717444="" class="pc-variants"><a _ngcontent-ng-c482717444="" class="variant" href="harnais/index.html?c=c-palette">Document</a><a _ngcontent-ng-c482717444="" class="variant" href="harnais/index.html?c=c-csv">Code court</a></div></div></div></section></div></kit-doc-page></app-pages-gallery>
   </main>
-  <script src="js/pages-registry.js"></script>
-  <script src="js/doc.js"></script>
+  <script src="js/mat.js"></script>
   <script src="js/kit.js"></script>
   <script>
-  (function () {
-    var $ = function (id) { return document.getElementById(id); }, R = PAGE_REGISTRY, st = { q: '', g: '', k: '' };
-    var KL = { dashboard: ['Tableau de bord', 'dashboard'], list: ['Liste', 'view_list'], detail: ['Détail', 'article'], form: ['Formulaire', 'edit_note'], wizard: ['Assistant', 'linear_scale'], calendar: ['Calendrier', 'calendar_month'], kanban: ['Kanban', 'view_kanban'], settings: ['Paramètres', 'settings'], auth: ['Authentification', 'lock'], other: ['Autre', 'web'] };
-    $('grp').innerHTML += R.map(function (g) { return '<option value="' + g.id + '">' + g.label + '</option>'; }).join('');
-    function draw() {
-      $('kinds').innerHTML = '<button class="ui-filter-chip' + (st.k ? '' : ' on') + '" data-k="">Tous types</button>' + Object.keys(KL).map(function (k) { return '<button class="ui-filter-chip' + (st.k === k ? ' on' : '') + '" data-k="' + k + '"><span class="mi" style="font-size:15px">' + KL[k][1] + '</span>' + KL[k][0] + '</button>'; }).join('');
-      var q = st.q.toLowerCase().trim(), n = 0;
-      var gs = R.filter(function (g) { return !st.g || g.id === st.g; }).map(function (g) { return { g: g, p: g.pages.filter(function (p) { return (!st.k || p.kind === st.k) && (!q || (p.label + ' ' + p.path + ' ' + (p.description || '') + ' ' + g.label).toLowerCase().indexOf(q) >= 0); }) }; }).filter(function (x) { return x.p.length; });
-      $('groups').innerHTML = gs.length ? gs.map(function (x) { n += x.p.length; return '<section class="group" id="' + x.g.id + '"><div class="ghead"><span class="ic-tile tone-primary"><span class="mi">' + x.g.icon + '</span></span><div class="t"><h2>' + x.g.label + '</h2><p>' + (x.g.description || '') + '</p></div><span class="gcount">' + x.p.length + '</span></div><div class="pgrid">' +
-        x.p.map(function (p) { return '<div class="pcard"><a class="main" href="' + p.path + '"><span class="top"><span class="ic-tile"><span class="mi">' + KL[p.kind][1] + '</span></span><span class="kind">' + KL[p.kind][0] + '</span></span><strong>' + p.label + '</strong>' + (p.description ? '<span class="desc">' + p.description + '</span>' : '') + '<code>' + p.path + '</code></a>' + (p.variants ? '<div class="vars">' + p.variants.map(function (v) { return '<a href="' + v.path + '">' + v.label + '</a>'; }).join('') + '</div>' : '') + '</div>'; }).join('') + '</div></section>'; }).join('')
-        : '<div class="none"><span class="mi" style="font-size:36px">search_off</span><br>Aucune page ne correspond. <button class="ui-btn ui-btn--text" id="reset">Réinitialiser</button></div>';
-      $('count').textContent = n + ' page(s)';
-      var r = $('reset'); if (r) r.onclick = function () { st = { q: '', g: '', k: '' }; $('q').value = ''; $('grp').value = ''; draw(); };
-    }
-    $('q').oninput = function () { st.q = this.value; draw(); }; $('grp').onchange = function () { st.g = this.value; draw(); };
-    $('kinds').onclick = function (e) { var b = e.target.closest('[data-k]'); if (b) { st.k = b.dataset.k; draw(); } };
-    draw();
-  })();
+(function () {
+  // Filtres de la galerie des pages : recherche, module (sélecteur natif superposé au mat-select), type.
+  var page = document.querySelector('app-pages-gallery'), f = page.querySelector('.filters');
+  var input = f.querySelector('.search input'), box = f.querySelector('.select-box'), chips = f.querySelector('.kind-chips'), count = f.querySelector('.count');
+  var groups = Array.from(page.querySelectorAll('section.group')), q = '', mod = '', kind = '';
+  var kinds = Array.from(chips.children).map(function (b, i) { return i ? b.textContent.replace(b.querySelector('mat-icon') ? b.querySelector('mat-icon').textContent : '', '').trim() : ''; });
+  var sel = document.createElement('select'); sel.setAttribute('aria-label', 'Module');
+  sel.style.cssText = 'position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%';
+  sel.innerHTML = '<option value="">Tous les modules</option>' + groups.map(function (g) { return '<option value="' + g.id + '">' + g.querySelector('h2').textContent + '</option>'; }).join('');
+  box.style.position = 'relative'; box.appendChild(sel);
+  var label = box.querySelector('.mat-mdc-select-value-text, .mat-mdc-select-placeholder, .mat-mdc-select-min-line');
+  function norm(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function apply() { var n = 0;
+    groups.forEach(function (g) { var vis = 0;
+      g.querySelectorAll('.page-card').forEach(function (c) { var k = c.querySelector('.pc-kind'), ok = (!q || norm(c.textContent).indexOf(q) >= 0) && (!kind || (k && k.textContent.trim() === kind)); c.hidden = !ok; if (ok) vis++; });
+      var show = (!mod || g.id === mod) && (vis > 0 || (!q && !kind && !g.querySelector('.page-card'))); g.hidden = !show; if (show) { n += vis; var gc = g.querySelector('.g-count'); if (gc) gc.textContent = vis; } });
+    count.textContent = n + ' page(s)'; }
+  input.addEventListener('input', function () { q = norm(input.value.trim()); apply(); });
+  sel.addEventListener('change', function () { mod = sel.value; if (label) label.textContent = sel.options[sel.selectedIndex].text; apply(); });
+  chips.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; kind = kinds[Array.from(chips.children).indexOf(b)];
+    chips.querySelectorAll('button').forEach(function (x) { x.classList.toggle('active', x === b); }); apply(); });
+})();
+
   </script>
 </body>
 </html>

@@ -36,10 +36,15 @@ css/
   components.css    base + composants (.ui-*, champs, menus, tableaux, cartes, calendrier…)
   fonts-extra.css   Outfit, Inter, Space Mono + échelle .text-*
   doc.css           pages de documentation des galeries
+  orig/             CSS repris de ui-kit : styles globaux, Material (MDC/CDK) relevés à l'exécution, composants partagés, pages
+  ng/               styles des composants relevés pour les pages reprises du rendu d'origine (showcases, layouts, pages,
+                    typographie, boutons, layout, Material & CDK)
   planning.css · media.css · files.css · chat.css · harnais.css · device-frame.css · pages/*.css
 js/
   ui-kit.js         thème, mode, onglets, dialogues (confirm / prompt), toasts
   kit.js · doc.js   shell du catalogue · pages de documentation (hero, sommaire, démos + code)
+  mat.js            comportements natifs du balisage Material : interrupteurs, groupes de boutons, puces, onglets,
+                    panneaux dépliables, extraits de code des démos
   forms.js          UIForms : masque, select recherchable, multi-select, autocomplétion, filtre, date, dialogue CRUD
   fields.js         UIFields : OTP, nombre ±, montant, intervalle, notation, couleur, texte riche, Markdown,
                     arborescence, transfert, tags, adresse, mot de passe, copie

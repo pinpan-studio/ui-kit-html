@@ -70,7 +70,7 @@
       center.dataset.mode = mode;
       if (mode === 'welcome') {
         var h = new Date().getHours() < 18 ? 'Bonjour' : 'Bonsoir';
-        center.innerHTML = '<div class="hz-welcome"><div class="hz-column"><div class="hz-hello"><span class="hz-spark"><span class="mi">auto_awesome</span></span><h2>' + h + ', ' + esc(user.prenoms) + '</h2></div><div class="hz-composer-slot"></div>' +
+        center.innerHTML = '<div class="hz-welcome"><div class="hz-column"><div class="hz-hello"><span class="hz-hello-spark"><span class="mi">auto_awesome</span></span><h2>' + h + ', ' + esc(user.prenoms) + '</h2></div><div class="hz-composer-slot"></div>' +
           '<div class="hz-suggestions">' + D.HARNAIS_SUGGESTIONS.map(function (s, i) { return '<button type="button" class="hz-suggestion" data-suggest="' + i + '"><span class="mi">' + s.icon + '</span>' + esc(s.label) + '</button>'; }).join('') + '</div></div></div>';
       } else {
         center.innerHTML = '<div class="hz-thread" id="hz-thread"><div class="hz-column" id="hz-msgs"></div></div><div class="hz-dock"><div class="hz-column"><div class="hz-composer-slot"></div><p class="hz-disclaimer">Les réponses sont simulées localement — démonstration statique du UI Kit.</p></div></div>';
